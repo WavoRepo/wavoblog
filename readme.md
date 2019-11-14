@@ -12,18 +12,22 @@ A simple blog application using laravel as framework, sqlite as database and Vue
   * If you don't have a .env file, run `cp .env.example .env`
   * run `php artisan migrate`
 
-### add to your env
-
-  # Application name
+### Add to your env
+  
   APP_NAME=WavoBlog
 
   #sqlite connection
+  
   DB_CONNECTION=sqlite
+  
   DB_HOST=127.0.0.1
+  
   DB_DATABASE=database.sqlite
 
   DB_PORT=3306
+  
   DB_USERNAME=homestead
+  
   DB_PASSWORD=secret
 
 ### Authors
