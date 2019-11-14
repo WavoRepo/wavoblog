@@ -1,0 +1,367 @@
+.align-center {
+    text-align: center;
+}
+.user-index {
+    .profile-image-wrap {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100px;
+        margin: 10px auto;
+        text-align: center;
+        width: 100px;
+        img {
+            height: 100px;
+            margin: 0;
+            width: 100px;
+        }
+    }
+}
+.user-edit {
+    .modal-content {
+        min-height: 778px;
+    }
+    form {
+        padding: 0;
+        .uploader-wrap {
+            .profile-image-wrap {
+                background-color: #ffffff;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                display: block;
+                min-height: 220px;
+                padding: 20px;
+                text-align: center;
+                width: 100%;
+                img {
+                    height: 220px;
+                    min-width: 270px;
+                    width: auto;
+                }
+            }
+            .image-uploader {
+                .fileinput {
+                    margin-bottom: 4px;
+                    width: 100%;
+                    .btn-file {
+                        display: inline-block;
+                        max-width: 145px;
+                    }
+                }
+                .fileinput-filename {
+                    left: 168px;
+                    position: absolute;
+                    top: 5px;
+                }
+                .fileinput-exists {
+                    float: none;
+                    font-size: 13px;
+                    font-weight: normal;
+                    max-width: 145px;
+                    opacity: 1;
+                    padding: 0.6rem 2.2rem;
+                    position: absolute;
+                    right: 15px;
+                    top: 0px;
+                }
+            }
+        }
+    }
+}
+.user-profile {
+    .modal-content {
+        min-height: 592px;
+        .profile-image-wrap {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            min-height: 270px;
+            text-align: center;
+            width: 100%;
+            img {
+                height: 270px;
+                min-width: 270px;
+                width: auto;
+            }
+        }
+        .profile-content {
+            h2 {
+                margin: 30px 0;
+                i {
+                    margin-right: 15px;
+                }
+            }
+            .profile-email,
+            .profile-hone,
+            .profile-address {
+                i {
+                    margin-right: 15px;
+                }
+            }
+        }
+    }
+}
+.blog-post {
+    .full-height {
+        height: 100vh;
+    }
+
+    .flex-center {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+
+    .position-ref {
+        position: relative;
+    }
+
+    .top-right {
+        position: absolute;
+        right: 10px;
+        top: 18px;
+    }
+
+    .content {
+        text-align: center;
+    }
+
+    .title {
+        font-size: 84px;
+    }
+
+    .links > a {
+        color: #636b6f;
+        padding: 0 25px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: .1rem;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+
+    .m-b-md {
+        margin-bottom: 30px;
+    }
+}
+.blog-index {
+    .card {
+        margin-bottom: 30px;
+        h4 {
+            span {
+                font-size: 11px;
+                font-weight: normal;
+            }
+        }
+        h5 {
+            display: inline-block;
+            span {
+                font-weight: normal;
+            }
+        }
+        .card-content {
+            .featured-image-wrap {
+                background-position: center;
+                background-repeat: no-repeat;
+                min-height: 225px;
+                .image-wrap {
+                    background-color: #fff;
+                    height: 100%;
+                    text-align: center;
+                    img {
+                        margin: auto;
+                        max-width: 100%;
+                    }
+                }
+            }
+            .post-content {
+                .excerpt {
+                    padding: 12px 0;
+                }
+            }
+        }
+    }
+}
+.blog-edit,
+.blog-add {
+    form {
+        height: 100%;
+        .slug-wrap {
+            margin-top: 10px;
+            input {
+                border: none;
+                display: inline-block;
+                font-size: 14px;
+                height: 20px;
+                padding-left: 0;
+            }
+        }
+        .card {
+            margin-top: 34px;
+            select {
+                display: inline-block;
+                width: 124px;
+            }
+            .featured-image-wrap {
+                text-align: center;
+                #profile-image {
+                    height: 220px;
+                }
+                #featured-image-preview {
+                    max-width: 100%;
+                }
+            }
+            .fileinput {
+                margin: 4px 0;
+                position: relative;
+                width: 100%;
+                .btn-file {
+                    display: inline-block;
+                    max-width: 145px;
+                }
+            }
+            .fileinput-exists {
+                float: none;
+                font-size: 14px;
+                font-weight: normal;
+                max-width: 145px;
+                opacity: 1;;
+                padding: 10px 2.2rem;
+                position: absolute;
+                right: 0px;
+                top: 0px;
+            }
+        }
+    }
+}
+.blog-edit,
+.blog-add,
+.blog-single {
+
+    blockquote {
+        background: #f9f9f9;
+        border-left: 10px solid #ccc;
+        padding: 0.5em 10px;
+        quotes: "\201C""\201D""\2018""\2019";
+        img {
+            float: left;
+            margin-right: 40px;
+        }
+    }
+    blockquote:before {
+        color: #ccc;
+        content: open-quote;
+        font-size: 4em;
+        line-height: 0.1em;
+        margin-right: 0.25em;
+        vertical-align: -0.4em;
+        p {
+            display: inline;
+        }
+    }
+    blockquote.ql-align-left,
+    .ql-align-left, p {
+        text-align: left;
+        img {
+            float: left;
+            margin-right: 40px;
+        }
+    }
+    blockquote.ql-align-right,
+    .ql-align-right {
+        text-align: right;
+        img {
+            float: right;
+            margin-left: 40px;
+        }
+    }
+    blockquote.ql-align-center,
+    .ql-align-center {
+        text-align: center;
+        img {
+            display: block;
+            margin: 0 auto 20px;
+            float: none;
+        }
+    }
+    blockquote.ql-align-justify,
+    .ql-align-justify {
+        text-align: justify;
+        text-justify: inter-word;
+        img {
+            display: block;
+            margin: 0 auto 20px;
+            float: none;
+        }
+    }
+    ul[data-checked=false],
+    ul[data-checked=true] {
+        pointer-events: none;
+        list-style-type: none;
+    }
+    ul[data-checked=false] li::before,
+    ul[data-checked=true] li::before {
+        content: '\2610';
+        font-size: 1.35em;
+        vertical-align: baseline;
+        bottom: -.065em;
+        font-weight: 900;
+        color: #222;
+        cursor: pointer;
+        pointer-events: all;
+
+    }
+    ul[data-checked=true]>li::before {
+        content: '\2611';
+    }
+     li:not(.ql-direction-rtl)::before {
+        margin-left: -1.5em;
+        margin-right: .3em;
+        text-align: right;
+    }
+    .ql-snow .ql-editor pre.ql-syntax {
+        background-color: #eff2f3;
+        color: #333;
+        overflow: visible;
+    }
+}
+.blog-single {
+    h1 {
+        font-size: 48px;
+        font-weight: 700;
+        color: #2f4050;
+    }
+    .featured-image-wrap {
+        text-align: center;
+        img {
+            border: 1px solid #ccc;
+            max-width: 98%;
+            padding: 1px;
+        }
+    }
+    .post-content-wrap {
+
+    }
+}
+.page-not-found {
+    align-items: center;
+    display: flex;
+    height: 74vh;
+    justify-content: center;
+    position: relative;
+    .error-status {
+        border-right: 2px solid;
+        font-size: 26px;
+        padding: 0 15px 0 15px;
+        text-align: center;
+    }
+    .error-text {
+        font-size: 18px;
+        padding: 10px;
+        text-align: center;
+    }
+}
+strong {
+    font-weight: bold;
+}
