@@ -1,5 +1,5 @@
 <template>
-    <div class="container blog-add">
+    <div class="container py-4 blog-add">
         <form class="form-control no-borders" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-lg-8">

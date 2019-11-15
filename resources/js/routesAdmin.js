@@ -5,6 +5,7 @@ import Blog from './components/backend/blog/Index';
 import AddBlog from './components/backend/blog/Add';
 import EditBlog from './components/backend/blog/Edit';
 import Security from './components/backend/Security';
+import SinglePost from './components/frontend/blog/SinglePost';
 import PageNotFound from './components/PageNotFound';
 
 let routesAdmin = [
@@ -15,6 +16,8 @@ let routesAdmin = [
     { path: '/admin/blog/add', component: AddBlog, name: 'Add New Blog' },
     { path: '/admin/blog/edit', component: EditBlog, name: 'Edit Blog' },
     { path: '/admin/security', component: Security, name: 'Security' },
+    // Frontend
+    { path: '/blog/:post', component: SinglePost, name: 'Single Post' },
     // PageNotFound always last
     { path: "*", component: PageNotFound, name: 'Page Not Found' }
 ];

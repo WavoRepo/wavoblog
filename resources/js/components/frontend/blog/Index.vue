@@ -118,16 +118,19 @@
                 return false;
             },
             getAllPosts () {
+
+
                 let self = this;
                 let url = '';
                 if(!_.isEmpty(this.activeUser)) {
                     url = '/api/v1/post/?frontpage=true';
                 } else {
-                    url = '/api/v1/post/frontend/?frontpage=true';
+                    url = '/api/v1/frontend/post/?frontpage=true';
                 }
 
                 axios.get(url)
                 .then((response) => {
+                    console.log(response);
                     if(_.isEmpty(response.data.posts)) {
                         this.havePost = false;
                     };
@@ -145,6 +148,11 @@
             }
         },
         mounted() {
+            if(!_.isEmpty(this.blogPosts)) {
+                console.log(this.blogPosts);
+                this.posts = this.blogPosts;
+                return;
+            }
             this.getAllPosts();
         }
     }

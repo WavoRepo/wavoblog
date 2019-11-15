@@ -9,6 +9,8 @@
 
         <meta name="cl-code" content="{{ $user['api_token'] }}">
         <meta name="base_url" content="{{ $base_url }}">
+        <meta name="has_user" content="{{ $user->exists }}">
+        <meta name="frontpage" content="true">
 
         <title>Blog Post</title>
 

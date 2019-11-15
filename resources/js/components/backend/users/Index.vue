@@ -1,5 +1,5 @@
 <template>
-    <div class="container user-index">
+    <div class="container py-4 user-index">
         <div class="row">
             <template v-for="user of users">
                 <div class="col-lg-4">

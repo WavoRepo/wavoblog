@@ -1,5 +1,5 @@
 <template>
-    <div class="container blog-index">
+    <div class="container py-4 blog-index">
         <div class="row">
             <div class="col-lg-12">
                 <router-link :to="'/admin/blog/add'">
@@ -50,8 +50,17 @@
                                 type="button"
                                 @click="setSelected(post.id)">
 
-                                <i class="fa fa-eye"> </i>
+                                <i class="fa fa-pencil"> </i>
                                 Edit
+                            </button>
+                        </router-link>
+                        <router-link :to="'/blog/' + post.post_slug">
+                            <button class="btn btn-info btn-xs"
+                                type="button"
+                                @click="setSelected(post.id)">
+
+                                <i class="fa fa-eye"> </i>
+                                View
                             </button>
                         </router-link>
                         <button class="btn btn-white btn-xs"
@@ -67,8 +76,15 @@
                             type="button"
                             disabled>
 
-                            <i class="fa fa-eye" > </i>
+                            <i class="fa fa-pencil" > </i>
                             Edit
+                        </button>
+                        <button class="btn btn-info btn-xs"
+                            type="button"
+                            disabled>
+
+                            <i class="fa fa-eye"> </i>
+                            View
                         </button>
                         <button class="btn btn-white btn-xs"
                             type="button"

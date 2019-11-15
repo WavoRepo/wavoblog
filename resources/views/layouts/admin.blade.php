@@ -9,6 +9,7 @@
 
     <meta name="cl-code" content="{{ $user['api_token'] }}">
     <meta name="base_url" content="{{ $base_url }}">
+    <meta name="has_user" content="{{ $user->exists }}">
 
     <title>Wavo Blog - @yield('title')</title>
 
@@ -77,7 +78,7 @@
 
             </div>
         </div>
-        <main class="py-4">
+        <main>
             @yield('content')
         </main>
     </div>

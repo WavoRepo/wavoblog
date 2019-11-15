@@ -1,5 +1,5 @@
 <template>
-    <div class=" container">
+    <div class="container py-4">
         <div class="row"  id="sortable-view">
             <template v-for="service of services">
                 <div class="col-lg-4">

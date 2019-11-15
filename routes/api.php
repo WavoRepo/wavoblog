@@ -17,7 +17,8 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'v1'], function () {
 
     /*** BOF POSTS ***/
-    Route::get('/post/frontend', 'PostsController@index');
+    Route::get('/frontend/post', 'PostsController@index');
+    Route::get('/frontend/post/{id}', 'PostsController@show');
 
     /*** REQUEST METHOD DON'T MATCH ***/
     Route::fallback(function(){
