@@ -51,14 +51,14 @@
                         </div>
                     @endif
                 </div>
-                @if($user)
+                @if($user || $hasPost)
                 <div class="container">
                     <router-view></router-view>
                 </div
                 </div>
                 @endif
             </div>
-            @if(!$user)
+            @if(!$user && !$hasPost)
             <div class="flex-center position-ref xfull-height" style="height: calc(100vh - 400px">
                 <div class="content">
                     <div class="title m-b-md">

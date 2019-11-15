@@ -88,6 +88,9 @@
             }
         },
         computed: {
+            ...mapState('USERS', {
+                activeUser: 'active'
+            }),
             ...mapState('POSTS', {
                 blogPosts: 'all'
             }),
@@ -116,7 +119,12 @@
             },
             getAllPosts () {
                 let self = this;
-                let url = '/api/v1/post/?frontpage=true';
+                let url = '';
+                if(!_.isEmpty(this.activeUser)) {
+                    url = '/api/v1/post/?frontpage=true';
+                } else {
+                    url = '/api/v1/post/frontend/?frontpage=true';
+                }
 
                 axios.get(url)
                 .then((response) => {

@@ -3503,7 +3503,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       base_url: document.head.querySelector('meta[name="base_url"]').content
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('USERS', {
+    activeUser: 'active'
+  }), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', {
     blogPosts: 'all'
   })),
   watch: {
@@ -3527,7 +3529,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       var self = this;
-      var url = '/api/v1/post/?frontpage=true';
+      var url = '';
+
+      if (!_.isEmpty(this.activeUser)) {
+        url = '/api/v1/post/?frontpage=true';
+      } else {
+        url = '/api/v1/post/frontend/?frontpage=true';
+      }
+
       axios.get(url).then(function (response) {
         if (_.isEmpty(response.data.posts)) {
           _this.havePost = false;

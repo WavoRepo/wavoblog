@@ -14,6 +14,18 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::group(['prefix' => 'v1'], function () {
+
+    /*** BOF POSTS ***/
+    Route::get('/post/frontend', 'PostsController@index');
+
+    /*** REQUEST METHOD DON'T MATCH ***/
+    Route::fallback(function(){
+        return response()->json([
+            'message' => 'Page Not Found. If error persists, contact support@wavo.com'], 404);
+    });
+});
+
 Route::group(['prefix' => 'v1', 'middleware' => 'auth:api'], function () {
 
     /*** BOF DASHBOARD ***/

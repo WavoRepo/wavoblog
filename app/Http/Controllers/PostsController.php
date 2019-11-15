@@ -47,8 +47,15 @@ class PostsController extends Controller
         }
         // load View template for frontend
         else {
+            $hasPost = $this->post->where('status', 'Published')->exists();
+
+            // echo '<pre>';
+            // print_r($hasPost);
+            // echo '</pre>';
+
             return view('blogpage', [
                 'user' => Auth::user(),
+                'hasPost' =>$hasPost,
                 'base_url' => config('app.url')
             ]);
         }
