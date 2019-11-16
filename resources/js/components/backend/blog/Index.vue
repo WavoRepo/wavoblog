@@ -12,7 +12,7 @@
                 </router-link>
                 <div class="input-group" style="position: absolute; top: 0; width: calc(100% - 216px); right: 14px;">
                     <input type="text"
-                        placeholder="Search By Title, Content, Date, Slug, And Status"
+                        placeholder="Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
                         v-model="search"
                         class="form-control form-control-lg" style="font-size: 0.8rem;">
                     <div class="input-group-btn">
