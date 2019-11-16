@@ -14,8 +14,8 @@
             </div>
         </div>
         <div class="col-lg-12 mb-4">
-            <button v-for="meta of metas" type="button" class="btn btn-primary btn-sm mr-2">
-                {{ meta }} <span class="badge badge-light" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
+            <button v-for="meta of metas" type="button" class="btn btn-secondary btn-sm mr-2">
+                {{ meta }} <span class="badge badge-warning" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
             </button>
         </div>
         <template v-if="havePost" v-for="post of posts">
@@ -87,6 +87,16 @@
 
                 <div class="">
                     <a :href="base_url + '/admin/blog'" class="btn btn-primary m-t">Post Listing</a>
+                </div>
+            </div>
+        </div>
+        <div v-show="!hasResult" class="flex-center position-ref" style="height: 200px; width: 100%;">
+            <div class="content">
+                <div class="middle-box text-center wrapper" style="background-color: #fff;">
+                    <h3 class="font-bold">Sorry, no result to display.</h3>
+                    <div class="error-desc">
+                        There's no result for search: <span v-for="meta of metas"> <strong>{{ meta }}</strong> </span>. Try another search.
+                    </div>
                 </div>
             </div>
         </div>

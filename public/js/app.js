@@ -3657,6 +3657,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'blog',
@@ -76744,7 +76754,7 @@ var render = function() {
           return _c(
             "button",
             {
-              staticClass: "btn btn-primary btn-sm mr-2",
+              staticClass: "btn btn-secondary btn-sm mr-2",
               attrs: { type: "button" }
             },
             [
@@ -76752,7 +76762,7 @@ var render = function() {
               _c(
                 "span",
                 {
-                  staticClass: "badge badge-light",
+                  staticClass: "badge badge-warning",
                   on: {
                     click: function($event) {
                       return _vm.removeTheMeta(meta)
@@ -76925,6 +76935,53 @@ var render = function() {
                 [_vm._v("Post Listing")]
               )
             ])
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: !_vm.hasResult,
+              expression: "!hasResult"
+            }
+          ],
+          staticClass: "flex-center position-ref",
+          staticStyle: { height: "200px", width: "100%" }
+        },
+        [
+          _c("div", { staticClass: "content" }, [
+            _c(
+              "div",
+              {
+                staticClass: "middle-box text-center wrapper",
+                staticStyle: { "background-color": "#fff" }
+              },
+              [
+                _c("h3", { staticClass: "font-bold" }, [
+                  _vm._v("Sorry, no result to display.")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "error-desc" },
+                  [
+                    _vm._v(
+                      "\n                    There's no result for search: "
+                    ),
+                    _vm._l(_vm.metas, function(meta) {
+                      return _c("span", [_c("strong", [_vm._v(_vm._s(meta))])])
+                    }),
+                    _vm._v(". Try another search.\n                ")
+                  ],
+                  2
+                )
+              ]
+            )
           ])
         ]
       )
