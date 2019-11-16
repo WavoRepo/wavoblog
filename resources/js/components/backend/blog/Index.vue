@@ -172,7 +172,7 @@
                 this.posts = $post;
             },
             results: function ($post) {
-                this.CheckResultHasOmerPost();
+                this.CheckResultsOwnerIsActive();
                 if(_.isEmpty($post) && _.isEmpty(this.metas)) {
                     this.hasResult = true;
                     this.posts = this.blogPosts;
@@ -221,7 +221,7 @@
                 } else {
                     this.postOwnerText = 'Show All Posts';
                 }
-                this.CheckResultHasOmerPost();
+                this.CheckResultsOwnerIsActive();
             },
             showOwnerPost ($email) {
                 if($email != this.activeUser.email && this.postOwner) {
@@ -229,7 +229,7 @@
                 }
                 return true;
             },
-            CheckResultHasOmerPost() {
+            CheckResultsOwnerIsActive() {
                 let self = this;
                 let visible = false;
                 $('#owner_msg').hide();

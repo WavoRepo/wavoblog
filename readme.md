@@ -12,6 +12,7 @@ A simple blog application using laravel as framework, sqlite as database and Vue
   * If you don't have a .env file, run `cp .env.example .env`
   * add new file under database folder: database.sqlite
   * run `php artisan migrate`
+  * run `php artisan storage:link`
 
 ### add to your env
 
