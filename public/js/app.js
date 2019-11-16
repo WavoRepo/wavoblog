@@ -2925,7 +2925,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.posts = $post;
     },
     results: function results($post) {
-      this.CheckResultHasOmerPost();
+      this.CheckResultsOwnerIsActive();
 
       if (_.isEmpty($post) && _.isEmpty(this.metas)) {
         this.hasResult = true;
@@ -2972,7 +2972,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.postOwnerText = 'Show All Posts';
       }
 
-      this.CheckResultHasOmerPost();
+      this.CheckResultsOwnerIsActive();
     },
     showOwnerPost: function showOwnerPost($email) {
       if ($email != this.activeUser.email && this.postOwner) {
@@ -2981,7 +2981,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       return true;
     },
-    CheckResultHasOmerPost: function CheckResultHasOmerPost() {
+    CheckResultsOwnerIsActive: function CheckResultsOwnerIsActive() {
       var self = this;
       var visible = false;
       $('#owner_msg').hide();
@@ -3676,7 +3676,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       hasResult: true,
       posts: [],
       search: '',
-      base_url: document.head.querySelector('meta[name="base_url"]').content
+      base_url: document.head.querySelector('meta[name="base_url"]').content,
+      app_name: document.head.querySelector('meta[name="app_name"]').content
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('USERS', {
@@ -3709,6 +3710,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'searchPosts', 'removeMeta', 'setSelectedPostById']), {
+    formatDate: function formatDate($date) {
+      // return moment($date).format('ll');
+      return moment($date).format('Do MM YYYY hh:mm');
+    },
     excerpt: function excerpt($text) {
       return $text.replace(/(<([^>]+)>)/ig, '').substr(0, 450) + '...';
     },
@@ -3864,6 +3869,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setSelectedPost']), {
+    formatDate: function formatDate($date) {
+      // return moment($date).format('ll');
+      return moment($date).format('Do MMMM YYYY');
+    },
     getImage: function getImage($image) {
       return $image ? $image + '?' + Math.random() : '';
     },
@@ -75424,7 +75433,7 @@ var render = function() {
                 attrs: {
                   type: "text",
                   placeholder:
-                    "Search By Title, Content, Date, Slug, And Status"
+                    "Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
                 },
                 domProps: { value: _vm.search },
                 on: {
@@ -76720,7 +76729,8 @@ var render = function() {
               staticStyle: { "font-size": "0.8rem" },
               attrs: {
                 type: "text",
-                placeholder: "Search By Title, Content, Date, Slug, And Status"
+                placeholder:
+                  "Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
               },
               domProps: { value: _vm.search },
               on: {
@@ -76801,7 +76811,7 @@ var render = function() {
                                   _c("i", { staticClass: "fa fa-clock-o" }),
                                   _vm._v(
                                     "\n                                    " +
-                                      _vm._s(post.created_at) +
+                                      _vm._s(_vm.formatDate(post.created_at)) +
                                       "\n                                "
                                   )
                                 ])
@@ -76920,7 +76930,9 @@ var render = function() {
         [
           _c("div", { staticClass: "content" }, [
             _c("div", { staticClass: "title m-b-md" }, [
-              _vm._v("\n                WavoBlog\n            ")
+              _vm._v(
+                "\n                " + _vm._s(_vm.app_name) + "\n            "
+              )
             ]),
             _vm._v(" "),
             _vm._m(1),
@@ -76974,7 +76986,10 @@ var render = function() {
                       "\n                    There's no result for search: "
                     ),
                     _vm._l(_vm.metas, function(meta) {
-                      return _c("span", [_c("strong", [_vm._v(_vm._s(meta))])])
+                      return _c("span", [
+                        _c("strong", [_vm._v(_vm._s(meta))]),
+                        _vm._v(" - ")
+                      ])
                     }),
                     _vm._v(". Try another search.\n                ")
                   ],
@@ -77130,7 +77145,7 @@ var render = function() {
                   _c("i", { staticClass: "fa fa-clock-o" }),
                   _vm._v(
                     "\n                    " +
-                      _vm._s(_vm.post.created_at) +
+                      _vm._s(_vm.formatDate(_vm.post.created_at)) +
                       "\n                "
                   )
                 ]

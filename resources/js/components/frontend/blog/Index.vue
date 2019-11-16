@@ -3,7 +3,7 @@
         <div class="col-lg-12" style="margin-bottom: 32px;">
             <div class="input-group">
                 <input type="text"
-                    placeholder="Search By Title, Content, Date, Slug, And Status"
+                    placeholder="Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
                     v-model="search"
                     class="form-control form-control-lg" style="font-size: 0.8rem;">
                 <div class="input-group-btn">
@@ -29,7 +29,7 @@
                                     {{ post.owner.name }}
                                     <span class="text-muted">
                                         <i class="fa fa-clock-o"></i>
-                                        {{ post.created_at }}
+                                        {{ formatDate(post.created_at) }}
                                     </span></h4>
                             </div>
                             <div class="col-md-6">
@@ -75,7 +75,7 @@
         <div v-show="!havePost" class="flex-center position-ref" style="height: calc(100vh - 400px); width: 100%;">
             <div class="content">
                 <div class="title m-b-md">
-                    WavoBlog
+                    {{ app_name }}
                 </div>
 
                 <div class="middle-box text-center" style="padding-top: 0;">
@@ -95,7 +95,7 @@
                 <div class="middle-box text-center wrapper" style="background-color: #fff;">
                     <h3 class="font-bold">Sorry, no result to display.</h3>
                     <div class="error-desc">
-                        There's no result for search: <span v-for="meta of metas"> <strong>{{ meta }}</strong> </span>. Try another search.
+                        There's no result for search: <span v-for="meta of metas"> <strong>{{ meta }}</strong> - </span>. Try another search.
                     </div>
                 </div>
             </div>
@@ -114,7 +114,8 @@
                 hasResult: true,
                 posts: [],
                 search: '',
-                base_url: document.head.querySelector('meta[name="base_url"]').content
+                base_url: document.head.querySelector('meta[name="base_url"]').content,
+                app_name: document.head.querySelector('meta[name="app_name"]').content
             }
         },
         computed: {
@@ -154,6 +155,10 @@
                 'removeMeta',
                 'setSelectedPostById'
             ]),
+            formatDate($date) {
+                // return moment($date).format('ll');
+                return moment($date).format('Do MM YYYY hh:mm');
+            },
             excerpt ($text) {
 
                 return $text.replace(/(<([^>]+)>)/ig, '').substr(0, 450) + '...';

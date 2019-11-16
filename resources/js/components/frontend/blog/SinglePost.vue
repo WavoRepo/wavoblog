@@ -11,7 +11,7 @@
                 <div class="text-center col-lg-12">
                     <span v-show="post.created_at" class="text-muted">
                         <i class="fa fa-clock-o"></i>
-                        {{ post.created_at  }}
+                        {{ formatDate(post.created_at)  }}
                     </span>
                     <h1>
                         {{ post.post_title }}
@@ -84,6 +84,10 @@
             ...mapActions('POSTS', [
                 'setSelectedPost'
             ]),
+            formatDate($date) {
+                // return moment($date).format('ll');
+                return moment($date).format('Do MMMM YYYY');
+            },
             getImage($image) {
                 return ($image) ? $image + '?' + Math.random() : '';
             },
