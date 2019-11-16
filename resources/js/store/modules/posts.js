@@ -2,7 +2,9 @@ const namespaced = true;
 
 const state = {
 	all: [],
-    selected: {}
+    selected: {},
+    searchMeta : [],
+    searchResult : {}
 }
 
 const getters = {
@@ -47,6 +49,44 @@ const mutations = {
 
         if(userKey == -1) return;
         state.all.splice(userKey, 1);
+    },
+    SEARCHPOSTS: (state, $search) => {
+        if ($search) {
+            let metaKey = _.findIndex(state.searchMeta, function(meta) { return meta == $search; });
+            if (metaKey == -1) {
+                    state.searchMeta.push($search);
+            }
+        }
+
+        if(_.isEmpty(state.searchMeta)) {
+            state.searchResult = {};
+            return;
+        }
+
+        let results = state.all.filter(obj => Object.values(obj).some(
+            function (val) {
+                if (typeof val == 'string') {
+                    var hay = val.toLowerCase().replace(/(<([^>]+)>)/ig,"");
+                    var selected = false;
+                    state.searchMeta.some(function(search) {
+                        if(hay.includes(search.toLowerCase())) {
+                            selected = true;
+                            return;
+                        }
+                    });
+
+                    if(selected) return val;
+                }
+            }
+        ));
+        if(_.isEmpty(results)) {
+            state.searchResult = [];
+            return;
+        }
+        state.searchResult = results;
+    },
+    REMOVEMETA: (state, $meta) => {
+        _.pull(state.searchMeta, $meta);
     }
 }
 
@@ -68,6 +108,12 @@ const actions = {
 	},
     removePost (context, value) {
         context.commit('REMOVEPOST', value)
+	},
+    searchPosts (context, value) {
+        context.commit('SEARCHPOSTS', value)
+	},
+    removeMeta (context, value) {
+        context.commit('REMOVEMETA', value)
 	}
 }
 

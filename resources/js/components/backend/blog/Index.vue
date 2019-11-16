@@ -1,20 +1,41 @@
 <template>
     <div class="container py-4 blog-index">
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-8" style="position;: relative;">
                 <router-link :to="'/admin/blog/add'">
                     <button v-show="isBlog"
                         type="button"
-                        class="btn btn-secondary btn-lg mb-4">
+                        class="btn btn-secondary btn-lg xmb-4">
 
                         Add
                     </button>
                 </router-link>
+                <div class="input-group" style="position: absolute; top: 0; width: calc(100% - 216px); right: 14px;">
+                    <input type="text"
+                        placeholder="Search By Title, Content, Date, Slug, And Status"
+                        v-model="search"
+                        class="form-control form-control-lg" style="font-size: 0.8rem;">
+                    <div class="input-group-btn">
+                        <button class="btn btn-lg btn-primary" @click="searchPost">
+                            Search
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary btn-lg xmb-4" @click="ownersPost">
+                    {{ postOwnerText }}
+                </button>
             </div>
         </div>
         <div class="row">
-            <div v-for="post of blogPosts" class="col-lg-4">
-                <div class="card">
+            <div class="col-lg-12 mt-4 mb-4">
+                <button v-for="meta of metas" type="button" class="btn btn-primary btn-sm mr-2">
+                    {{ meta }} <span class="badge badge-light" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div v-for="post of posts" class="col-lg-4">
+                <div  v-show="showOwnerPost(post.owner.email)" class="card">
                     <div class="card-header">
                         <h4>{{ post.post_title }}</h4>
                     </div>
@@ -96,6 +117,26 @@
                     </div>
                 </div>
             </div>
+            <div v-show="!hasResult" class="flex-center position-ref" style="height: calc(100vh - 270px); width: 100%;">
+                <div class="content wrapper">
+                    <div class="middle-box text-center wrapper" style="background-color: #fff;">
+                        <h3 class="font-bold">Sorry, no result to display.</h3>
+                        <div class="error-desc">
+                            Start your new blog by clicking the add button. If there is a post already, maybe the search result is empty. Enjoy our new app.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="owner_msg" class="flex-center position-ref" style="height: calc(100vh - 270px); width: 100%; display: none;">
+                <div class="content wrapper">
+                    <div class="middle-box text-center wrapper" style="background-color: #fff;">
+                        <h3 class="font-bold">Sorry, no result to display.</h3>
+                        <div class="error-desc">
+                            You don't owned a post on this result. Start your new blog by clicking the add button. Enjoy our new app.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -107,21 +148,51 @@
         name: 'blog',
         data () {
             return {
-
+                hasResult: true,
+                postOwner: false,
+                postOwnerText: 'Owner\'s Posts',
+                search: '',
+                posts: {}
             }
         },
         computed: {
             ...mapState('POSTS', {
-                blogPosts: 'all'
+                blogPosts: 'all',
+                metas: 'searchMeta',
+                results: 'searchResult'
             }),
             ...mapState('USERS', {
                 activeUser: 'active'
             })
         },
+        watch: {
+            blogPosts: function ($post) {
+                if(_.isEmpty($post)) return;
+                this.hasResult = true;
+                this.posts = $post;
+            },
+            results: function ($post) {
+                this.CheckResultHasOmerPost();
+                if(_.isEmpty($post) && _.isEmpty(this.metas)) {
+                    this.hasResult = true;
+                    this.posts = this.blogPosts;
+                    return;
+                }
+                if(_.isEmpty($post) && !_.isEmpty(this.metas)) {
+                    this.hasResult = false;
+                    this.posts = $post;
+                    return;
+                }
+                this.hasResult = true;
+                this.posts = $post;
+            }
+        },
         methods: {
             ...mapActions('POSTS', [
                 'setPosts',
                 'removePost',
+                'removeMeta',
+                'searchPosts',
                 'setSelectedPostById'
             ]),
             formatDate($date) {
@@ -135,15 +206,56 @@
 
                 return false;
             },
-            getAllPosts () {
+            searchPost () {
+                this.searchPosts(this.search);
+                this.search = '';
+            },
+            removeTheMeta ($meta) {
+                this.removeMeta($meta);
+                this.searchPosts('');
+            },
+            ownersPost () {
+                this.postOwner = !this.postOwner;
+                if(!this.postOwner) {
+                    this.postOwnerText = 'Owner\'s Posts';
+                } else {
+                    this.postOwnerText = 'Show All Posts';
+                }
+                this.CheckResultHasOmerPost();
+            },
+            showOwnerPost ($email) {
+                if($email != this.activeUser.email && this.postOwner) {
+                    return false;
+                }
+                return true;
+            },
+            CheckResultHasOmerPost() {
+                let self = this;
+                let visible = false;
+                $('#owner_msg').hide();
 
-                if(!_.isEmpty(this.blogPosts)) return;
+                setTimeout(function(){
+                    $('.card').each(function() {
+                        if($(this).css('display') != 'none') {
+                            visible = true;
+                        }
+                    });
+                    if(!visible && self.postOwner) {
+                        $('#owner_msg').show();
+                    }
+                }, 1000);
+            },
+            getAllPosts () {
 
                 let self = this;
                 let url = '/api/v1/post';
 
                 axios.get(url)
                 .then((response) => {
+                    if(_.isEmpty(response.data.posts)) {
+                        self.hasResult = true;
+                        return;
+                    }
                     self.setPosts(response.data.posts);
                 })
                 .catch((error) => {
@@ -190,6 +302,14 @@
             }
         },
         mounted() {
+            if(!_.isEmpty(this.results)) {
+                this.posts = this.results;
+                return;
+            }
+            if(!_.isEmpty(this.blogPosts)) {
+                this.posts = this.blogPosts;
+                return;
+            }
             this.getAllPosts();
         }
     }
