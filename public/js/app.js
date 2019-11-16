@@ -3639,28 +3639,66 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'blog',
   data: function data() {
     return {
       havePost: true,
+      hasResult: true,
       posts: [],
+      search: '',
       base_url: document.head.querySelector('meta[name="base_url"]').content
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('USERS', {
     activeUser: 'active'
   }), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', {
-    blogPosts: 'all'
+    blogPosts: 'all',
+    metas: 'searchMeta',
+    results: 'searchResult'
   })),
   watch: {
     blogPosts: function blogPosts($posts) {
       if (_.isEmpty($posts)) return;
       this.posts = $posts;
+    },
+    results: function results($post) {
+      if (_.isEmpty($post) && _.isEmpty(this.metas)) {
+        this.hasResult = true;
+        this.posts = this.blogPosts;
+        return;
+      }
+
+      if (_.isEmpty($post) && !_.isEmpty(this.metas)) {
+        this.hasResult = false;
+        this.posts = $post;
+        return;
+      }
+
+      this.hasResult = true;
+      this.posts = $post;
     }
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'setSelectedPostById']), {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'searchPosts', 'removeMeta', 'setSelectedPostById']), {
     excerpt: function excerpt($text) {
       return $text.replace(/(<([^>]+)>)/ig, '').substr(0, 450) + '...';
     },
@@ -3670,6 +3708,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return false;
+    },
+    searchPost: function searchPost() {
+      this.searchPosts(this.search);
+      this.search = '';
+    },
+    removeTheMeta: function removeTheMeta($meta) {
+      this.removeMeta($meta);
+      this.searchPosts('');
     },
     getAllPosts: function getAllPosts() {
       var _this = this;
@@ -75321,7 +75367,7 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _c(
         "div",
-        { staticClass: "col-lg-8", staticStyle: { "": "relative" } },
+        { staticClass: "col-lg-8", staticStyle: { position: "relative" } },
         [
           _c("router-link", { attrs: { to: "/admin/blog/add" } }, [
             _c(
@@ -76646,6 +76692,81 @@ var render = function() {
     "div",
     { staticClass: "row blog-index" },
     [
+      _c(
+        "div",
+        { staticClass: "col-lg-12", staticStyle: { "margin-bottom": "32px" } },
+        [
+          _c("div", { staticClass: "input-group" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search,
+                  expression: "search"
+                }
+              ],
+              staticClass: "form-control form-control-lg",
+              staticStyle: { "font-size": "0.8rem" },
+              attrs: {
+                type: "text",
+                placeholder: "Search By Title, Content, Date, Slug, And Status"
+              },
+              domProps: { value: _vm.search },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.search = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group-btn" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-lg btn-primary",
+                  on: { click: _vm.searchPost }
+                },
+                [_vm._v("\n                    Search\n                ")]
+              )
+            ])
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-lg-12 mb-4" },
+        _vm._l(_vm.metas, function(meta) {
+          return _c(
+            "button",
+            {
+              staticClass: "btn btn-primary btn-sm mr-2",
+              attrs: { type: "button" }
+            },
+            [
+              _vm._v("\n            " + _vm._s(meta) + " "),
+              _c(
+                "span",
+                {
+                  staticClass: "badge badge-light",
+                  on: {
+                    click: function($event) {
+                      return _vm.removeTheMeta(meta)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fa fa-times" })]
+              )
+            ]
+          )
+        }),
+        0
+      ),
+      _vm._v(" "),
       _vm._l(_vm.posts, function(post) {
         return _vm.havePost
           ? [

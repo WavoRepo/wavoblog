@@ -1,7 +1,7 @@
 <template>
     <div class="container py-4 blog-index">
         <div class="row">
-            <div class="col-lg-8" style="position;: relative;">
+            <div class="col-lg-8" style="position: relative;">
                 <router-link :to="'/admin/blog/add'">
                     <button v-show="isBlog"
                         type="button"

@@ -1,5 +1,23 @@
 <template>
     <div class="row blog-index">
+        <div class="col-lg-12" style="margin-bottom: 32px;">
+            <div class="input-group">
+                <input type="text"
+                    placeholder="Search By Title, Content, Date, Slug, And Status"
+                    v-model="search"
+                    class="form-control form-control-lg" style="font-size: 0.8rem;">
+                <div class="input-group-btn">
+                    <button class="btn btn-lg btn-primary" @click="searchPost">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 mb-4">
+            <button v-for="meta of metas" type="button" class="btn btn-primary btn-sm mr-2">
+                {{ meta }} <span class="badge badge-light" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
+            </button>
+        </div>
         <template v-if="havePost" v-for="post of posts">
             <div v-if="post.status == 'Published'" class="col-lg-6">
                 <div class="card">
@@ -83,7 +101,9 @@
         data () {
             return {
                 havePost: true,
+                hasResult: true,
                 posts: [],
+                search: '',
                 base_url: document.head.querySelector('meta[name="base_url"]').content
             }
         },
@@ -92,18 +112,36 @@
                 activeUser: 'active'
             }),
             ...mapState('POSTS', {
-                blogPosts: 'all'
+                blogPosts: 'all',
+                metas: 'searchMeta',
+                results: 'searchResult'
             }),
         },
         watch: {
             blogPosts: function ($posts) {
                 if(_.isEmpty($posts)) return;
                 this.posts = $posts;
+            },
+            results: function ($post) {
+                if(_.isEmpty($post) && _.isEmpty(this.metas)) {
+                    this.hasResult = true;
+                    this.posts = this.blogPosts;
+                    return;
+                }
+                if(_.isEmpty($post) && !_.isEmpty(this.metas)) {
+                    this.hasResult = false;
+                    this.posts = $post;
+                    return;
+                }
+                this.hasResult = true;
+                this.posts = $post;
             }
         },
         methods: {
             ...mapActions('POSTS', [
                 'setPosts',
+                'searchPosts',
+                'removeMeta',
                 'setSelectedPostById'
             ]),
             excerpt ($text) {
@@ -116,6 +154,14 @@
                 }
 
                 return false;
+            },
+            searchPost () {
+                this.searchPosts(this.search);
+                this.search = '';
+            },
+            removeTheMeta ($meta) {
+                this.removeMeta($meta);
+                this.searchPosts('');
             },
             getAllPosts () {
 
