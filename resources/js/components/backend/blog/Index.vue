@@ -33,90 +33,29 @@
                 </button>
             </div>
         </div>
-        <div class="row">
-            <div v-for="post of posts" class="col-lg-4">
-                <div  v-show="showOwnerPost(post.owner.email)" class="card">
-                    <div class="card-header">
-                        <h4>{{ post.post_title }}</h4>
-                    </div>
-                    <div class="card-content wrapper">
-                        <div class="small m-b-xs">
-                            <h4>
-                                {{ post.owner.name }}
-                                <span class="text-muted">
-                                    <i class="fa fa-clock-o"></i>
-                                    {{ formatDate(post.created_at) }}
-                                </span>
-                            </h4>
-                        </div>
-                        <!-- <div v-html="post.post_content"></div> -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="small text-left">
-                                    <h5>Category:</h5>
-                                    Uncategorized
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="small text-right">
-                                    <h5>Status:</h5>
-                                    {{ post.status }}
-                                </div>
+        <div class="row" style="margin-top: -40px;">
+            <div class="col-lg-12">
+                <div class="tabs-container">
+                    <ul class="nav nav-tabs" style="direction: rtl; padding: 0;">
+                        <li><a class="nav-link active" data-toggle="tab" href="#blog-block"> <i class="fa fa-th-large"></i></a></li>
+                        <li><a class="nav-link" data-toggle="tab" href="#blog-table"><i class="fa fa-th-list"></i></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="blog-block" class="tab-pane active">
+                            <div class="panel-body" style="background-color: transparent; border: none; padding: 20px 0;">
+                                <blog-list-block :posts="posts" :activeUser="activeUser" :postOwner="postOwner"/>
                             </div>
                         </div>
-                    </div>
-                    <div  v-if="post.owner.email == activeUser.email" class="card-footer">
-                        <router-link :to="'/admin/blog/edit'">
-                            <button class="btn btn-primary btn-xs"
-                                type="button"
-                                @click="setSelected(post.id)">
-
-                                <i class="fa fa-pencil"> </i>
-                                Edit
-                            </button>
-                        </router-link>
-                        <router-link :to="'/blog/' + post.post_slug">
-                            <button class="btn btn-info btn-xs"
-                                type="button"
-                                @click="setSelected(post.id)">
-
-                                <i class="fa fa-eye"> </i>
-                                View
-                            </button>
-                        </router-link>
-                        <button class="btn btn-white btn-xs"
-                            type="button"
-                            @click="remove(post.id)">
-
-                            <i class="fa fa-trash"> </i>
-                            Trash
-                        </button>
-                    </div>
-                    <div  v-else class="card-footer">
-                        <button class="btn btn-primary btn-xs"
-                            type="button"
-                            disabled>
-
-                            <i class="fa fa-pencil" > </i>
-                            Edit
-                        </button>
-                        <button class="btn btn-info btn-xs"
-                            type="button"
-                            disabled>
-
-                            <i class="fa fa-eye"> </i>
-                            View
-                        </button>
-                        <button class="btn btn-white btn-xs"
-                            type="button"
-                            disabled>
-
-                            <i class="fa fa-trash"> </i>
-                            Trash
-                        </button>
+                        <div id="blog-table" class="tab-pane">
+                            <div class="panel-body" style="background-color: transparent; border: none; padding: 20px 0;">
+                                <blog-list-table :posts="posts" :activeUser="activeUser" :postOwner="postOwner"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="row">
             <div v-show="!hasResult" class="flex-center position-ref" style="height: calc(100vh - 270px); width: 100%;">
                 <div class="content wrapper">
                     <div class="middle-box text-center wrapper" style="background-color: #fff;">
@@ -143,9 +82,15 @@
 
 <script>
     import { mapState, mapGetters,  mapActions } from 'vuex';
+    import blogListTable from './components/BlogListTable';
+    import BlogListBlock from './components/BlogListBlock';
 
     export default {
         name: 'blog',
+        components: {
+            blogListTable,
+            BlogListBlock
+        },
         data () {
             return {
                 hasResult: true,
@@ -190,15 +135,9 @@
         methods: {
             ...mapActions('POSTS', [
                 'setPosts',
-                'removePost',
                 'removeMeta',
-                'searchPosts',
-                'setSelectedPostById'
+                'searchPosts'
             ]),
-            formatDate($date) {
-                // return moment($date).format('ll');
-                return moment($date).format('Do MM YYYY');
-            },
             isBlog () {
                 if (window.location.href.indexOf('blog') > -1 && this.$router.name != 'Blog Posts') {
                     return true;
@@ -223,12 +162,6 @@
                 }
                 this.CheckResultsOwnerIsActive();
             },
-            showOwnerPost ($email) {
-                if($email != this.activeUser.email && this.postOwner) {
-                    return false;
-                }
-                return true;
-            },
             CheckResultsOwnerIsActive() {
                 let self = this;
                 let visible = false;
@@ -240,7 +173,7 @@
                             visible = true;
                         }
                     });
-                    if(!visible && self.postOwner) {
+                    if(!visible && self.postOwner && self.hasResult) {
                         $('#owner_msg').show();
                     }
                 }, 1000);
@@ -261,44 +194,6 @@
                 .catch((error) => {
                     console.log('error: ', error);
                 })
-            },
-            setSelected($id) {
-                this.setSelectedPostById($id);
-            },
-            remove($id) {
-
-                let self = this;
-
-                this.$swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.value) {
-
-                        let formData = new FormData();
-                        formData.append('-method', 'delete');
-
-                        axios.delete('/api/v1/post/' + $id, formData)
-                        .then((response) => {
-
-                            self.removePost($id);
-
-                            self.$swal.fire(
-                                'Deleted!',
-                                'Post has been deleted.',
-                                'success'
-                            )
-                        })
-                        .catch((error) => {
-                            console.log('error: ', error);
-                        })
-                    }
-                });
             }
         },
         mounted() {
