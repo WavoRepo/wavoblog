@@ -26,7 +26,7 @@
                 </button>
             </div>
         </div>
-        <div class="row">
+        <div class="row col-lg-10" style=" z-index: 10; position: relative;">
             <div class="col-lg-12 mt-4 mb-4">
                 <button v-for="meta of metas" type="button" class="btn btn-primary btn-sm mr-2">
                     {{ meta }} <span class="badge badge-light" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
@@ -97,12 +97,13 @@
                 postOwner: false,
                 postOwnerText: 'Owner\'s Posts',
                 search: '',
-                posts: {}
+                posts: {},
             }
         },
         computed: {
             ...mapState('POSTS', {
                 blogPosts: 'all',
+                paginatePost: 'paginate',
                 metas: 'searchMeta',
                 results: 'searchResult'
             }),
@@ -112,7 +113,7 @@
         },
         watch: {
             blogPosts: function ($post) {
-                if(_.isEmpty($post)) return;
+                if(_.isEmpty($post) || !_.isEmpty(this.paginatePost)) return;
                 this.hasResult = true;
                 this.posts = $post;
             },
@@ -130,7 +131,12 @@
                 }
                 this.hasResult = true;
                 this.posts = $post;
-            }
+            },
+            paginatePost: function ($paginatePost) {
+                if(_.isEmpty($paginatePost)) return;
+                this.hasResult = true;
+                this.posts = $paginatePost;
+            },
         },
         methods: {
             ...mapActions('POSTS', [
@@ -197,6 +203,10 @@
             }
         },
         mounted() {
+            if(!_.isEmpty(this.paginatePost)) {
+                this.posts = this.paginatePost;
+                return;
+            }
             if(!_.isEmpty(this.results)) {
                 this.posts = this.results;
                 return;

@@ -1,5 +1,6 @@
 <template>
     <div class="wrapper" style="background-color: #fff;">
+        <pagination />
         <table class="table table-striped table-bordered table-lg">
             <thead class="thead-light">
             <tr>
@@ -31,12 +32,14 @@
 
 <script>
 import blogAction from './Action';
+import Pagination from '../../../../utility/Pagination';
 
 export default {
     name: 'blog-list-table',
     props: ['posts', 'activeUser', 'postOwner'],
     components: {
-        blogAction
+        blogAction,
+        Pagination
     },
     data() {
         return {}

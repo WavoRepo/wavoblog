@@ -1,5 +1,8 @@
 <template>
     <div class="row">
+        <div class="col-lg-12">
+                <pagination />
+        </div>
         <div v-for="post of posts" class="col-lg-4" v-show="showOwnerPost(post.owner.email)">
             <div  v-show="showOwnerPost(post.owner.email)" class="card">
                 <div class="card-header">
@@ -39,12 +42,14 @@
 
 <script>
 import blogAction from './Action';
+import Pagination from '../../../../utility/Pagination';
 
 export default {
     name: 'blog-list-block',
     props: ['posts', 'activeUser', 'postOwner'],
     components: {
-        blogAction
+        blogAction,
+        Pagination
     },
     data() {
         return {}
