@@ -1,11 +1,11 @@
 <template>
     <div class="row blog-index">
-        <div class="col-lg-12" style="margin-bottom: 32px;">
+        <div class="col-lg-12 search_wrap">
             <div class="input-group">
                 <input type="text"
                     placeholder="Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
                     v-model="search"
-                    class="form-control form-control-lg" style="font-size: 0.8rem;">
+                    class="form-control form-control-lg">
                 <div class="input-group-btn">
                     <button class="btn btn-lg btn-primary" @click="searchPost">
                         Search
@@ -13,10 +13,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-12 mb-4">
+        <div class="col-lg-12 mb-4 meta_wrap">
             <button v-for="meta of metas" type="button" class="btn btn-secondary btn-sm mr-2">
                 {{ meta }} <span class="badge badge-warning" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
             </button>
+        </div>
+        <div class="col-lg-12 pagination_wrap">
+                <pagination />
         </div>
         <template v-if="havePost" v-for="post of posts">
             <div v-if="post.status == 'Published'" class="col-lg-6">
@@ -72,13 +75,13 @@
                 </div>
             </div>
         </template>
-        <div v-show="!havePost" class="flex-center position-ref" style="height: calc(100vh - 400px); width: 100%;">
+        <div v-show="!havePost" class="flex-center position-ref no-article-display">
             <div class="content">
                 <div class="title m-b-md">
                     {{ app_name }}
                 </div>
 
-                <div class="middle-box text-center" style="padding-top: 0;">
+                <div class="middle-box text-center">
                     <h3 class="font-bold">Sorry, no article to display.</h3>
                     <div class="error-desc">
                         Check out our dashboard and start your new blog by adding new post in admin blog page. If there is a post already, please check the status and that should be published. Enjoy our new app.
@@ -90,9 +93,9 @@
                 </div>
             </div>
         </div>
-        <div v-show="!hasResult" class="flex-center position-ref" style="height: 200px; width: 100%;">
+        <div v-show="!hasResult" class="flex-center position-ref no-result-display">
             <div class="content">
-                <div class="middle-box text-center wrapper" style="background-color: #fff;">
+                <div class="middle-box text-center wrapper">
                     <h3 class="font-bold">Sorry, no result to display.</h3>
                     <div class="error-desc">
                         There's no result for search: <span v-for="meta of metas"> <strong>{{ meta }}</strong> - </span>. Try another search.
@@ -105,9 +108,13 @@
 
 <script>
     import { mapState, mapGetters,  mapActions } from 'vuex';
+    import Pagination from '../../../utility/Pagination';
 
     export default {
         name: 'blog',
+        components: {
+            Pagination
+        },
         data () {
             return {
                 havePost: true,
@@ -125,7 +132,8 @@
             ...mapState('POSTS', {
                 blogPosts: 'all',
                 metas: 'searchMeta',
-                results: 'searchResult'
+                results: 'searchResult',
+                paginatePost: 'paginate'
             }),
         },
         watch: {
@@ -146,7 +154,12 @@
                 }
                 this.hasResult = true;
                 this.posts = $post;
-            }
+            },
+            paginatePost: function ($paginatePost) {
+                if(_.isEmpty($paginatePost)) return;
+                this.hasResult = true;
+                this.posts = $paginatePost;
+            },
         },
         methods: {
             ...mapActions('POSTS', [
@@ -161,7 +174,7 @@
             },
             excerpt ($text) {
 
-                return $text.replace(/(<([^>]+)>)/ig, '').substr(0, 450) + '...';
+                return $text.replace(/(<([^>]+)>)/ig, '').substr(0, 350) + '...';
             },
             isBlog () {
                 if (window.location.href.indexOf('blog') > -1 && this.$router.name != 'Blog Posts') {
@@ -191,7 +204,6 @@
 
                 axios.get(url)
                 .then((response) => {
-                    console.log(response);
                     if(_.isEmpty(response.data.posts)) {
                         this.havePost = false;
                     };
@@ -209,8 +221,15 @@
             }
         },
         mounted() {
+            if(!_.isEmpty(this.paginatePost)) {
+                this.posts = this.paginatePost;
+                return;
+            }
+            if(!_.isEmpty(this.results)) {
+                this.posts = this.results;
+                return;
+            }
             if(!_.isEmpty(this.blogPosts)) {
-                console.log(this.blogPosts);
                 this.posts = this.blogPosts;
                 return;
             }

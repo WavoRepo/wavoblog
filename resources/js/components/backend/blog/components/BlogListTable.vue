@@ -14,8 +14,8 @@
             </tr>
             </thead>
             <tbody class="table-hover">
-                <tr v-for="post of posts" v-show="showOwnerPost(post.owner.email)">
-                    <td></td>
+                <tr v-for="(post, index) of posts" v-show="showOwnerPost(post.owner.email)">
+                    <td>{{ ++index }}</td>
                     <td>{{ post.post_title }}</td>
                     <td>{{ post.owner.name }}</td>
                     <td>Uncategorized</td>

@@ -1,7 +1,7 @@
 <template>
     <div class="">
-        <div  v-if="post.owner.email == activeUser.email" :class="display">
-            <router-link :to="'/admin/blog/edit'">
+        <div :class="display">
+            <router-link v-if="post.owner.email == activeUser.email" :to="'/admin/blog/edit'">
                 <button class="btn btn-primary btn-xs"
                     type="button"
                     @click="setSelected(post.id)">
@@ -10,6 +10,13 @@
                     Edit
                 </button>
             </router-link>
+            <button v-else class="btn btn-white btn-xs"
+                type="button"
+                disabled>
+
+                <i class="fa fa-pencil" > </i>
+                Edit
+            </button>
             <router-link :to="'/blog/' + post.post_slug">
                 <button class="btn btn-info btn-xs"
                     type="button"
@@ -19,30 +26,14 @@
                     View
                 </button>
             </router-link>
-            <button class="btn btn-white btn-xs"
+            <button v-if="post.owner.email == activeUser.email" class="btn btn-danger btn-xs"
                 type="button"
                 @click="remove(post.id)">
 
                 <i class="fa fa-trash"> </i>
                 Trash
             </button>
-        </div>
-        <div  v-else :class="display">
-            <button class="btn btn-primary btn-xs"
-                type="button"
-                disabled>
-
-                <i class="fa fa-pencil" > </i>
-                Edit
-            </button>
-            <button class="btn btn-info btn-xs"
-                type="button"
-                disabled>
-
-                <i class="fa fa-eye"> </i>
-                View
-            </button>
-            <button class="btn btn-white btn-xs"
+            <button v-else class="btn btn-white btn-xs"
                 type="button"
                 disabled>
 

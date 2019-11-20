@@ -146,6 +146,41 @@
     }
 }
 .blog-index {
+    .add_btn_wrap {
+        position: relative;
+    }
+    .admin_search_wrap {
+        position: absolute;
+        right: 14px;
+        top: 0;
+        width: calc(100% - 216px);
+        input {
+            font-size: 0.8rem;
+        }
+    }
+    .admin_meta_wrap {
+        z-index: 10; position: relative;
+    }
+    .search_wrap {
+        margin-bottom: 32px;
+        input {
+            font-size: 0.8rem;
+        }
+    }
+    .tab_wrap {
+        margin-top: -40px;
+        .nav-tabs {
+            direction: rtl; padding: 0;
+        }
+        .panel-body {
+            background-color: transparent;
+            border: none;
+            padding: 20px 0;
+            .wrapper {
+                padding: 20px;
+            }
+        }
+    }
     .card {
         margin-bottom: 30px;
         h4 {
@@ -170,7 +205,7 @@
                     height: 100%;
                     text-align: center;
                     img {
-                        margin: auto;
+                        margin: 18px auto auto;
                         max-width: 100%;
                     }
                 }
@@ -180,6 +215,31 @@
                     padding: 12px 0;
                 }
             }
+        }
+    }
+    .admin-no-article-display,
+    .admin-no-owner-article-display {
+        height: calc(100vh - 270px);
+        width: 100%;
+        .wrapper {
+            padding: 20px;
+        }
+        .middle-box {
+            background-color: #fff;
+        }
+    }
+    .no-article-display {
+        height: calc(100vh - 400px);
+        width: 100%;
+        .middle-box {
+            padding-top: 0;
+        }
+    }
+    .no-result-display {
+        height: 200px;
+        width: 100%;
+        .middle-box {
+            background-color: #fff;
         }
     }
 }
@@ -325,6 +385,14 @@
         color: #333;
         overflow: visible;
     }
+    .quillWrapper,
+    .ck.ck-editor {
+        margin-top: 25px;
+    }
+    .quillWrapper .ql-editor,
+    .ck.ck-editor__main>.ck-editor__editable{
+        min-height: 58vh;
+    }
 }
 .blog-single {
     h1 {
@@ -364,4 +432,7 @@
 }
 strong {
     font-weight: bold;
+}
+.pretty {
+    margin-top: 10px;
 }

@@ -6,6 +6,12 @@
 
 require('./bootstrap');
 
+/*********************************
+Vuejs Paginate
+**********************************/
+import Paginate from 'vuejs-paginate'
+Vue.component('paginate', Paginate)
+
 /**
  * Next, we will create a Vue router to build a single page applications,
  * we are composing our application with components.

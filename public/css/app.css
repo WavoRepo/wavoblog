@@ -28670,6 +28670,53 @@ body.md-skin {
   margin-bottom: 30px;
 }
 
+.blog-index .add_btn_wrap {
+  position: relative;
+}
+
+.blog-index .admin_search_wrap {
+  position: absolute;
+  right: 14px;
+  top: 0;
+  width: calc(100% - 216px);
+}
+
+.blog-index .admin_search_wrap input {
+  font-size: 0.8rem;
+}
+
+.blog-index .admin_meta_wrap {
+  z-index: 10;
+  position: relative;
+}
+
+.blog-index .search_wrap {
+  margin-bottom: 32px;
+}
+
+.blog-index .search_wrap input {
+  font-size: 0.8rem;
+}
+
+.blog-index .tab_wrap {
+  margin-top: -40px;
+}
+
+.blog-index .tab_wrap .nav-tabs {
+  direction: rtl;
+  padding: 0;
+}
+
+.blog-index .tab_wrap .panel-body {
+  background-color: transparent;
+  border: none;
+  padding: 20px 0;
+}
+
+.blog-index .tab_wrap .panel-body .wrapper {
+  padding: 20px;
+}
+
 .blog-index .card {
   margin-bottom: 30px;
 }
@@ -28700,12 +28747,46 @@ body.md-skin {
 }
 
 .blog-index .card .card-content .featured-image-wrap .image-wrap img {
-  margin: auto;
+  margin: 18px auto auto;
   max-width: 100%;
 }
 
 .blog-index .card .card-content .post-content .excerpt {
   padding: 12px 0;
+}
+
+.blog-index .admin-no-article-display,
+.blog-index .admin-no-owner-article-display {
+  height: calc(100vh - 270px);
+  width: 100%;
+}
+
+.blog-index .admin-no-article-display .wrapper,
+.blog-index .admin-no-owner-article-display .wrapper {
+  padding: 20px;
+}
+
+.blog-index .admin-no-article-display .middle-box,
+.blog-index .admin-no-owner-article-display .middle-box {
+  background-color: #fff;
+}
+
+.blog-index .no-article-display {
+  height: calc(100vh - 400px);
+  width: 100%;
+}
+
+.blog-index .no-article-display .middle-box {
+  padding-top: 0;
+}
+
+.blog-index .no-result-display {
+  height: 200px;
+  width: 100%;
+}
+
+.blog-index .no-result-display .middle-box {
+  background-color: #fff;
 }
 
 .blog-edit form,
@@ -28945,6 +29026,24 @@ body.md-skin {
   overflow: visible;
 }
 
+.blog-edit .quillWrapper,
+.blog-edit .ck.ck-editor,
+.blog-add .quillWrapper,
+.blog-add .ck.ck-editor,
+.blog-single .quillWrapper,
+.blog-single .ck.ck-editor {
+  margin-top: 25px;
+}
+
+.blog-edit .quillWrapper .ql-editor,
+.blog-edit .ck.ck-editor__main > .ck-editor__editable,
+.blog-add .quillWrapper .ql-editor,
+.blog-add .ck.ck-editor__main > .ck-editor__editable,
+.blog-single .quillWrapper .ql-editor,
+.blog-single .ck.ck-editor__main > .ck-editor__editable {
+  min-height: 58vh;
+}
+
 .blog-single h1 {
   font-size: 48px;
   font-weight: 700;
@@ -28987,5 +29086,9 @@ body.md-skin {
 
 strong {
   font-weight: bold;
+}
+
+.pretty {
+  margin-top: 10px;
 }
 

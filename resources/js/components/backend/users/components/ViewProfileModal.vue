@@ -101,9 +101,3 @@
         }
     }
 </script>
-
-<style lang="css" scoped>
-    .pretty {
-        margin-top: 10px;
-    }
-</style>

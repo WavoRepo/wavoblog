@@ -260,14 +260,3 @@
         }
     }
 </script>
-
-<style>
-    .quillWrapper,
-    .ck.ck-editor {
-        margin-top: 25px;
-    }
-    .quillWrapper .ql-editor,
-    .ck.ck-editor__main>.ck-editor__editable{
-        min-height: 58vh;
-    }
-</style>

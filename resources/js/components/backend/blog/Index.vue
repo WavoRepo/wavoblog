@@ -1,7 +1,7 @@
 <template>
     <div class="container py-4 blog-index">
         <div class="row">
-            <div class="col-lg-8" style="position: relative;">
+            <div class="col-lg-8 add_btn_wrap">
                 <router-link :to="'/admin/blog/add'">
                     <button v-show="isBlog"
                         type="button"
@@ -10,11 +10,11 @@
                         Add
                     </button>
                 </router-link>
-                <div class="input-group" style="position: absolute; top: 0; width: calc(100% - 216px); right: 14px;">
+                <div class="input-group admin_search_wrap">
                     <input type="text"
                         placeholder="Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
                         v-model="search"
-                        class="form-control form-control-lg" style="font-size: 0.8rem;">
+                        class="form-control form-control-lg">
                     <div class="input-group-btn">
                         <button class="btn btn-lg btn-primary" @click="searchPost">
                             Search
@@ -26,28 +26,36 @@
                 </button>
             </div>
         </div>
-        <div class="row col-lg-10" style=" z-index: 10; position: relative;">
+        <div class="row col-lg-8 admin_meta_wrap">
             <div class="col-lg-12 mt-4 mb-4">
                 <button v-for="meta of metas" type="button" class="btn btn-primary btn-sm mr-2">
                     {{ meta }} <span class="badge badge-light" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
                 </button>
             </div>
         </div>
-        <div class="row" style="margin-top: -40px;">
+        <div class="row tab_wrap">
             <div class="col-lg-12">
                 <div class="tabs-container">
-                    <ul class="nav nav-tabs" style="direction: rtl; padding: 0;">
-                        <li><a class="nav-link active" data-toggle="tab" href="#blog-block"> <i class="fa fa-th-large"></i></a></li>
-                        <li><a class="nav-link" data-toggle="tab" href="#blog-table"><i class="fa fa-th-list"></i></a></li>
+                    <ul class="nav nav-tabs">
+                        <li>
+                            <a :class="'nav-link' + activeTab('block')" data-toggle="tab" href="#blog-block" @click="setActiveTab('block')">
+                                <i class="fa fa-th-large"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a :class="'nav-link' + activeTab('table')" data-toggle="tab" href="#blog-table" @click="setActiveTab('table')">
+                                <i class="fa fa-th-list"></i>
+                            </a>
+                        </li>
                     </ul>
                     <div class="tab-content">
-                        <div id="blog-block" class="tab-pane active">
-                            <div class="panel-body" style="background-color: transparent; border: none; padding: 20px 0;">
+                        <div id="blog-block" :class="'tab-pane' + activeTab('block')">
+                            <div class="panel-body">
                                 <blog-list-block :posts="posts" :activeUser="activeUser" :postOwner="postOwner"/>
                             </div>
                         </div>
-                        <div id="blog-table" class="tab-pane">
-                            <div class="panel-body" style="background-color: transparent; border: none; padding: 20px 0;">
+                        <div id="blog-table" :class="'tab-pane' + activeTab('table')">
+                            <div class="panel-body">
                                 <blog-list-table :posts="posts" :activeUser="activeUser" :postOwner="postOwner"/>
                             </div>
                         </div>
@@ -56,9 +64,9 @@
             </div>
         </div>
         <div class="row">
-            <div v-show="!hasResult" class="flex-center position-ref" style="height: calc(100vh - 270px); width: 100%;">
+            <div v-show="!hasResult" class="flex-center position-ref admin-no-article-display">
                 <div class="content wrapper">
-                    <div class="middle-box text-center wrapper" style="background-color: #fff;">
+                    <div class="middle-box text-center wrapper">
                         <h3 class="font-bold">Sorry, no result to display.</h3>
                         <div class="error-desc">
                             Start your new blog by clicking the add button. If there is a post already, maybe the search result is empty. Enjoy our new app.
@@ -66,9 +74,9 @@
                     </div>
                 </div>
             </div>
-            <div id="owner_msg" class="flex-center position-ref" style="height: calc(100vh - 270px); width: 100%; display: none;">
+            <div id="owner_msg" class="flex-center position-ref admin-no-owner-article-display" style="display: none;">
                 <div class="content wrapper">
-                    <div class="middle-box text-center wrapper" style="background-color: #fff;">
+                    <div class="middle-box text-center wrapper">
                         <h3 class="font-bold">Sorry, no result to display.</h3>
                         <div class="error-desc">
                             You don't owned a post on this result. Start your new blog by clicking the add button. Enjoy our new app.
@@ -98,14 +106,15 @@
                 postOwnerText: 'Owner\'s Posts',
                 search: '',
                 posts: {},
+                tabActive: (sessionStorage.getItem('tab-active')) ? sessionStorage.getItem('tab-active') : 'block'
             }
         },
         computed: {
             ...mapState('POSTS', {
                 blogPosts: 'all',
-                paginatePost: 'paginate',
                 metas: 'searchMeta',
-                results: 'searchResult'
+                results: 'searchResult',
+                paginatePost: 'paginate'
             }),
             ...mapState('USERS', {
                 activeUser: 'active'
@@ -151,6 +160,13 @@
 
                 return false;
             },
+            setActiveTab ($tab) {
+                sessionStorage.setItem('tab-active', $tab);
+            },
+            activeTab ($tab) {
+                if($tab == this.tabActive) return ' active';
+                return ''
+            },
             searchPost () {
                 this.searchPosts(this.search);
                 this.search = '';
@@ -179,6 +195,9 @@
                             visible = true;
                         }
                     });
+                    console.log('visible: ', visible);
+                    console.log('postOwner: ', self.postOwner);
+                    console.log('hasResult: ', self.hasResult);
                     if(!visible && self.postOwner && self.hasResult) {
                         $('#owner_msg').show();
                     }
@@ -203,6 +222,7 @@
             }
         },
         mounted() {
+
             if(!_.isEmpty(this.paginatePost)) {
                 this.posts = this.paginatePost;
                 return;
@@ -219,9 +239,3 @@
         }
     }
 </script>
-
-<style lang="css" scoped>
-    .wrapper {
-        padding: 20px;
-    }
-</style>

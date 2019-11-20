@@ -36,23 +36,25 @@
         },
         watch: {
             all: function ($list) {
+                this.haveList = false;
                 if(_.isEmpty($list)) {
-                    this.haveList = true;
                     this.pageCount = 0;
                     return
                 }
+
                 this.updateData ($list);
             },
             searchResult: function ($list) {
+                this.haveList = false;
                 if(_.isEmpty($list)) {
                     if(!_.isEmpty(this.all) && _.isEmpty(this.searchMeta)) {
                         this.updateData (this.all);
                         return
                     }
-                    this.haveList = true;
                     this.pageCount = 0;
                     return
                 }
+
                 this.updateData ($list);
             }
         },
@@ -61,16 +63,32 @@
                 'setPageNum'
             ]),
             updateData ($list) {
+                this.haveList = true;
                 let pageCount = $list.length / this.perPage;
                 this.pageCount = Math.round(pageCount);
                 this.page = this.pageNum;
-                this.haveList = true;
             },
             changePage ($page) {
                 this.setPageNum($page);
             }
         },
         mounted() {
+            if(!_.isEmpty(this.paginatePost)) {
+            this.haveList = true;
+                this.posts = this.paginatePost;
+                return;
+            }
+            if(!_.isEmpty(this.results)) {
+            this.haveList = true;
+                this.posts = this.results;
+                return;
+            }
+            if(!_.isEmpty(this.all)) {
+                this.haveList = true;
+                this.updateData (this.all);
+                return;
+            }
+            this.haveList = false;
         }
 
     }
