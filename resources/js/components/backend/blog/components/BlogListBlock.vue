@@ -1,10 +1,44 @@
 <template>
     <div class="row">
         <div class="col-lg-12">
-                <pagination />
+            <div class="row">
+                <div class="col-lg-3">
+                    <div v-show="hasPost" class="input-group input-group-sm block-order-by">
+                        <div class="input-group-prepend">
+                            <span class="input-group-addon">Order By</span>
+                        </div>
+                        <select class="form-control" v-model="sortedBy" @change="changeSortBy">
+                            <option v-for="(header, index) of headers" :value="index"> {{ header }}</option>
+                        </select>
+                        <div class="input-group-append bg-primary">
+                                <sorter :sorting="sortBy" :sortby="sortedBy" :sortDir="sortDir" @sortBy="orderBy" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div v-show="hasPost && doPagination" class="input-group input-group-sm" style="margin-bottom: 30px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-addon">Display</span>
+                        </div>
+                        <select class="form-control" v-model="rowNum" @change="displayRowNum">
+                            <option>1</option>
+                            <option>3</option>
+                            <option>6</option>
+                            <option>9</option>
+                            <option>12</option>
+                            <option>24</option>
+                            <option>48</option>
+                            <option>96</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <pagination />
+                </div>
+            </div>
         </div>
-        <div v-for="post of posts" class="col-lg-4" v-show="showOwnerPost(post.owner.email)">
-            <div  v-show="showOwnerPost(post.owner.email)" class="card">
+        <div v-for="post of posts" class="col-lg-4">
+            <div class="card">
                 <div class="card-header">
                     <h4>{{ post.post_title }}</h4>
                 </div>
@@ -41,31 +75,69 @@
 </template>
 
 <script>
-import blogAction from './Action';
-import Pagination from '../../../../utility/Pagination';
+    import { mapState, mapGetters,  mapActions } from 'vuex';
+    import blogAction from './Action';
+    import Sorter from '../../../../utility/Sorter';
+    import Pagination from '../../../../utility/Pagination';
 
-export default {
-    name: 'blog-list-block',
-    props: ['posts', 'activeUser', 'postOwner'],
-    components: {
-        blogAction,
-        Pagination
-    },
-    data() {
-        return {}
-    },
-    methods: {
-        formatDate($date) {
-            return moment($date).format('Do MM YYYY');
+    export default {
+        name: 'blog-list-block',
+        props: ['posts', 'activeUser', 'headers', 'hasPost'],
+        components: {
+            Sorter,
+            blogAction,
+            Pagination
         },
-        showOwnerPost ($email) {
-            if($email != this.activeUser.email && this.postOwner) {
-                return false;
+        data() {
+            return {
+                rowNum: 96,
+                sortedBy: 'index'
             }
-            return true;
         },
+        computed: {
+            ...mapState('POSTS', [
+                'sortBy',
+                'sortDir',
+                'perPage',
+                'doPagination'
+            ])
+        },
+        watch: {
+            sortBy: function ($sortBy) {
+                this.sortedBy = $sortBy;
+            },
+            perPage: function ($perPage) {
+                this.rowNum = $perPage;
+            }
+        },
+        methods: {
+            ...mapActions('POSTS', [
+                'sort',
+                'changePerPage'
+            ]),
+            orderBy ($data) {
+
+                if($data.by == 'index') {
+                    this.posts = this.posts.reverse();
+                }
+                this.sort($data);
+            },
+            formatDate($date) {
+                return moment($date).format('Do MM YYYY');
+            },
+            changeSortBy () {
+                // this.sort({
+                //     by: this.sortedBy
+                // });
+            },
+            displayRowNum () {
+                this.changePerPage(parseInt(this.rowNum));
+            },
+        },
+        mounted () {
+            this.rowNum = this.perPage;
+        }
     }
-}
 </script>
 
 <style lang="css" scoped>

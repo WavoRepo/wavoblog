@@ -3,7 +3,7 @@
         <div class="col-lg-12 search_wrap">
             <div class="input-group">
                 <input type="text"
-                    placeholder="Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
+                    placeholder="Search By Title, Post Owner's Name, Content, Date(yyyy-mm-dd), Slug, And Status"
                     v-model="search"
                     class="form-control form-control-lg">
                 <div class="input-group-btn">

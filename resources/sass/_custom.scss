@@ -151,9 +151,9 @@
     }
     .admin_search_wrap {
         position: absolute;
-        right: 14px;
+        right: 138px;
         top: 0;
-        width: calc(100% - 216px);
+        width: calc(100% - 221px);
         input {
             font-size: 0.8rem;
         }
@@ -168,7 +168,6 @@
         }
     }
     .tab_wrap {
-        margin-top: -40px;
         .nav-tabs {
             direction: rtl; padding: 0;
         }
@@ -178,6 +177,18 @@
             padding: 20px 0;
             .wrapper {
                 padding: 20px;
+            }
+        }
+    }
+    .block-order-by {
+        margin-bottom: 30px;
+        .input-group-append {
+            position: relative;
+            width: 45px;
+            .sorter {
+                position: absolute;
+                top: 7px;
+                left: 50%;
             }
         }
     }
@@ -428,6 +439,15 @@
         font-size: 18px;
         padding: 10px;
         text-align: center;
+    }
+}
+.sorter {
+    float: right;
+    position: relative;
+    .sorter-icon {
+        cursor: pointer;
+        position: absolute;
+        right: -2px;
     }
 }
 strong {

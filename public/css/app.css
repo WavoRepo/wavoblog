@@ -28676,9 +28676,9 @@ body.md-skin {
 
 .blog-index .admin_search_wrap {
   position: absolute;
-  right: 14px;
+  right: 138px;
   top: 0;
-  width: calc(100% - 216px);
+  width: calc(100% - 221px);
 }
 
 .blog-index .admin_search_wrap input {
@@ -28698,10 +28698,6 @@ body.md-skin {
   font-size: 0.8rem;
 }
 
-.blog-index .tab_wrap {
-  margin-top: -40px;
-}
-
 .blog-index .tab_wrap .nav-tabs {
   direction: rtl;
   padding: 0;
@@ -28715,6 +28711,21 @@ body.md-skin {
 
 .blog-index .tab_wrap .panel-body .wrapper {
   padding: 20px;
+}
+
+.blog-index .block-order-by {
+  margin-bottom: 30px;
+}
+
+.blog-index .block-order-by .input-group-append {
+  position: relative;
+  width: 45px;
+}
+
+.blog-index .block-order-by .input-group-append .sorter {
+  position: absolute;
+  top: 7px;
+  left: 50%;
 }
 
 .blog-index .card {
@@ -29082,6 +29093,17 @@ body.md-skin {
   font-size: 18px;
   padding: 10px;
   text-align: center;
+}
+
+.sorter {
+  float: right;
+  position: relative;
+}
+
+.sorter .sorter-icon {
+  cursor: pointer;
+  position: absolute;
+  right: -2px;
 }
 
 strong {

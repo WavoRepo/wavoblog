@@ -1,6 +1,6 @@
 <template>
     <paginate
-        v-show="haveList && pageCount"
+        v-show="haveList && pageCount > 1 && doPagination"
         v-model="page"
         :page-count="pageCount"
         :page-range="3"
@@ -28,10 +28,12 @@
         computed: {
             ...mapState('POSTS',[
                 'all',
+                'paginate',
                 'searchMeta',
                 'searchResult',
                 'perPage',
                 'pageNum',
+                'doPagination',
             ])
         },
         watch: {
@@ -56,7 +58,13 @@
                 }
 
                 this.updateData ($list);
-            }
+            },
+            paginate: function ($paginatePost) {
+                this.haveList = false;
+                if(_.isEmpty($paginatePost)) return;
+                if(!_.isEmpty(this.searchResult)) return this.updateData (this.searchResult);
+                this.updateData (this.all);
+            },
         },
         methods: {
             ...mapActions('POSTS', [
@@ -73,22 +81,7 @@
             }
         },
         mounted() {
-            if(!_.isEmpty(this.paginatePost)) {
-            this.haveList = true;
-                this.posts = this.paginatePost;
-                return;
-            }
-            if(!_.isEmpty(this.results)) {
-            this.haveList = true;
-                this.posts = this.results;
-                return;
-            }
-            if(!_.isEmpty(this.all)) {
-                this.haveList = true;
-                this.updateData (this.all);
-                return;
-            }
-            this.haveList = false;
+
         }
 
     }

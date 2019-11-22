@@ -1,7 +1,7 @@
 <template>
     <div class="container py-4 blog-index">
         <div class="row">
-            <div class="col-lg-8 add_btn_wrap">
+            <div class="col-lg-12 add_btn_wrap">
                 <router-link :to="'/admin/blog/add'">
                     <button v-show="isBlog"
                         type="button"
@@ -12,7 +12,7 @@
                 </router-link>
                 <div class="input-group admin_search_wrap">
                     <input type="text"
-                        placeholder="Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
+                        placeholder="Search By Title, Post Owner's Name,  Content, Date(yyyy-mm-dd), Slug, And Status"
                         v-model="search"
                         class="form-control form-control-lg">
                     <div class="input-group-btn">
@@ -21,13 +21,13 @@
                         </button>
                     </div>
                 </div>
-                <button type="button" class="btn btn-secondary btn-lg xmb-4" @click="ownersPost">
-                    {{ postOwnerText }}
+                <button class="btn btn-secondary btn-lg pull-right" @click="paginate">
+                    Pagination <i :class="isPaginated"></i>
                 </button>
             </div>
         </div>
         <div class="row col-lg-8 admin_meta_wrap">
-            <div class="col-lg-12 mt-4 mb-4">
+            <div :class="'col-lg-12 mt-4' + hasMeta()">
                 <button v-for="meta of metas" type="button" class="btn btn-primary btn-sm mr-2">
                     {{ meta }} <span class="badge badge-light" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
                 </button>
@@ -51,12 +51,12 @@
                     <div class="tab-content">
                         <div id="blog-block" :class="'tab-pane' + activeTab('block')">
                             <div class="panel-body">
-                                <blog-list-block :posts="posts" :activeUser="activeUser" :postOwner="postOwner"/>
+                                <blog-list-block :posts="posts" :headers="headers" :activeUser="activeUser" :hasPost="hasResult" />
                             </div>
                         </div>
                         <div id="blog-table" :class="'tab-pane' + activeTab('table')">
                             <div class="panel-body">
-                                <blog-list-table :posts="posts" :activeUser="activeUser" :postOwner="postOwner"/>
+                                <blog-list-table :posts="posts" :headers="headers" :activeUser="activeUser" :hasPost="hasResult" />
                             </div>
                         </div>
                     </div>
@@ -70,16 +70,6 @@
                         <h3 class="font-bold">Sorry, no result to display.</h3>
                         <div class="error-desc">
                             Start your new blog by clicking the add button. If there is a post already, maybe the search result is empty. Enjoy our new app.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="owner_msg" class="flex-center position-ref admin-no-owner-article-display" style="display: none;">
-                <div class="content wrapper">
-                    <div class="middle-box text-center wrapper">
-                        <h3 class="font-bold">Sorry, no result to display.</h3>
-                        <div class="error-desc">
-                            You don't owned a post on this result. Start your new blog by clicking the add button. Enjoy our new app.
                         </div>
                     </div>
                 </div>
@@ -102,19 +92,28 @@
         data () {
             return {
                 hasResult: true,
-                postOwner: false,
-                postOwnerText: 'Owner\'s Posts',
                 search: '',
                 posts: {},
-                tabActive: (sessionStorage.getItem('tab-active')) ? sessionStorage.getItem('tab-active') : 'block'
+                tabActive: (sessionStorage.getItem('tab-active')) ? sessionStorage.getItem('tab-active') : 'block',
+                headers: {
+                    index: 'Id',
+                    post_title: 'Title',
+                    owner: 'Owner',
+                    category: 'Category',
+                    status: 'Status',
+                    created_at: 'Date Created'
+                },
+                isPaginated: 'fa fa-ban text-info'
             }
         },
         computed: {
             ...mapState('POSTS', {
                 blogPosts: 'all',
                 metas: 'searchMeta',
+                sortedPost: 'sorted',
                 results: 'searchResult',
-                paginatePost: 'paginate'
+                paginatePost: 'paginate',
+                doPagination: 'doPagination'
             }),
             ...mapState('USERS', {
                 activeUser: 'active'
@@ -127,7 +126,6 @@
                 this.posts = $post;
             },
             results: function ($post) {
-                this.CheckResultsOwnerIsActive();
                 if(_.isEmpty($post) && _.isEmpty(this.metas)) {
                     this.hasResult = true;
                     this.posts = this.blogPosts;
@@ -141,18 +139,28 @@
                 this.hasResult = true;
                 this.posts = $post;
             },
+            sortedPost: function ($sortedPost) {
+                if(_.isEmpty($sortedPost)) return;
+                this.hasResult = true;
+                this.posts = $sortedPost;
+            },
             paginatePost: function ($paginatePost) {
                 if(_.isEmpty($paginatePost)) return;
                 this.hasResult = true;
                 this.posts = $paginatePost;
-            },
+            }
         },
         methods: {
             ...mapActions('POSTS', [
                 'setPosts',
                 'removeMeta',
-                'searchPosts'
+                'searchPosts',
+                'togglePagination'
             ]),
+            hasMeta () {
+                if(!_.isEmpty(this.metas)) return ' mt-4';
+                return '';
+            },
             isBlog () {
                 if (window.location.href.indexOf('blog') > -1 && this.$router.name != 'Blog Posts') {
                     return true;
@@ -175,33 +183,14 @@
                 this.removeMeta($meta);
                 this.searchPosts('');
             },
-            ownersPost () {
-                this.postOwner = !this.postOwner;
-                if(!this.postOwner) {
-                    this.postOwnerText = 'Owner\'s Posts';
-                } else {
-                    this.postOwnerText = 'Show All Posts';
+            paginate () {
+                this.togglePagination();
+                if(this.doPagination) {
+                    this.isPaginated = 'fa fa-check text-info';
                 }
-                this.CheckResultsOwnerIsActive();
-            },
-            CheckResultsOwnerIsActive() {
-                let self = this;
-                let visible = false;
-                $('#owner_msg').hide();
-
-                setTimeout(function(){
-                    $('.card').each(function() {
-                        if($(this).css('display') != 'none') {
-                            visible = true;
-                        }
-                    });
-                    console.log('visible: ', visible);
-                    console.log('postOwner: ', self.postOwner);
-                    console.log('hasResult: ', self.hasResult);
-                    if(!visible && self.postOwner && self.hasResult) {
-                        $('#owner_msg').show();
-                    }
-                }, 1000);
+                else {
+                    this.isPaginated = 'fa fa-ban text-info';
+                }
             },
             getAllPosts () {
 
@@ -222,9 +211,19 @@
             }
         },
         mounted() {
+            if(this.doPagination) {
+                this.isPaginated = 'fa fa-check text-info';
+            }
+            else {
+                this.isPaginated = 'fa fa-ban text-info';
+            }
 
             if(!_.isEmpty(this.paginatePost)) {
                 this.posts = this.paginatePost;
+                return;
+            }
+            if(!_.isEmpty(this.$sortedPost)) {
+                this.posts = this.$sortedPost;
                 return;
             }
             if(!_.isEmpty(this.results)) {

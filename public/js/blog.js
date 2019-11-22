@@ -2822,16 +2822,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -2844,18 +2834,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       hasResult: true,
-      postOwner: false,
-      postOwnerText: 'Owner\'s Posts',
       search: '',
       posts: {},
-      tabActive: sessionStorage.getItem('tab-active') ? sessionStorage.getItem('tab-active') : 'block'
+      tabActive: sessionStorage.getItem('tab-active') ? sessionStorage.getItem('tab-active') : 'block',
+      headers: {
+        index: 'Id',
+        post_title: 'Title',
+        owner: 'Owner',
+        category: 'Category',
+        status: 'Status',
+        created_at: 'Date Created'
+      },
+      isPaginated: 'fa fa-ban text-info'
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', {
     blogPosts: 'all',
     metas: 'searchMeta',
+    sortedPost: 'sorted',
     results: 'searchResult',
-    paginatePost: 'paginate'
+    paginatePost: 'paginate',
+    doPagination: 'doPagination'
   }), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('USERS', {
     activeUser: 'active'
   })),
@@ -2866,8 +2865,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.posts = $post;
     },
     results: function results($post) {
-      this.CheckResultsOwnerIsActive();
-
       if (_.isEmpty($post) && _.isEmpty(this.metas)) {
         this.hasResult = true;
         this.posts = this.blogPosts;
@@ -2883,13 +2880,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.hasResult = true;
       this.posts = $post;
     },
+    sortedPost: function sortedPost($sortedPost) {
+      if (_.isEmpty($sortedPost)) return;
+      this.hasResult = true;
+      this.posts = $sortedPost;
+    },
     paginatePost: function paginatePost($paginatePost) {
       if (_.isEmpty($paginatePost)) return;
       this.hasResult = true;
       this.posts = $paginatePost;
     }
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'removeMeta', 'searchPosts']), {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'removeMeta', 'searchPosts', 'togglePagination']), {
+    hasMeta: function hasMeta() {
+      if (!_.isEmpty(this.metas)) return ' mt-4';
+      return '';
+    },
     isBlog: function isBlog() {
       if (window.location.href.indexOf('blog') > -1 && this.$router.name != 'Blog Posts') {
         return true;
@@ -2912,35 +2918,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.removeMeta($meta);
       this.searchPosts('');
     },
-    ownersPost: function ownersPost() {
-      this.postOwner = !this.postOwner;
+    paginate: function paginate() {
+      this.togglePagination();
 
-      if (!this.postOwner) {
-        this.postOwnerText = 'Owner\'s Posts';
+      if (this.doPagination) {
+        this.isPaginated = 'fa fa-check text-info';
       } else {
-        this.postOwnerText = 'Show All Posts';
+        this.isPaginated = 'fa fa-ban text-info';
       }
-
-      this.CheckResultsOwnerIsActive();
-    },
-    CheckResultsOwnerIsActive: function CheckResultsOwnerIsActive() {
-      var self = this;
-      var visible = false;
-      $('#owner_msg').hide();
-      setTimeout(function () {
-        $('.card').each(function () {
-          if ($(this).css('display') != 'none') {
-            visible = true;
-          }
-        });
-        console.log('visible: ', visible);
-        console.log('postOwner: ', self.postOwner);
-        console.log('hasResult: ', self.hasResult);
-
-        if (!visible && self.postOwner && self.hasResult) {
-          $('#owner_msg').show();
-        }
-      }, 1000);
     },
     getAllPosts: function getAllPosts() {
       var self = this;
@@ -2958,8 +2943,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   mounted: function mounted() {
+    if (this.doPagination) {
+      this.isPaginated = 'fa fa-check text-info';
+    } else {
+      this.isPaginated = 'fa fa-ban text-info';
+    }
+
     if (!_.isEmpty(this.paginatePost)) {
       this.posts = this.paginatePost;
+      return;
+    }
+
+    if (!_.isEmpty(this.$sortedPost)) {
+      this.posts = this.$sortedPost;
       return;
     }
 
@@ -3089,8 +3085,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Action__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Action */ "./resources/js/components/backend/blog/components/Action.vue");
-/* harmony import */ var _utility_Pagination__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../utility/Pagination */ "./resources/js/utility/Pagination.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _Action__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Action */ "./resources/js/components/backend/blog/components/Action.vue");
+/* harmony import */ var _utility_Sorter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../utility/Sorter */ "./resources/js/utility/Sorter.vue");
+/* harmony import */ var _utility_Pagination__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../utility/Pagination */ "./resources/js/utility/Pagination.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -3133,29 +3137,88 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'blog-list-block',
-  props: ['posts', 'activeUser', 'postOwner'],
+  props: ['posts', 'activeUser', 'headers', 'hasPost'],
   components: {
-    blogAction: _Action__WEBPACK_IMPORTED_MODULE_0__["default"],
-    Pagination: _utility_Pagination__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Sorter: _utility_Sorter__WEBPACK_IMPORTED_MODULE_2__["default"],
+    blogAction: _Action__WEBPACK_IMPORTED_MODULE_1__["default"],
+    Pagination: _utility_Pagination__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
-    return {};
+    return {
+      rowNum: 96,
+      sortedBy: 'index'
+    };
   },
-  methods: {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', ['sortBy', 'sortDir', 'perPage', 'doPagination'])),
+  watch: {
+    sortBy: function sortBy($sortBy) {
+      this.sortedBy = $sortBy;
+    },
+    perPage: function perPage($perPage) {
+      this.rowNum = $perPage;
+    }
+  },
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['sort', 'changePerPage']), {
+    orderBy: function orderBy($data) {
+      if ($data.by == 'index') {
+        this.posts = this.posts.reverse();
+      }
+
+      this.sort($data);
+    },
     formatDate: function formatDate($date) {
       return moment($date).format('Do MM YYYY');
     },
-    showOwnerPost: function showOwnerPost($email) {
-      if ($email != this.activeUser.email && this.postOwner) {
-        return false;
-      }
-
-      return true;
+    changeSortBy: function changeSortBy() {// this.sort({
+      //     by: this.sortedBy
+      // });
+    },
+    displayRowNum: function displayRowNum() {
+      this.changePerPage(parseInt(this.rowNum));
     }
+  }),
+  mounted: function mounted() {
+    this.rowNum = this.perPage;
   }
 });
 
@@ -3170,8 +3233,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Action__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Action */ "./resources/js/components/backend/blog/components/Action.vue");
-/* harmony import */ var _utility_Pagination__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../utility/Pagination */ "./resources/js/utility/Pagination.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _Action__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Action */ "./resources/js/components/backend/blog/components/Action.vue");
+/* harmony import */ var _utility_Sorter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../utility/Sorter */ "./resources/js/utility/Sorter.vue");
+/* harmony import */ var _utility_Pagination__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../utility/Pagination */ "./resources/js/utility/Pagination.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -3204,29 +3275,65 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'blog-list-table',
-  props: ['posts', 'activeUser', 'postOwner'],
+  props: ['posts', 'headers', 'activeUser', 'hasPost'],
   components: {
-    blogAction: _Action__WEBPACK_IMPORTED_MODULE_0__["default"],
-    Pagination: _utility_Pagination__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Sorter: _utility_Sorter__WEBPACK_IMPORTED_MODULE_2__["default"],
+    blogAction: _Action__WEBPACK_IMPORTED_MODULE_1__["default"],
+    Pagination: _utility_Pagination__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
-    return {};
+    return {
+      rowNum: 96
+    };
   },
-  methods: {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', ['sortBy', 'sortDir', 'perPage', 'doPagination'])),
+  watch: {
+    perPage: function perPage($perPage) {
+      this.rowNum = $perPage;
+    }
+  },
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['sort', 'changePerPage']), {
+    orderBy: function orderBy($data) {
+      if ($data.by == 'index') {
+        this.posts = this.posts.reverse();
+      }
+
+      this.sort($data);
+    },
     formatDate: function formatDate($date) {
       return moment($date).format('Do MM YYYY');
     },
-    showOwnerPost: function showOwnerPost($email) {
-      if ($email != this.activeUser.email && this.postOwner) {
-        return false;
-      }
-
-      return true;
+    displayRowNum: function displayRowNum() {
+      this.changePerPage(parseInt(this.rowNum));
     }
+  }),
+  mounted: function mounted() {
+    this.rowNum = this.perPage;
   }
 });
 
@@ -4184,7 +4291,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       haveList: false
     };
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', ['all', 'searchMeta', 'searchResult', 'perPage', 'pageNum'])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', ['all', 'paginate', 'searchMeta', 'searchResult', 'perPage', 'pageNum', 'doPagination'])),
   watch: {
     all: function all($list) {
       this.haveList = false;
@@ -4210,6 +4317,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       this.updateData($list);
+    },
+    paginate: function paginate($paginatePost) {
+      this.haveList = false;
+      if (_.isEmpty($paginatePost)) return;
+      if (!_.isEmpty(this.searchResult)) return this.updateData(this.searchResult);
+      this.updateData(this.all);
     }
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPageNum']), {
@@ -4223,26 +4336,94 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.setPageNum($page);
     }
   }),
-  mounted: function mounted() {
-    if (!_.isEmpty(this.paginatePost)) {
-      this.haveList = true;
-      this.posts = this.paginatePost;
-      return;
-    }
+  mounted: function mounted() {}
+});
 
-    if (!_.isEmpty(this.results)) {
-      this.haveList = true;
-      this.posts = this.results;
-      return;
-    }
+/***/ }),
 
-    if (!_.isEmpty(this.all)) {
-      this.haveList = true;
-      this.updateData(this.all);
-      return;
-    }
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/utility/Sorter.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/utility/Sorter.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-    this.haveList = false;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'sorter',
+  props: ['sorting', 'sortby', 'sortDir'],
+  data: function data() {
+    return {
+      sorted: {
+        up: '',
+        down: ''
+      }
+    };
+  },
+  watch: {
+    sortDir: function sortDir($dir) {
+      this.changeSorter($dir);
+    }
+  },
+  methods: {
+    isCenter: function isCenter($dir) {
+      if (!this.sorting || this.sorting != this.sortby) {
+        this.sorted.up = '';
+        this.sorted.down = '';
+      }
+
+      if (this.sorting == this.sortby) {
+        if (this.sortDir == 'desc') {
+          this.sorted.up = true;
+          this.sorted.down = false;
+        }
+
+        if (this.sortDir == 'asc') {
+          this.sorted.up = false;
+          this.sorted.down = true;
+        }
+      }
+
+      if ($dir == 'up') {
+        if (this.sorted.up !== true) return 'top: -7px';
+      }
+
+      if ($dir == 'down') {
+        if (this.sorted.down !== true) return 'top: 6px';
+      }
+
+      return 'top: 0px';
+    },
+    changeSorter: function changeSorter($type) {
+      if ($type == 'asc') {
+        this.sorted.up = false;
+        this.sorted.down = true;
+      } else {
+        this.sorted.up = true;
+        this.sorted.down = false;
+      }
+    },
+    sort: function sort($type) {
+      this.changeSorter($type);
+      this.$emit('sortBy', {
+        by: this.sortby,
+        type: $type
+      });
+    }
   }
 });
 
@@ -72520,7 +72701,7 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _c(
         "div",
-        { staticClass: "col-lg-8 add_btn_wrap" },
+        { staticClass: "col-lg-12 add_btn_wrap" },
         [
           _c("router-link", { attrs: { to: "/admin/blog/add" } }, [
             _c(
@@ -72555,7 +72736,7 @@ var render = function() {
               attrs: {
                 type: "text",
                 placeholder:
-                  "Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
+                  "Search By Title, Post Owner's Name,  Content, Date(yyyy-mm-dd), Slug, And Status"
               },
               domProps: { value: _vm.search },
               on: {
@@ -72587,16 +72768,12 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-secondary btn-lg xmb-4",
-              attrs: { type: "button" },
-              on: { click: _vm.ownersPost }
+              staticClass: "btn btn-secondary btn-lg pull-right",
+              on: { click: _vm.paginate }
             },
             [
-              _vm._v(
-                "\n                " +
-                  _vm._s(_vm.postOwnerText) +
-                  "\n            "
-              )
+              _vm._v("\n                Pagination "),
+              _c("i", { class: _vm.isPaginated })
             ]
           )
         ],
@@ -72607,7 +72784,7 @@ var render = function() {
     _c("div", { staticClass: "row col-lg-8 admin_meta_wrap" }, [
       _c(
         "div",
-        { staticClass: "col-lg-12 mt-4 mb-4" },
+        { class: "col-lg-12 mt-4" + _vm.hasMeta() },
         _vm._l(_vm.metas, function(meta) {
           return _c(
             "button",
@@ -72688,8 +72865,9 @@ var render = function() {
                     _c("blog-list-block", {
                       attrs: {
                         posts: _vm.posts,
+                        headers: _vm.headers,
                         activeUser: _vm.activeUser,
-                        postOwner: _vm.postOwner
+                        hasPost: _vm.hasResult
                       }
                     })
                   ],
@@ -72712,8 +72890,9 @@ var render = function() {
                     _c("blog-list-table", {
                       attrs: {
                         posts: _vm.posts,
+                        headers: _vm.headers,
                         activeUser: _vm.activeUser,
-                        postOwner: _vm.postOwner
+                        hasPost: _vm.hasResult
                       }
                     })
                   ],
@@ -72741,9 +72920,7 @@ var render = function() {
           staticClass: "flex-center position-ref admin-no-article-display"
         },
         [_vm._m(0)]
-      ),
-      _vm._v(" "),
-      _vm._m(1)
+      )
     ])
   ])
 }
@@ -72765,34 +72942,6 @@ var staticRenderFns = [
         ])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "flex-center position-ref admin-no-owner-article-display",
-        staticStyle: { display: "none" },
-        attrs: { id: "owner_msg" }
-      },
-      [
-        _c("div", { staticClass: "content wrapper" }, [
-          _c("div", { staticClass: "middle-box text-center wrapper" }, [
-            _c("h3", { staticClass: "font-bold" }, [
-              _vm._v("Sorry, no result to display.")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "error-desc" }, [
-              _vm._v(
-                "\n                        You don't owned a post on this result. Start your new blog by clicking the add button. Enjoy our new app.\n                    "
-              )
-            ])
-          ])
-        ])
-      ]
-    )
   }
 ]
 render._withStripped = true
@@ -72930,23 +73079,9 @@ var render = function() {
     "div",
     { staticClass: "row" },
     [
-      _c("div", { staticClass: "col-lg-12" }, [_c("pagination")], 1),
-      _vm._v(" "),
-      _vm._l(_vm.posts, function(post) {
-        return _c(
-          "div",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.showOwnerPost(post.owner.email),
-                expression: "showOwnerPost(post.owner.email)"
-              }
-            ],
-            staticClass: "col-lg-4"
-          },
-          [
+      _c("div", { staticClass: "col-lg-12" }, [
+        _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "col-lg-3" }, [
             _c(
               "div",
               {
@@ -72954,70 +73089,226 @@ var render = function() {
                   {
                     name: "show",
                     rawName: "v-show",
-                    value: _vm.showOwnerPost(post.owner.email),
-                    expression: "showOwnerPost(post.owner.email)"
+                    value: _vm.hasPost,
+                    expression: "hasPost"
                   }
                 ],
-                staticClass: "card"
+                staticClass: "input-group input-group-sm block-order-by"
               },
               [
-                _c("div", { staticClass: "card-header" }, [
-                  _c("h4", [_vm._v(_vm._s(post.post_title))])
-                ]),
+                _vm._m(0),
                 _vm._v(" "),
-                _c("div", { staticClass: "card-content wrapper" }, [
-                  _c("div", { staticClass: "small m-b-xs" }, [
-                    _c("h4", [
-                      _vm._v(
-                        "\n                        " +
-                          _vm._s(post.owner.name) +
-                          "\n                        "
-                      ),
-                      _c("span", { staticClass: "text-muted" }, [
-                        _c("i", { staticClass: "fa fa-clock-o" }),
-                        _vm._v(
-                          "\n                            " +
-                            _vm._s(_vm.formatDate(post.created_at)) +
-                            "\n                        "
-                        )
-                      ])
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.sortedBy,
+                        expression: "sortedBy"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.sortedBy = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        _vm.changeSortBy
+                      ]
+                    }
+                  },
+                  _vm._l(_vm.headers, function(header, index) {
+                    return _c("option", { domProps: { value: index } }, [
+                      _vm._v(" " + _vm._s(header))
                     ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "row" }, [
-                    _vm._m(0, true),
+                  }),
+                  0
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "input-group-append bg-primary" },
+                  [
+                    _c("sorter", {
+                      attrs: {
+                        sorting: _vm.sortBy,
+                        sortby: _vm.sortedBy,
+                        sortDir: _vm.sortDir
+                      },
+                      on: { sortBy: _vm.orderBy }
+                    })
+                  ],
+                  1
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-lg-2" }, [
+            _c(
+              "div",
+              {
+                directives: [
+                  {
+                    name: "show",
+                    rawName: "v-show",
+                    value: _vm.hasPost && _vm.doPagination,
+                    expression: "hasPost && doPagination"
+                  }
+                ],
+                staticClass: "input-group input-group-sm",
+                staticStyle: { "margin-bottom": "30px" }
+              },
+              [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.rowNum,
+                        expression: "rowNum"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: [
+                        function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.rowNum = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        },
+                        _vm.displayRowNum
+                      ]
+                    }
+                  },
+                  [
+                    _c("option", [_vm._v("1")]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "col-md-6" }, [
-                      _c("div", { staticClass: "small text-right" }, [
-                        _c("h5", [_vm._v("Status:")]),
-                        _vm._v(
-                          "\n                            " +
-                            _vm._s(post.status) +
-                            "\n                        "
-                        )
-                      ])
+                    _c("option", [_vm._v("3")]),
+                    _vm._v(" "),
+                    _c("option", [_vm._v("6")]),
+                    _vm._v(" "),
+                    _c("option", [_vm._v("9")]),
+                    _vm._v(" "),
+                    _c("option", [_vm._v("12")]),
+                    _vm._v(" "),
+                    _c("option", [_vm._v("24")]),
+                    _vm._v(" "),
+                    _c("option", [_vm._v("48")]),
+                    _vm._v(" "),
+                    _c("option", [_vm._v("96")])
+                  ]
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "col-lg-7" }, [_c("pagination")], 1)
+        ])
+      ]),
+      _vm._v(" "),
+      _vm._l(_vm.posts, function(post) {
+        return _c("div", { staticClass: "col-lg-4" }, [
+          _c(
+            "div",
+            { staticClass: "card" },
+            [
+              _c("div", { staticClass: "card-header" }, [
+                _c("h4", [_vm._v(_vm._s(post.post_title))])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "card-content wrapper" }, [
+                _c("div", { staticClass: "small m-b-xs" }, [
+                  _c("h4", [
+                    _vm._v(
+                      "\n                        " +
+                        _vm._s(post.owner.name) +
+                        "\n                        "
+                    ),
+                    _c("span", { staticClass: "text-muted" }, [
+                      _c("i", { staticClass: "fa fa-clock-o" }),
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.formatDate(post.created_at)) +
+                          "\n                        "
+                      )
                     ])
                   ])
                 ]),
                 _vm._v(" "),
-                _c("blog-action", {
-                  attrs: {
-                    display: "card-footer",
-                    post: post,
-                    activeUser: _vm.activeUser
-                  }
-                })
-              ],
-              1
-            )
-          ]
-        )
+                _c("div", { staticClass: "row" }, [
+                  _vm._m(2, true),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "small text-right" }, [
+                      _c("h5", [_vm._v("Status:")]),
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(post.status) +
+                          "\n                        "
+                      )
+                    ])
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("blog-action", {
+                attrs: {
+                  display: "card-footer",
+                  post: post,
+                  activeUser: _vm.activeUser
+                }
+              })
+            ],
+            1
+          )
+        ])
       })
     ],
     2
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-addon" }, [_vm._v("Order By")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-addon" }, [_vm._v("Display")])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -73055,63 +73346,167 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "wrapper", staticStyle: { "background-color": "#fff" } },
+    {
+      directives: [
+        {
+          name: "show",
+          rawName: "v-show",
+          value: _vm.hasPost,
+          expression: "hasPost"
+        }
+      ],
+      staticClass: "wrapper",
+      staticStyle: { "background-color": "#fff" }
+    },
     [
-      _c("pagination"),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-lg-2" }, [
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.hasPost && _vm.doPagination,
+                  expression: "hasPost && doPagination"
+                }
+              ],
+              staticClass: "input-group input-group-sm block-order-by"
+            },
+            [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.rowNum,
+                      expression: "rowNum"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  on: {
+                    change: [
+                      function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.rowNum = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      },
+                      _vm.displayRowNum
+                    ]
+                  }
+                },
+                [
+                  _c("option", [_vm._v("1")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("3")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("6")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("9")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("12")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("24")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("48")]),
+                  _vm._v(" "),
+                  _c("option", [_vm._v("96")])
+                ]
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-lg-10" }, [_c("pagination")], 1)
+      ]),
       _vm._v(" "),
       _c(
         "table",
-        { staticClass: "table table-striped table-bordered table-lg" },
+        {
+          staticClass:
+            "table table-striped table-bordered xtable-responsive table-lg"
+        },
         [
-          _vm._m(0),
+          _c("thead", { staticClass: "thead-light" }, [
+            _c(
+              "tr",
+              [
+                _vm._l(_vm.headers, function(header, index) {
+                  return _c(
+                    "th",
+                    [
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(header) +
+                          "\n                "
+                      ),
+                      _c("sorter", {
+                        attrs: {
+                          sorting: _vm.sortBy,
+                          sortby: index,
+                          sortDir: _vm.sortDir
+                        },
+                        on: { sortBy: _vm.orderBy }
+                      })
+                    ],
+                    1
+                  )
+                }),
+                _vm._v(" "),
+                _c("th", { staticStyle: { width: "185px" } }, [
+                  _vm._v("Action")
+                ])
+              ],
+              2
+            )
+          ]),
           _vm._v(" "),
           _c(
             "tbody",
             { staticClass: "table-hover" },
             _vm._l(_vm.posts, function(post, index) {
-              return _c(
-                "tr",
-                {
-                  directives: [
-                    {
-                      name: "show",
-                      rawName: "v-show",
-                      value: _vm.showOwnerPost(post.owner.email),
-                      expression: "showOwnerPost(post.owner.email)"
-                    }
-                  ]
-                },
-                [
-                  _c("td", [_vm._v(_vm._s(++index))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(post.post_title))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(post.owner.name))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v("Uncategorized")]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(post.status))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(_vm.formatDate(post.created_at)))]),
-                  _vm._v(" "),
-                  _c(
-                    "td",
-                    [
-                      _c("blog-action", {
-                        attrs: { post: post, activeUser: _vm.activeUser }
-                      })
-                    ],
-                    1
-                  )
-                ]
-              )
+              return _c("tr", [
+                _c("td", [_vm._v(_vm._s(post.id))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(post.post_title))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(post.owner.name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v("Uncategorized")]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(post.status))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(_vm.formatDate(post.created_at)))]),
+                _vm._v(" "),
+                _c(
+                  "td",
+                  [
+                    _c("blog-action", {
+                      attrs: { post: post, activeUser: _vm.activeUser }
+                    })
+                  ],
+                  1
+                )
+              ])
             }),
             0
           )
         ]
       )
-    ],
-    1
+    ]
   )
 }
 var staticRenderFns = [
@@ -73119,22 +73514,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", { staticClass: "thead-light" }, [
-      _c("tr", [
-        _c("th", [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Title")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Owner")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Category")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Status")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("DAte Created")]),
-        _vm._v(" "),
-        _c("th", { staticStyle: { width: "185px" } }, [_vm._v("Action")])
-      ])
+    return _c("div", { staticClass: "input-group-prepend" }, [
+      _c("span", { staticClass: "input-group-addon" }, [_vm._v("Display")])
     ])
   }
 ]
@@ -74052,7 +74433,7 @@ var render = function() {
             attrs: {
               type: "text",
               placeholder:
-                "Search By Title, Content, Date(yyyy-mm-dd), Slug, And Status"
+                "Search By Title, Post Owner's Name, Content, Date(yyyy-mm-dd), Slug, And Status"
             },
             domProps: { value: _vm.search },
             on: {
@@ -74587,8 +74968,8 @@ var render = function() {
       {
         name: "show",
         rawName: "v-show",
-        value: _vm.haveList && _vm.pageCount,
-        expression: "haveList && pageCount"
+        value: _vm.haveList && _vm.pageCount > 1 && _vm.doPagination,
+        expression: "haveList && pageCount > 1 && doPagination"
       }
     ],
     attrs: {
@@ -74609,6 +74990,82 @@ var render = function() {
       expression: "page"
     }
   })
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/utility/Sorter.vue?vue&type=template&id=7858abec&":
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/utility/Sorter.vue?vue&type=template&id=7858abec& ***!
+  \******************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "sorter" }, [
+    _c(
+      "span",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.sorted.up === "" || _vm.sorted.up == true,
+            expression: "sorted.up === '' || sorted.up == true"
+          }
+        ],
+        staticClass: "sorter-icon",
+        style: _vm.isCenter("up")
+      },
+      [
+        _c("i", {
+          staticClass: "fa fa-caret-up",
+          on: {
+            click: function($event) {
+              return _vm.sort("asc")
+            }
+          }
+        })
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "span",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.sorted.down === "" || _vm.sorted.down === true,
+            expression: "sorted.down === '' || sorted.down === true"
+          }
+        ],
+        staticClass: "sorter-icon",
+        style: _vm.isCenter("down")
+      },
+      [
+        _c("i", {
+          staticClass: "fa fa-caret-down",
+          on: {
+            click: function($event) {
+              return _vm.sort("desc")
+            }
+          }
+        })
+      ]
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -91590,7 +92047,8 @@ var map = {
 	"./components/backend/users/components/ViewProfileModal.vue": "./resources/js/components/backend/users/components/ViewProfileModal.vue",
 	"./components/frontend/blog/Index.vue": "./resources/js/components/frontend/blog/Index.vue",
 	"./components/frontend/blog/SinglePost.vue": "./resources/js/components/frontend/blog/SinglePost.vue",
-	"./utility/Pagination.vue": "./resources/js/utility/Pagination.vue"
+	"./utility/Pagination.vue": "./resources/js/utility/Pagination.vue",
+	"./utility/Sorter.vue": "./resources/js/utility/Sorter.vue"
 };
 
 
@@ -92911,34 +93369,87 @@ var module = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function paginate(array, page_size, page_number) {
   --page_number; // because pages logically start with 1, but technically with 0
 
   return array.slice(page_number * page_size, (page_number + 1) * page_size);
 }
 
+function sortOwner(prop, sortable, sort_type) {
+  prop = prop.split('.');
+  var len = prop.length;
+  sortable.sort(function (prop_a, prop_b) {
+    var i = 0; // Get the correct value
+
+    while (i < len) {
+      prop_a = prop_a[prop[i]];
+      prop_b = prop_b[prop[i]];
+      i++;
+    }
+
+    if (prop_a < prop_b) {
+      if (sort_type == 'desc') return 1;
+      return -1;
+    } else if (prop_a > prop_b) {
+      if (sort_type == 'desc') return -1;
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+  return sortable;
+}
+
+;
+
+function search($searchable, $metas) {
+  return $searchable.filter(function (obj) {
+    return Object.values(obj).some(function (val) {
+      if (val && (typeof val == 'string' || _typeof(val) == 'object')) {
+        var hay = '';
+        if (_typeof(val) === 'object') hay = val.name.toLowerCase().replace(/(<([^>]+)>)/ig, "");else hay = val.toLowerCase().replace(/(<([^>]+)>)/ig, "");
+        var selected = false;
+        $metas.some(function (search) {
+          if (hay.includes(search.toLowerCase())) {
+            selected = true;
+            return;
+          }
+        });
+        if (selected) return val;
+      }
+    });
+  });
+}
+
 var namespaced = true;
 var state = {
   all: [],
-  selected: {},
   searchMeta: [],
-  searchResult: {},
-  paginate: {},
-  perPage: 9,
-  pageNum: 1
+  searchResult: [],
+  paginate: [],
+  sorted: [],
+  selected: {},
+  perPage: sessionStorage.getItem('post-per-page') ? parseInt(sessionStorage.getItem('post-per-page')) : 9,
+  pageNum: sessionStorage.getItem('post-page-num') ? parseInt(sessionStorage.getItem('post-page-num')) : 1,
+  doPagination: sessionStorage.getItem('do-pagination') == 'true' ? true : false,
+  sortBy: 'index',
+  sortDir: ''
 };
 var getters = {};
 var mutations = {
   SETPOSTS: function SETPOSTS(state, $posts) {
     if (_.isEmpty($posts)) return;
     state.all = $posts;
-    state.paginate = paginate($posts, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = paginate($posts, state.perPage, state.pageNum);
   },
   ADDPOSTS: function ADDPOSTS(state, $post) {
     var all = _.reverse(state.all);
 
     all.push($post);
     state.all = _.reverse(state.all);
+    if (state.doPagination) state.paginate = paginate($posts, state.perPage, state.pageNum);
   },
   UPDATEPOSTS: function UPDATEPOSTS(state, $post) {
     if (_.isEmpty(state.all)) {
@@ -92954,6 +93465,7 @@ var mutations = {
 
     if (userKey == -1) return;
     state.all[userKey] = $post;
+    if (state.doPagination) state.paginate = paginate($posts, state.perPage, state.pageNum);
   },
   SETSELECTEDPOST: function SETSELECTEDPOST(state, $post) {
     state.selected = $post;
@@ -92975,7 +93487,7 @@ var mutations = {
 
     if (userKey == -1) return;
     state.all.splice(userKey, 1);
-    state.paginate = paginate(state.all, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = paginate(state.all, state.perPage, state.pageNum);
   },
   SEARCHPOSTS: function SEARCHPOSTS(state, $search) {
     state.pageNum = 1;
@@ -92991,26 +93503,13 @@ var mutations = {
     }
 
     if (_.isEmpty(state.searchMeta)) {
+      state.sortBy = '';
       state.searchResult = {};
-      state.paginate = paginate(state.all, state.perPage, state.pageNum);
+      if (state.doPagination) state.paginate = paginate(state.all, state.perPage, state.pageNum);
       return;
     }
 
-    var results = state.all.filter(function (obj) {
-      return Object.values(obj).some(function (val) {
-        if (typeof val == 'string') {
-          var hay = val.toLowerCase().replace(/(<([^>]+)>)/ig, "");
-          var selected = false;
-          state.searchMeta.some(function (search) {
-            if (hay.includes(search.toLowerCase())) {
-              selected = true;
-              return;
-            }
-          });
-          if (selected) return val;
-        }
-      });
-    });
+    var results = search(state.all, state.searchMeta);
 
     if (_.isEmpty(results)) {
       state.searchResult = [];
@@ -93018,7 +93517,7 @@ var mutations = {
     }
 
     state.searchResult = results;
-    state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);
   },
   REMOVEMETA: function REMOVEMETA(state, $meta) {
     _.pull(state.searchMeta, $meta);
@@ -93026,7 +93525,57 @@ var mutations = {
   SETPAGENUM: function SETPAGENUM(state, $pageNum) {
     if ($pageNum) {
       state.pageNum = $pageNum;
+      sessionStorage.setItem('post-page-num', state.pageNum);
+      if (!state.doPagination) return;
       if (!_.isEmpty(state.searchResult)) state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);else state.paginate = paginate(state.all, state.perPage, state.pageNum);
+    }
+  },
+  SORT: function SORT(state, $data) {
+    state.sortBy = $data.by;
+    if (!$data.type) return;
+    state.sortDir = $data.type;
+
+    if (state.sortBy == 'index') {
+      return;
+    }
+
+    var sortable = [];
+    if (!_.isEmpty(state.searchResult)) sortable = state.searchResult;else sortable = state.all;
+
+    if (state.sortBy == 'owner') {
+      sortable = sortOwner('owner.name', sortable, $data.type); // Use Lodash to sort array by 'field name'
+    } else {
+      sortable = _.orderBy(sortable, $data.by, $data.type); // Use Lodash to sort array by 'field name'
+    }
+
+    if (sortable.length == 0) return;
+    state.sorted = sortable;
+    if (state.doPagination) state.paginate = paginate(sortable, state.perPage, state.pageNum);
+  },
+  CHANGEPERPAGE: function CHANGEPERPAGE(state, $perpage) {
+    state.perPage = $perpage;
+    sessionStorage.setItem('post-per-page', state.perPage);
+    if (!state.doPagination) return;
+    if (!_.isEmpty(state.searchResult)) state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);else state.paginate = paginate(state.all, state.perPage, state.pageNum);
+  },
+  TOGGLEPAGINATION: function TOGGLEPAGINATION(state, $paginate) {
+    state.doPagination = !state.doPagination;
+    sessionStorage.setItem('do-pagination', state.doPagination);
+    if (!state.doPagination) return;
+
+    if (!_.isEmpty(state.sorted)) {
+      state.paginate = paginate(state.sorted, state.perPage, state.pageNum);
+      return;
+    }
+
+    if (!_.isEmpty(state.searchResult)) {
+      state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);
+      return;
+    }
+
+    if (!_.isEmpty(state.all)) {
+      state.paginate = paginate(state.all, state.perPage, state.pageNum);
+      return;
     }
   }
 };
@@ -93057,6 +93606,15 @@ var actions = {
   },
   setPageNum: function setPageNum(context, value) {
     context.commit('SETPAGENUM', value);
+  },
+  sort: function sort(context, value) {
+    context.commit('SORT', value);
+  },
+  changePerPage: function changePerPage(context, value) {
+    context.commit('CHANGEPERPAGE', value);
+  },
+  togglePagination: function togglePagination(context, value) {
+    context.commit('TOGGLEPAGINATION', value);
   }
 };
 var module = {
@@ -93282,6 +93840,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_0412a4bb___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Pagination_vue_vue_type_template_id_0412a4bb___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/utility/Sorter.vue":
+/*!*****************************************!*\
+  !*** ./resources/js/utility/Sorter.vue ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Sorter_vue_vue_type_template_id_7858abec___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Sorter.vue?vue&type=template&id=7858abec& */ "./resources/js/utility/Sorter.vue?vue&type=template&id=7858abec&");
+/* harmony import */ var _Sorter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Sorter.vue?vue&type=script&lang=js& */ "./resources/js/utility/Sorter.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Sorter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Sorter_vue_vue_type_template_id_7858abec___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Sorter_vue_vue_type_template_id_7858abec___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/utility/Sorter.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/utility/Sorter.vue?vue&type=script&lang=js&":
+/*!******************************************************************!*\
+  !*** ./resources/js/utility/Sorter.vue?vue&type=script&lang=js& ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Sorter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Sorter.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/utility/Sorter.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Sorter_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/utility/Sorter.vue?vue&type=template&id=7858abec&":
+/*!************************************************************************!*\
+  !*** ./resources/js/utility/Sorter.vue?vue&type=template&id=7858abec& ***!
+  \************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Sorter_vue_vue_type_template_id_7858abec___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./Sorter.vue?vue&type=template&id=7858abec& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/utility/Sorter.vue?vue&type=template&id=7858abec&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Sorter_vue_vue_type_template_id_7858abec___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Sorter_vue_vue_type_template_id_7858abec___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
