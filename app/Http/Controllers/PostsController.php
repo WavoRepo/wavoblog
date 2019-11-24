@@ -74,7 +74,7 @@ class PostsController extends Controller
 
         // Process Image then add to post
         if ($request->hasFile('featured_image')) {
-            $this->storage->savePostFeaturedImage($postId->id, $request->featured_image);
+            $this->storage->savePostFeaturedImage($this->post->id, $request->featured_image);
 
             $this->post->featured_image = $this->storage->getPublicPath();
             $this->post->save();

@@ -181,7 +181,6 @@
 
                     client.post(url, formData)
                     .then((response) => {
-                        console.log('awww');
                         if(!_.isEmpty(this.blogPosts)) {
                             self.addPosts(response.data.post);
                         }
