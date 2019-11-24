@@ -2449,8 +2449,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
         var url = '/api/v1/post';
         client.post(url, formData).then(function (response) {
-          console.log('awww');
-
           if (!_.isEmpty(_this.blogPosts)) {
             self.addPosts(response.data.post);
           }
@@ -2907,9 +2905,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.posts = $sortedPost;
     },
     paginatePost: function paginatePost($paginatePost) {
-      if (_.isEmpty($paginatePost)) return;
       this.hasResult = true;
       this.posts = $paginatePost;
+    },
+    doPagination: function doPagination($doPagination) {
+      if (!$doPagination) {
+        if (!_.isEmpty(this.sortedPost)) {
+          this.hasResult = true;
+          this.posts = this.sortedPost;
+          return;
+        }
+
+        if (!_.isEmpty(this.results)) {
+          this.hasResult = true;
+          this.posts = this.results;
+          return;
+        }
+
+        if (!_.isEmpty(this.blogPosts)) {
+          this.hasResult = true;
+          this.posts = this.blogPosts;
+          return;
+        }
+
+        this.hasResult = false;
+        return;
+      }
     }
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'removeMeta', 'searchPosts', 'togglePagination']), {
@@ -95231,7 +95252,7 @@ try {
 
 
 
-window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["axios"];
+if (_clients__WEBPACK_IMPORTED_MODULE_0__["axios"]) window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["axios"];else window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["xhttp"];
 /**
  * Load the Vuejs
  */

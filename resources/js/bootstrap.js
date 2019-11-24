@@ -30,8 +30,8 @@ try {
 
 import { axios, xhttp } from './clients';
 
-window.client = axios;
-
+if(axios) window.client = axios;
+else window.client = xhttp;
 
 /**
  * Load the Vuejs

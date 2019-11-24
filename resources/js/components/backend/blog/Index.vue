@@ -145,9 +145,29 @@
                 this.posts = $sortedPost;
             },
             paginatePost: function ($paginatePost) {
-                if(_.isEmpty($paginatePost)) return;
                 this.hasResult = true;
                 this.posts = $paginatePost;
+            },
+            doPagination: function ($doPagination) {
+                if(!$doPagination) {
+                    if(!_.isEmpty(this.sortedPost)) {
+                        this.hasResult = true;
+                        this.posts = this.sortedPost;
+                        return;
+                    }
+                    if(!_.isEmpty(this.results)) {
+                        this.hasResult = true;
+                        this.posts = this.results;
+                        return;
+                    }
+                    if(!_.isEmpty(this.blogPosts)) {
+                        this.hasResult = true;
+                        this.posts = this.blogPosts;
+                        return;
+                    }
+                    this.hasResult = false;
+                    return;
+                }
             }
         },
         methods: {

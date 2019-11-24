@@ -40,8 +40,7 @@ class PostsController extends Controller
             }
 
             return response()->json([
-                'posts' => $posts,
-                'request' => $request->all()
+                'posts' => $posts
             ]);
 
         }
@@ -89,7 +88,7 @@ class PostsController extends Controller
      * Get the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $userId
+     * @param  int  $postId
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $postId)
@@ -103,7 +102,7 @@ class PostsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $userId
+     * @param  int  $postId
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Text $text, $postId)
@@ -134,7 +133,7 @@ class PostsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $userId
+     * @param  int  $postId
      * @return \Illuminate\Http\Response
      */
     public function destroy(Posts $posts, $postId)
@@ -152,7 +151,7 @@ class PostsController extends Controller
     }
 
     /**
-     * A query function for the owner of post wth selected data
+     * A query function for the owner of post with selected data
      */
     protected function postOwner()
     {

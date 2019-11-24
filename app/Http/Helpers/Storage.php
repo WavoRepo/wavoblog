@@ -22,8 +22,7 @@ class Storage extends Directory
     /**
      * Save the user profile image.
      *
-     * @param  string $disk
-     * @param  string $directory
+     * @param  integer $userId
      * @param  file $file
      * @return void
      */
@@ -41,8 +40,7 @@ class Storage extends Directory
     /**
      * Save the post featured image.
      *
-     * @param  string $disk
-     * @param  string $directory
+     * @param  integer $postId
      * @param  file $file
      * @return void
      */

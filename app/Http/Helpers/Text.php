@@ -6,7 +6,7 @@ class Text
 {
 
     /**
-     * Turn the post title to a nic url slug.
+     * Turn the post title to a nice url slug.
      * @param  string $text
      * @return string
      */
