@@ -212,7 +212,7 @@
 
                     let url = '/api/v1/post/' + this.post.id;
 
-                    axios.post(url, formData)
+                    client.post(url, formData)
                     .then((response) => {
                         self.updatePosts(response.data.post);
                         self.setSelectedPost(response.data.post);
@@ -226,8 +226,8 @@
                         });
                     })
                     .catch((error) => {
-                        console.log('error: ', error);
-                    })
+                        console.log('error ',  error);
+                    });
                 }
             },
             validateForm () {

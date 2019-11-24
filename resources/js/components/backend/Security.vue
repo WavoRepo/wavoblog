@@ -89,6 +89,7 @@
         },
         methods: {
             submitForm () {
+                console.log('submitted');
                 if(this.validateForm()) {
                     let self = this;
 
@@ -100,7 +101,7 @@
 
                     let url = '/api/v1/security/password/confirm';
 
-                    axios.post(url, formData)
+                    client.post(url, formData)
                     .then((response) => {
                         this.alert = {
                             show: true,
@@ -134,7 +135,7 @@
                 }else {
                     $('#confirm_password').removeClass('is-invalid');
                 }
-                return false;
+                return true;
             }
 
         },

@@ -202,7 +202,7 @@
                     url = '/api/v1/frontend/post/?frontpage=true';
                 }
 
-                axios.get(url)
+                client.get(url)
                 .then((response) => {
                     if(_.isEmpty(response.data.posts)) {
                         this.havePost = false;

@@ -79,9 +79,10 @@ export default {
                     let formData = new FormData();
                     formData.append('-method', 'delete');
 
-                    axios.delete('/api/v1/post/' + $id, formData)
-                    .then((response) => {
+                    let url = '/api/v1/post/' + $id;
 
+                    client.delete(url, formData)
+                    .then((response) => {
                         self.removePost($id);
 
                         self.$swal.fire(
@@ -91,8 +92,8 @@ export default {
                         )
                     })
                     .catch((error) => {
-                        console.log('error: ', error);
-                    })
+                        console.log('error ',  error);
+                    });
                 }
             });
         }

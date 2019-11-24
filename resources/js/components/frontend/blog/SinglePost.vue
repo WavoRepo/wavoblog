@@ -120,7 +120,7 @@
                 }
 
 
-                axios.get(url)
+                client.get(url)
                 .then((response) => {
                     self.setSelectedPost(response.data.posts);
                 })

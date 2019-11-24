@@ -179,8 +179,9 @@
 
                     let url = '/api/v1/post';
 
-                    axios.post(url, formData)
+                    client.post(url, formData)
                     .then((response) => {
+                        console.log('awww');
                         if(!_.isEmpty(this.blogPosts)) {
                             self.addPosts(response.data.post);
                         }
@@ -193,8 +194,8 @@
                         });
                     })
                     .catch((error) => {
-                        console.log('error: ', error);
-                    })
+                        console.log('error ',  error);
+                    });
                 }
             },
             validateForm () {

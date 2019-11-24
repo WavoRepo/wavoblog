@@ -91,7 +91,7 @@
 
                 if(!_.isEmpty(this.users)) return;
 
-                axios.get('/api/v1/user/')
+                client.get('/api/v1/user/')
                 .then((response) => {
                     self.setUsers(response.data.users);
                 })

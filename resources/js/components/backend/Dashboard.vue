@@ -63,7 +63,7 @@
                 if(!_.isEmpty(this.user)) return;
 
                 let self = this;
-                axios.get('/api/v1/user')
+                client.get('/api/v1/user')
                 .then(function (response) {
         			self.setActiveUser(response.data.user);
                     if(!response.data.details) return;
@@ -78,7 +78,7 @@
 
                 if(!_.isEmpty(this.users)) return;
 
-                axios.get('/api/v1/user/')
+                client.get('/api/v1/user/')
                 .then((response) => {
                     self.setUsers(response.data.users);
                 })
@@ -90,7 +90,7 @@
                 if(!_.isEmpty(this.services)) return;
 
                 let self = this;
-                axios.get('/api/v1/get-dashboard-services')
+                client.get('/api/v1/get-dashboard-services')
                 .then(function (response) {
         			self.setServices(response.data);
                 })

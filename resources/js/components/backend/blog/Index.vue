@@ -151,6 +151,7 @@
             }
         },
         methods: {
+            // Config,
             ...mapActions('POSTS', [
                 'setPosts',
                 'removeMeta',
@@ -197,7 +198,7 @@
                 let self = this;
                 let url = '/api/v1/post';
 
-                axios.get(url)
+                client.get(url)
                 .then((response) => {
                     if(_.isEmpty(response.data.posts)) {
                         self.hasResult = true;
@@ -206,11 +207,12 @@
                     self.setPosts(response.data.posts);
                 })
                 .catch((error) => {
-                    console.log('error: ', error);
-                })
+                    console.log('error ',  error);
+                });
             }
         },
         mounted() {
+            // console.log(req.open());
             if(this.doPagination) {
                 this.isPaginated = 'fa fa-check text-info';
             }

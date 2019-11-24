@@ -70,14 +70,17 @@
                 if(!_.isEmpty(this.activeUser)) return;
 
                 let self = this;
-                axios.get('/api/v1/user/active')
-                .then(function (response) {
-        			self.setActiveUser(response.data.user);
+                let url = '/api/v1/user/active';
+
+                client.get(url)
+                .then((response) => {
+                    self.setActiveUser(response.data.user);
+
                     if(!response.data.details) return;
                     self.setActiveUserDetails(response.data.details);
                 })
-                .catch(function (error) {
-                    console.log(error);
+                .catch((error) => {
+                    console.log('error ',  error);
                 });
             },
         },

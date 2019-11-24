@@ -217,7 +217,7 @@
 
                     let url = '/api/v1/user/' + this.user.id;
 
-                    axios.post(url, formData)
+                    client.post(url, formData)
                     .then((response) => {
                         self.setActiveUser(response.data.user);
 

@@ -1990,12 +1990,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getActiveUser: function getActiveUser() {
       if (!_.isEmpty(this.activeUser)) return;
       var self = this;
-      axios.get('/api/v1/user/active').then(function (response) {
+      var url = '/api/v1/user/active';
+      client.get(url).then(function (response) {
         self.setActiveUser(response.data.user);
         if (!response.data.details) return;
         self.setActiveUserDetails(response.data.details);
       })["catch"](function (error) {
-        console.log(error);
+        console.log('error ', error);
       });
     }
   }),
@@ -2073,7 +2074,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getActiveUser: function getActiveUser() {
       if (!_.isEmpty(this.user)) return;
       var self = this;
-      axios.get('/api/v1/user').then(function (response) {
+      client.get('/api/v1/user').then(function (response) {
         self.setActiveUser(response.data.user);
         if (!response.data.details) return;
         self.setActiveUserDetails(response.data.details);
@@ -2084,7 +2085,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getAllUsers: function getAllUsers() {
       var self = this;
       if (!_.isEmpty(this.users)) return;
-      axios.get('/api/v1/user/').then(function (response) {
+      client.get('/api/v1/user/').then(function (response) {
         self.setUsers(response.data.users);
       })["catch"](function (error) {
         console.log('error: ', error);
@@ -2093,7 +2094,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getServices: function getServices() {
       if (!_.isEmpty(this.services)) return;
       var self = this;
-      axios.get('/api/v1/get-dashboard-services').then(function (response) {
+      client.get('/api/v1/get-dashboard-services').then(function (response) {
         self.setServices(response.data);
       })["catch"](function (error) {
         console.log(error);
@@ -2212,6 +2213,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     submitForm: function submitForm() {
       var _this = this;
 
+      console.log('submitted');
+
       if (this.validateForm()) {
         var self = this;
         var formData = new FormData();
@@ -2219,7 +2222,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           formData.append(key, self.data[key]);
         });
         var url = '/api/v1/security/password/confirm';
-        axios.post(url, formData).then(function (response) {
+        client.post(url, formData).then(function (response) {
           _this.alert = {
             show: true,
             msg: response.data.msg,
@@ -2250,7 +2253,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         $('#confirm_password').removeClass('is-invalid');
       }
 
-      return false;
+      return true;
     }
   },
   mounted: function mounted() {
@@ -2445,7 +2448,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           formData.append(key, self.post[key]);
         });
         var url = '/api/v1/post';
-        axios.post(url, formData).then(function (response) {
+        client.post(url, formData).then(function (response) {
+          console.log('awww');
+
           if (!_.isEmpty(_this.blogPosts)) {
             self.addPosts(response.data.post);
           }
@@ -2457,7 +2462,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             timer: 1500
           });
         })["catch"](function (error) {
-          console.log('error: ', error);
+          console.log('error ', error);
         });
       }
     },
@@ -2691,7 +2696,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           formData.append(key, self.post[key]);
         });
         var url = '/api/v1/post/' + this.post.id;
-        axios.post(url, formData).then(function (response) {
+        client.post(url, formData).then(function (response) {
           self.updatePosts(response.data.post);
           self.setSelectedPost(response.data.post);
           self.show_preview = false;
@@ -2702,7 +2707,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             timer: 1500
           });
         })["catch"](function (error) {
-          console.log('error: ', error);
+          console.log('error ', error);
         });
       }
     },
@@ -2946,7 +2951,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getAllPosts: function getAllPosts() {
       var self = this;
       var url = '/api/v1/post';
-      axios.get(url).then(function (response) {
+      client.get(url).then(function (response) {
         if (_.isEmpty(response.data.posts)) {
           self.hasResult = true;
           return;
@@ -2954,11 +2959,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         self.setPosts(response.data.posts);
       })["catch"](function (error) {
-        console.log('error: ', error);
+        console.log('error ', error);
       });
     }
   }),
   mounted: function mounted() {
+    // console.log(req.open());
     if (this.doPagination) {
       this.isPaginated = 'fa fa-check text-info';
     } else {
@@ -3078,11 +3084,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         if (result.value) {
           var formData = new FormData();
           formData.append('-method', 'delete');
-          axios["delete"]('/api/v1/post/' + $id, formData).then(function (response) {
+          var url = '/api/v1/post/' + $id;
+          client["delete"](url, formData).then(function (response) {
             self.removePost($id);
             self.$swal.fire('Deleted!', 'Post has been deleted.', 'success');
           })["catch"](function (error) {
-            console.log('error: ', error);
+            console.log('error ', error);
           });
         }
       });
@@ -3456,7 +3463,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getAllUsers: function getAllUsers() {
       var self = this;
       if (!_.isEmpty(this.users)) return;
-      axios.get('/api/v1/user/').then(function (response) {
+      client.get('/api/v1/user/').then(function (response) {
         self.setUsers(response.data.users);
       })["catch"](function (error) {
         console.log('error: ', error);
@@ -3689,7 +3696,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           formData.append(key, self.profile[key]);
         });
         var url = '/api/v1/user/' + this.user.id;
-        axios.post(url, formData).then(function (response) {
+        client.post(url, formData).then(function (response) {
           self.setActiveUser(response.data.user);
 
           if (!_.isEmpty(response.data.details)) {
@@ -4058,7 +4065,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         url = '/api/v1/frontend/post/?frontpage=true';
       }
 
-      axios.get(url).then(function (response) {
+      client.get(url).then(function (response) {
         if (_.isEmpty(response.data.posts)) {
           _this.havePost = false;
         }
@@ -4231,7 +4238,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         url = '/api/v1/frontend/post/?id=' + $postId;
       }
 
-      axios.get(url).then(function (response) {
+      client.get(url).then(function (response) {
         self.setSelectedPost(response.data.posts);
       })["catch"](function (error) {
         console.log('error: ', error);
@@ -95188,9 +95195,12 @@ var app = new Vue({
 /*!***********************************!*\
   !*** ./resources/js/bootstrap.js ***!
   \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _clients__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./clients */ "./resources/js/clients.js");
 /**
  * lodash
  *
@@ -95214,37 +95224,253 @@ try {
   __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.js");
 } catch (e) {}
 /**
- * We'll load the axios HTTP library which allows us to easily issue requests
+ * We'll load the client (axios HTTP library) which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
 
-window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["axios"];
+/**
+ * Load the Vuejs
+ */
+
+window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
+/***/ }),
+
+/***/ "./resources/js/clients.js":
+/*!*********************************!*\
+  !*** ./resources/js/clients.js ***!
+  \*********************************/
+/*! exports provided: axios, xhttp */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "axios", function() { return axios; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "xhttp", function() { return xhttp; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
  * all outgoing HTTP requests automatically have it attached. This is just
  * a simple convenience so we don't have to attach every token manually.
  */
-
 var token = document.head.querySelector('meta[name="csrf-token"]');
 var api_token = document.head.querySelector('meta[name="cl-code"]');
 
-if (token) {
-  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-  window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-  window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
-  window.axios.defaults.headers.common['Accept'] = 'application/json';
-} else {
-  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
-}
-/**
- * Load the Vuejs
- */
+var axios = function () {
+  var _axios = null;
+
+  try {
+    _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+  } catch (e) {
+    console.error('Axios package not available');
+  }
+
+  if (_axios) {
+    _axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+    if (token) {
+      _axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+      _axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+      _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
+      _axios.defaults.headers.common['Accept'] = 'application/json';
+    } else {
+      console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    }
+  }
+
+  return _axios;
+}();
+
+var xhttp = function () {
+  var _response = {
+    data: {},
+    headers: {},
+    request: {},
+    status: '',
+    statusText: ''
+  };
+
+  var responseHeadersToJson = function responseHeadersToJson(allResponseHeaders) {
+    var array = allResponseHeaders.split('\r\n');
+    return array.reduce(function (acc, current, i) {
+      var parts = current.split(': ');
+
+      if (parts[0]) {
+        acc[parts[0]] = parts[1];
+      }
+
+      return acc;
+    }, {});
+  };
+
+  var generateResponse = function generateResponse(xhr) {
+    var response = Object.assign({}, _response);
+    response.request = xhr;
+    response.data = xhr.response;
+    response.headers = responseHeadersToJson(xhr.getAllResponseHeaders());
+    response.status = xhr.status;
+    response.statusText = xhr.statusText;
+    return response;
+  };
+
+  var Client =
+  /*#__PURE__*/
+  function () {
+    function Client() {
+      _classCallCheck(this, Client);
+
+      this.loadCallback = function () {};
+
+      this.errorCallback = function () {};
+
+      this.endCallback = function () {};
+
+      this.xhr = new XMLHttpRequest();
+
+      this.xhr.onabort = function handleAbort() {
+        console.log('onabort: ', this);
+      };
+
+      this.xhr.onerror = function handleError() {
+        console.log('onerror: ', this);
+      };
+
+      this.xhr.onreadystatechange = function handleLoad() {// console.log('onreadystatechange: ', this);
+      };
+
+      this.xhr.ontimeout = function handleTimeout() {
+        console.log('ontimeout: ', this);
+      };
+    }
+
+    _createClass(Client, [{
+      key: "run",
+      value: function run(method, url, formData) {
+        this.addListeners();
+        this.xhr.open(method, url, true);
+        this.setRequestHeader();
+        this.send(formData);
+        return this;
+      }
+    }, {
+      key: "addListeners",
+      value: function addListeners() {
+        var self = this; // this.xhr.addEventListener('loadstart', function () {
+        //     self.handleEvent(event);
+        // });
+
+        this.xhr.addEventListener('load', function () {
+          self.load(event, self.xhr);
+        });
+        this.xhr.addEventListener('loadend', function () {
+          self.end(event, self.xhr);
+        });
+        this.xhr.addEventListener('error', function () {
+          self.error(event, self.xhr);
+        }); // this.xhr.addEventListener('progress', handleEvent);
+        // this.xhr.addEventListener('abort', handleEvent);
+      }
+    }, {
+      key: "setRequestHeader",
+      value: function setRequestHeader() {
+        if (token || !api_token) {
+          this.xhr.setRequestHeader('X-CSRF-TOKEN', token.content);
+          this.xhr.setRequestHeader('X-xhruested-With', 'XMLHttpxhruest');
+          this.xhr.setRequestHeader('Authorization', 'Bearer ' + api_token.content);
+          this.xhr.setRequestHeader('Accept', 'application/json');
+          this.xhr.responseType = 'json';
+        } else {
+          console.error('CSRF token/api-token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+        }
+      }
+    }, {
+      key: "send",
+      value: function send(formData) {
+        if (formData) {
+          this.xhr.send(formData);
+          return;
+        }
+
+        this.xhr.send();
+      }
+    }, {
+      key: "handleEvent",
+      value: function handleEvent(event) {
+        console.log("".concat(e.type, ": ").concat(e.loaded, " bytes transferred\n"));
+      }
+    }, {
+      key: "load",
+      value: function load(event, xhr) {
+        this.loadCallback(generateResponse(xhr));
+
+        if (xhr.status != 200) {
+          this.errorCallback('Error: Request failed with status code ' + xhr.status);
+        }
+      }
+    }, {
+      key: "error",
+      value: function error(event, xhr) {
+        console.log(event, xhr);
+        this.errorCallback(xhr);
+      }
+    }, {
+      key: "end",
+      value: function end(event, xhr) {
+        this.endCallback(xhr);
+      }
+    }, {
+      key: "then",
+      value: function then(func) {
+        this.loadCallback = func;
+        return this;
+      }
+    }, {
+      key: "catch",
+      value: function _catch(func) {
+        this.errorCallback = func;
+        return this;
+      }
+    }, {
+      key: "finally",
+      value: function _finally(func) {
+        this.endCallback = func;
+        return this;
+      }
+    }]);
+
+    return Client;
+  }();
+
+  var publicMethod = {
+    open: function open(method, url, formData) {
+      return new Client().run(method, url, formData);
+    },
+    get: function get(url, formData) {
+      return new Client().run('get', url, formData);
+    },
+    post: function post(url, formData) {
+      return new Client().run('post', url, formData);
+    },
+    patch: function patch(url, formData) {
+      return new Client().run('patch', url, formData);
+    },
+    "delete": function _delete(url, formData) {
+      return new Client().run('delete', url, formData);
+    }
+  };
+  return publicMethod;
+}();
 
 
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 
 /***/ }),
 
