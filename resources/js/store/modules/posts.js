@@ -83,7 +83,7 @@ const mutations = {
         all.push($post);
         state.all = _.reverse(state.all);
 
-        if(state.doPagination) state.paginate = paginate ($posts, state.perPage, state.pageNum);
+        if(state.doPagination) state.paginate = paginate ($post, state.perPage, state.pageNum);
     },
     UPDATEPOSTS: (state, $post) => {
         if(_.isEmpty(state.all))  {

@@ -10880,7 +10880,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "\n#app article[data-v-2f8f91fa] {\n    background-color: #fff;\n    height: calc(100vh - 96px);\n}\n", ""]);
+exports.push([module.i, "\n#app article[data-v-2f8f91fa] {\n    background-color: #fff;\n    min-height: calc(100vh - 96px);\n}\n", ""]);
 
 // exports
 
@@ -93696,7 +93696,7 @@ var mutations = {
 
     all.push($post);
     state.all = _.reverse(state.all);
-    if (state.doPagination) state.paginate = paginate($posts, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = paginate($post, state.perPage, state.pageNum);
   },
   UPDATEPOSTS: function UPDATEPOSTS(state, $post) {
     if (_.isEmpty(state.all)) {

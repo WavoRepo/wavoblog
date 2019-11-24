@@ -156,6 +156,6 @@
 <style lang="css" scoped>
     #app article {
         background-color: #fff;
-        height: calc(100vh - 96px);
+        min-height: calc(100vh - 96px);
     }
 </style>
