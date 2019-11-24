@@ -1,7 +1,7 @@
 <template>
     <div class="row blog-index">
-        <div class="col-lg-12 search_wrap">
-            <div class="input-group">
+        <div class="col-lg-12">
+            <div class="input-group search_wrap admin_search_wrap" style="width: calc(100% - 178px); right: 162px;">
                 <input type="text"
                     placeholder="Search By Title, Post Owner's Name, Content, Date(yyyy-mm-dd), Slug, And Status"
                     v-model="search"
@@ -12,6 +12,9 @@
                     </button>
                 </div>
             </div>
+            <button class="btn btn-secondary btn-lg pull-right" @click="block = !block">
+                <i class="fa fa-th-large"></i> <strong>Display: </strong> <span style="    text-align: center; min-width: 40px; display: inline-block;" v-html="blockBtnText"></span>
+            </button>
         </div>
         <div class="col-lg-12 mb-4 meta_wrap">
             <button v-for="meta of metas" type="button" class="btn btn-secondary btn-sm mr-2">
@@ -22,7 +25,7 @@
                 <pagination />
         </div>
         <template v-if="havePost" v-for="post of posts">
-            <div v-if="post.status == 'Published'" class="col-lg-6">
+            <div v-if="post.status == 'Published'" :class="'col-lg-' + blockWidth">
                 <div class="card">
                     <div class="card-header text-left">
                         <h3>{{ post.post_title }}</h3>
@@ -122,7 +125,10 @@
                 posts: [],
                 search: '',
                 base_url: document.head.querySelector('meta[name="base_url"]').content,
-                app_name: document.head.querySelector('meta[name="app_name"]').content
+                app_name: document.head.querySelector('meta[name="app_name"]').content,
+                block: true,
+                blockWidth: 6,
+                blockBtnText: 'Block',
             }
         },
         computed: {
@@ -137,6 +143,10 @@
             }),
         },
         watch: {
+            block: function ($block) {
+                this.toggleBlock($block);
+                sessionStorage.setItem('toggle-block', $block);
+            },
             blogPosts: function ($posts) {
                 if(_.isEmpty($posts)) return;
                 this.posts = $posts;
@@ -168,6 +178,15 @@
                 'removeMeta',
                 'setSelectedPostById'
             ]),
+            toggleBlock($block) {
+                if(!$block) {
+                    this.blockWidth = 6;
+                    this.blockBtnText = 'Block';
+                } else {
+                    this.blockWidth = 12;
+                    this.blockBtnText = 'Full';
+                }
+            },
             formatDate($date) {
                 // return moment($date).format('ll');
                 return moment($date).format('Do MM YYYY hh:mm');
@@ -192,7 +211,6 @@
                 this.searchPosts('');
             },
             getAllPosts () {
-
 
                 let self = this;
                 let url = '';
@@ -221,15 +239,23 @@
             }
         },
         mounted() {
+            let toggle = sessionStorage.getItem('toggle-block');
+            if(toggle) {
+                toggle = (toggle === 'true' ) ? true : false;
+                this.toggleBlock(toggle);
+            }
             if(!_.isEmpty(this.paginatePost)) {
+                this.havePost = true;
                 this.posts = this.paginatePost;
                 return;
             }
             if(!_.isEmpty(this.results)) {
+                this.havePost = true;
                 this.posts = this.results;
                 return;
             }
             if(!_.isEmpty(this.blogPosts)) {
+                this.havePost = true;
                 this.posts = this.blogPosts;
                 return;
             }

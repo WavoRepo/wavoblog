@@ -3983,6 +3983,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3997,7 +4000,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       posts: [],
       search: '',
       base_url: document.head.querySelector('meta[name="base_url"]').content,
-      app_name: document.head.querySelector('meta[name="app_name"]').content
+      app_name: document.head.querySelector('meta[name="app_name"]').content,
+      block: true,
+      blockWidth: 6,
+      blockBtnText: 'Block'
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('USERS', {
@@ -4009,6 +4015,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     paginatePost: 'paginate'
   })),
   watch: {
+    block: function block($block) {
+      this.toggleBlock($block);
+      sessionStorage.setItem('toggle-block', $block);
+    },
     blogPosts: function blogPosts($posts) {
       if (_.isEmpty($posts)) return;
       this.posts = $posts;
@@ -4036,6 +4046,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'searchPosts', 'removeMeta', 'setSelectedPostById']), {
+    toggleBlock: function toggleBlock($block) {
+      if (!$block) {
+        this.blockWidth = 6;
+        this.blockBtnText = 'Block';
+      } else {
+        this.blockWidth = 12;
+        this.blockBtnText = 'Full';
+      }
+    },
     formatDate: function formatDate($date) {
       // return moment($date).format('ll');
       return moment($date).format('Do MM YYYY hh:mm');
@@ -4087,17 +4106,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     remove: function remove($id) {}
   }),
   mounted: function mounted() {
+    var toggle = sessionStorage.getItem('toggle-block');
+
+    if (toggle) {
+      toggle = toggle === 'true' ? true : false;
+      this.toggleBlock(toggle);
+    }
+
     if (!_.isEmpty(this.paginatePost)) {
+      this.havePost = true;
       this.posts = this.paginatePost;
       return;
     }
 
     if (!_.isEmpty(this.results)) {
+      this.havePost = true;
       this.posts = this.results;
       return;
     }
 
     if (!_.isEmpty(this.blogPosts)) {
+      this.havePost = true;
       this.posts = this.blogPosts;
       return;
     }
@@ -4316,7 +4345,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       page: 1,
       pageCount: 0,
-      haveList: false
+      haveList: true
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('POSTS', ['all', 'paginate', 'searchMeta', 'searchResult', 'perPage', 'pageNum', 'doPagination'])),
@@ -4364,7 +4393,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.setPageNum($page);
     }
   }),
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    if (!_.isEmpty(this.all)) {
+      this.updateData(this.all);
+    }
+  }
 });
 
 /***/ }),
@@ -74446,45 +74479,78 @@ var render = function() {
     "div",
     { staticClass: "row blog-index" },
     [
-      _c("div", { staticClass: "col-lg-12 search_wrap" }, [
-        _c("div", { staticClass: "input-group" }, [
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.search,
-                expression: "search"
-              }
-            ],
-            staticClass: "form-control form-control-lg",
-            attrs: {
-              type: "text",
-              placeholder:
-                "Search By Title, Post Owner's Name, Content, Date(yyyy-mm-dd), Slug, And Status"
-            },
-            domProps: { value: _vm.search },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+      _c("div", { staticClass: "col-lg-12" }, [
+        _c(
+          "div",
+          {
+            staticClass: "input-group search_wrap admin_search_wrap",
+            staticStyle: { width: "calc(100% - 178px)", right: "162px" }
+          },
+          [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.search,
+                  expression: "search"
                 }
-                _vm.search = $event.target.value
+              ],
+              staticClass: "form-control form-control-lg",
+              attrs: {
+                type: "text",
+                placeholder:
+                  "Search By Title, Post Owner's Name, Content, Date(yyyy-mm-dd), Slug, And Status"
+              },
+              domProps: { value: _vm.search },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.search = $event.target.value
+                }
+              }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group-btn" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-lg btn-primary",
+                  on: { click: _vm.searchPost }
+                },
+                [_vm._v("\n                    Search\n                ")]
+              )
+            ])
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-secondary btn-lg pull-right",
+            on: {
+              click: function($event) {
+                _vm.block = !_vm.block
               }
             }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "input-group-btn" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-lg btn-primary",
-                on: { click: _vm.searchPost }
+          },
+          [
+            _c("i", { staticClass: "fa fa-th-large" }),
+            _vm._v(" "),
+            _c("strong", [_vm._v("Display: ")]),
+            _vm._v(" "),
+            _c("span", {
+              staticStyle: {
+                "text-align": "center",
+                "min-width": "40px",
+                display: "inline-block"
               },
-              [_vm._v("\n                    Search\n                ")]
-            )
-          ])
-        ])
+              domProps: { innerHTML: _vm._s(_vm.blockBtnText) }
+            })
+          ]
+        )
       ]),
       _vm._v(" "),
       _c(
@@ -74528,7 +74594,7 @@ var render = function() {
         return _vm.havePost
           ? [
               post.status == "Published"
-                ? _c("div", { staticClass: "col-lg-6" }, [
+                ? _c("div", { class: "col-lg-" + _vm.blockWidth }, [
                     _c("div", { staticClass: "card" }, [
                       _c("div", { staticClass: "card-header text-left" }, [
                         _c("h3", [_vm._v(_vm._s(post.post_title))]),

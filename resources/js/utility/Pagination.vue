@@ -22,7 +22,7 @@
             return {
                 page: 1,
                 pageCount: 0,
-                haveList: false
+                haveList: true
             }
         },
         computed: {
@@ -81,7 +81,9 @@
             }
         },
         mounted() {
-
+            if(!_.isEmpty(this.all)) {
+                this.updateData (this.all);
+            }
         }
 
     }
