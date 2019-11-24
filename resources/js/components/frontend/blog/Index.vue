@@ -60,8 +60,8 @@
                                 </div>
                             </div>
                             <div class="col-md-7 post-content">
-                                <div class="excerpt">
-                                    {{ excerpt(post.post_content) }}
+                                <div class="excerpt" v-html="excerpt(post.post_content, excerptCount)">
+
                                 </div>
                                 <router-link :to="'/blog/' + post.post_slug" @click="setSelected(post.id)">
                                     <button class="btn btn-primary btn-xs pull-left mb-2"
@@ -129,6 +129,7 @@
                 block: true,
                 blockWidth: 6,
                 blockBtnText: 'Block',
+                excerptCount: 350,
             }
         },
         computed: {
@@ -181,9 +182,12 @@
             toggleBlock($block) {
                 if(!$block) {
                     this.blockWidth = 6;
+                    this.excerptCount = 350;
                     this.blockBtnText = 'Block';
                 } else {
                     this.blockWidth = 12;
+                    // this.excerptCount = 1400;
+                    this.excerptCount = 650;
                     this.blockBtnText = 'Full';
                 }
             },
@@ -191,9 +195,9 @@
                 // return moment($date).format('ll');
                 return moment($date).format('Do MM YYYY hh:mm');
             },
-            excerpt ($text) {
-
-                return $text.replace(/(<([^>]+)>)/ig, '').substr(0, 350) + '...';
+            excerpt ($text, excerptCount) {
+                // return $text.replace(/(<([^>]+)>)/ig, '').substr(0, excerptCount) + '...';
+                return $text.replace(/<img[^>]*>/g, '').substr(0, excerptCount) + '...';
             },
             isBlog () {
                 if (window.location.href.indexOf('blog') > -1 && this.$router.name != 'Blog Posts') {

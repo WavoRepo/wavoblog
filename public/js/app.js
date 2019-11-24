@@ -4019,7 +4019,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       app_name: document.head.querySelector('meta[name="app_name"]').content,
       block: true,
       blockWidth: 6,
-      blockBtnText: 'Block'
+      blockBtnText: 'Block',
+      excerptCount: 350
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('USERS', {
@@ -4065,9 +4066,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     toggleBlock: function toggleBlock($block) {
       if (!$block) {
         this.blockWidth = 6;
+        this.excerptCount = 350;
         this.blockBtnText = 'Block';
       } else {
-        this.blockWidth = 12;
+        this.blockWidth = 12; // this.excerptCount = 1400;
+
+        this.excerptCount = 650;
         this.blockBtnText = 'Full';
       }
     },
@@ -4075,8 +4079,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       // return moment($date).format('ll');
       return moment($date).format('Do MM YYYY hh:mm');
     },
-    excerpt: function excerpt($text) {
-      return $text.replace(/(<([^>]+)>)/ig, '').substr(0, 350) + '...';
+    excerpt: function excerpt($text, excerptCount) {
+      // return $text.replace(/(<([^>]+)>)/ig, '').substr(0, excerptCount) + '...';
+      return $text.replace(/<img[^>]*>/g, '').substr(0, excerptCount) + '...';
     },
     isBlog: function isBlog() {
       if (window.location.href.indexOf('blog') > -1 && this.$router.name != 'Blog Posts') {
@@ -77653,13 +77658,17 @@ var render = function() {
                             "div",
                             { staticClass: "col-md-7 post-content" },
                             [
-                              _c("div", { staticClass: "excerpt" }, [
-                                _vm._v(
-                                  "\n                                " +
-                                    _vm._s(_vm.excerpt(post.post_content)) +
-                                    "\n                            "
-                                )
-                              ]),
+                              _c("div", {
+                                staticClass: "excerpt",
+                                domProps: {
+                                  innerHTML: _vm._s(
+                                    _vm.excerpt(
+                                      post.post_content,
+                                      _vm.excerptCount
+                                    )
+                                  )
+                                }
+                              }),
                               _vm._v(" "),
                               _c(
                                 "router-link",
