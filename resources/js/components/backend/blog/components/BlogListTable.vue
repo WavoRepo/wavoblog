@@ -1,5 +1,5 @@
 <template>
-    <div  v-show="hasPost" class="wrapper" style="background-color: #fff;">
+    <div  v-show="hasPost" class="wrapper">
         <div class="row">
             <div class="col-lg-2">
                 <div v-show="hasPost && doPagination" class="input-group input-group-sm block-order-by">
@@ -25,11 +25,11 @@
         <table class="table table-striped table-bordered xtable-responsive table-lg">
             <thead class="thead-light">
             <tr>
-                <th v-for="(header, index) of headers">
-                    {{ header }}
+                <th v-for="(header, index) of headers" :id="'header_' + header.toLowerCase()">
+                    <span class="header_text" v-html="header"></span>
                     <sorter :sorting="sortBy" :sortby="index" :sortDir="sortDir" @sortBy="orderBy"/>
                 </th>
-                <th style="width: 185px;">Action</th>
+                <th id="header_action">Action</th>
             </tr>
             </thead>
             <tbody class="table-hover">
@@ -88,9 +88,9 @@
             ]),
             orderBy ($data) {
 
-                if($data.by == 'index') {
-                    this.posts = this.posts.reverse();
-                }
+                // if($data.by == 'index') {
+                //     this.posts = this.posts.reverse();
+                // }
                 this.sort($data);
             },
             formatDate($date) {

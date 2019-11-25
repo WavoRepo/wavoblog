@@ -28710,7 +28710,20 @@ body.md-skin {
 }
 
 .blog-index .tab_wrap .panel-body .wrapper {
+  background-color: #fff;
   padding: 20px;
+}
+
+.blog-index .tab_wrap .panel-body .wrapper table th#header_title {
+  width: 324px;
+}
+
+.blog-index .tab_wrap .panel-body .wrapper table th#header_action {
+  width: 185px;
+}
+
+.blog-index .tab_wrap .panel-body .wrapper table th .header_text {
+  padding-right: 20px;
 }
 
 .blog-index .block-order-by {

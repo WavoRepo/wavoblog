@@ -176,7 +176,21 @@
             border: none;
             padding: 20px 0;
             .wrapper {
+                background-color: #fff;
                 padding: 20px;
+                table {
+                    th {
+                        &#header_title {
+                            width: 324px;
+                        }
+                        &#header_action {
+                            width: 185px;
+                        }
+                        .header_text {
+                            padding-right: 20px;
+                        }
+                    }
+                }
             }
         }
     }

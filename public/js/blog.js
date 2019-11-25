@@ -2846,7 +2846,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         owner: 'Owner',
         category: 'Category',
         status: 'Status',
-        created_at: 'Date Created'
+        created_at: 'Date&nbsp;Created'
       },
       isPaginated: 'fa fa-ban text-info'
     };
@@ -2976,7 +2976,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.isPaginated = 'fa fa-ban text-info';
     }
 
-    if (!_.isEmpty(this.paginatePost)) {
+    if (!_.isEmpty(this.paginatePost) && this.doPagination) {
       this.posts = this.paginatePost;
       return;
     }
@@ -3347,10 +3347,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['sort', 'changePerPage']), {
     orderBy: function orderBy($data) {
-      if ($data.by == 'index') {
-        this.posts = this.posts.reverse();
-      }
-
+      // if($data.by == 'index') {
+      //     this.posts = this.posts.reverse();
+      // }
       this.sort($data);
     },
     formatDate: function formatDate($date) {
@@ -4047,6 +4046,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPosts', 'searchPosts', 'removeMeta', 'setSelectedPostById']), {
+    hasMeta: function hasMeta() {
+      if (!_.isEmpty(this.metas)) return ' mt-4';
+      return '';
+    },
     toggleBlock: function toggleBlock($block) {
       if (!$block) {
         this.blockWidth = 6;
@@ -73421,8 +73424,7 @@ var render = function() {
           expression: "hasPost"
         }
       ],
-      staticClass: "wrapper",
-      staticStyle: { "background-color": "#fff" }
+      staticClass: "wrapper"
     },
     [
       _c("div", { staticClass: "row" }, [
@@ -73513,12 +73515,13 @@ var render = function() {
                 _vm._l(_vm.headers, function(header, index) {
                   return _c(
                     "th",
+                    { attrs: { id: "header_" + header.toLowerCase() } },
                     [
-                      _vm._v(
-                        "\n                " +
-                          _vm._s(header) +
-                          "\n                "
-                      ),
+                      _c("span", {
+                        staticClass: "header_text",
+                        domProps: { innerHTML: _vm._s(header) }
+                      }),
+                      _vm._v(" "),
                       _c("sorter", {
                         attrs: {
                           sorting: _vm.sortBy,
@@ -73532,9 +73535,7 @@ var render = function() {
                   )
                 }),
                 _vm._v(" "),
-                _c("th", { staticStyle: { width: "185px" } }, [
-                  _vm._v("Action")
-                ])
+                _c("th", { attrs: { id: "header_action" } }, [_vm._v("Action")])
               ],
               2
             )
@@ -74560,7 +74561,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "col-lg-12 mb-4 meta_wrap" },
+        { class: "col-lg-12 mb-4 meta_wrap" + _vm.hasMeta() },
         _vm._l(_vm.metas, function(meta) {
           return _c(
             "button",
@@ -93856,18 +93857,23 @@ var mutations = {
     state.sortBy = $data.by;
     if (!$data.type) return;
     state.sortDir = $data.type;
-
-    if (state.sortBy == 'index') {
-      return;
-    }
-
     var sortable = [];
-    if (!_.isEmpty(state.searchResult)) sortable = state.searchResult;else sortable = state.all;
+    if (!_.isEmpty(state.searchResult)) sortable = state.searchResult.reduce(function (copy, element) {
+      copy.push(element);
+      return copy;
+    }, []);else sortable = state.all.reduce(function (copy, element) {
+      copy.push(element);
+      return copy;
+    }, []);
 
     if (state.sortBy == 'owner') {
       sortable = sortOwner('owner.name', sortable, $data.type); // Use Lodash to sort array by 'field name'
+    } else if (state.sortBy == 'index') {
+      sortable = _.orderBy(sortable, 'id', $data.type); // Use Lodash to sort array by 'field name'
     } else {
-      sortable = _.orderBy(sortable, $data.by, $data.type); // Use Lodash to sort array by 'field name'
+      sortable = _.orderBy(sortable, [function (item) {
+        return item[$data.by].toLowerCase();
+      }], $data.type); // Use Lodash to sort array by 'field name'
     }
 
     if (sortable.length == 0) return;

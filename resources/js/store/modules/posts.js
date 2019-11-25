@@ -167,18 +167,22 @@ const mutations = {
 
         state.sortDir = $data.type;
 
-        if(state.sortBy == 'index') {
-            return;
-        }
-
         let sortable = [];
-        if(!_.isEmpty(state.searchResult)) sortable = state.searchResult;
-        else sortable = state.all;
+        if(!_.isEmpty(state.searchResult)) sortable = state.searchResult.reduce((copy, element) => {
+            copy.push(element);
+            return copy;
+        }, []);
+        else sortable = state.all.reduce((copy, element) => {
+            copy.push(element);
+            return copy;
+        }, []);
 
         if(state.sortBy == 'owner') {
             sortable = sortOwner('owner.name', sortable, $data.type) // Use Lodash to sort array by 'field name'
+        } else if (state.sortBy == 'index') {
+            sortable = _.orderBy(sortable, 'id', $data.type); // Use Lodash to sort array by 'field name'
         } else {
-            sortable = _.orderBy(sortable, $data.by, $data.type); // Use Lodash to sort array by 'field name'
+            sortable = _.orderBy(sortable, [item => item[ $data.by].toLowerCase()], $data.type); // Use Lodash to sort array by 'field name'
         }
 
         if(sortable.length == 0) return;

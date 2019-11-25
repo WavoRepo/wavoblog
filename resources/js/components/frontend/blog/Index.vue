@@ -16,7 +16,7 @@
                 <i class="fa fa-th-large"></i> <strong>Display: </strong> <span style="    text-align: center; min-width: 40px; display: inline-block;" v-html="blockBtnText"></span>
             </button>
         </div>
-        <div class="col-lg-12 mb-4 meta_wrap">
+        <div :class="'col-lg-12 mb-4 meta_wrap' + hasMeta()">
             <button v-for="meta of metas" type="button" class="btn btn-secondary btn-sm mr-2">
                 {{ meta }} <span class="badge badge-warning" @click="removeTheMeta(meta)"><i class="fa fa-times"></i></span>
             </button>
@@ -179,6 +179,10 @@
                 'removeMeta',
                 'setSelectedPostById'
             ]),
+            hasMeta () {
+                if(!_.isEmpty(this.metas)) return ' mt-4';
+                return '';
+            },
             toggleBlock($block) {
                 if(!$block) {
                     this.blockWidth = 6;

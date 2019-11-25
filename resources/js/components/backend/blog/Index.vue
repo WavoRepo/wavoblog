@@ -101,7 +101,7 @@
                     owner: 'Owner',
                     category: 'Category',
                     status: 'Status',
-                    created_at: 'Date Created'
+                    created_at: 'Date&nbsp;Created'
                 },
                 isPaginated: 'fa fa-ban text-info'
             }
@@ -240,7 +240,7 @@
                 this.isPaginated = 'fa fa-ban text-info';
             }
 
-            if(!_.isEmpty(this.paginatePost)) {
+            if(!_.isEmpty(this.paginatePost) && this.doPagination) {
                 this.posts = this.paginatePost;
                 return;
             }
