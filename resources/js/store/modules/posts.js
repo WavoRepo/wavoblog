@@ -76,14 +76,14 @@ const mutations = {
         if(_.isEmpty($posts)) return;
         state.all = $posts;
 
-        if(state.doPagination) state.paginate = paginate ($posts, state.perPage, state.pageNum);
+        if(state.doPagination) state.paginate = paginate (state.all, state.perPage, state.pageNum);
     },
     ADDPOSTS: (state, $post) => {
         let all = _.reverse(state.all);
         all.push($post);
         state.all = _.reverse(state.all);
 
-        if(state.doPagination) state.paginate = paginate ($post, state.perPage, state.pageNum);
+        if(state.doPagination) state.paginate = paginate (state.all, state.perPage, state.pageNum);
     },
     UPDATEPOSTS: (state, $post) => {
         if(_.isEmpty(state.all))  {
@@ -97,7 +97,7 @@ const mutations = {
         if(userKey == -1) return;
         state.all[userKey] = $post;
 
-        if(state.doPagination) state.paginate = paginate ($posts, state.perPage, state.pageNum);
+        if(state.doPagination) state.paginate = paginate (state.all, state.perPage, state.pageNum);
     },
     SETSELECTEDPOST: (state, $post) => {
         state.selected = $post;
