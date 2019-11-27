@@ -26,17 +26,19 @@ class PostsController extends Controller
     {
         // From Api
         if ($request->wantsJson()) {
+            $query = $this->post->with($this->postOwner());
+
             // Fetch by ID
             if($request->has('id')) {
-                $posts = $this->post->where('id', $request->id)->with($this->postOwner())->first();
+                $posts = $query->where('id', $request->id)->first();
             }
             //  Fetch all
             else {
                 if($request->has('frontpage')) {
-                    $posts = $this->post->with($this->postOwner())->where('status', 'Published')->orderBy('created_at', 'DESC')->get();
-                } else {
-                    $posts = $this->post->with($this->postOwner())->orderBy('created_at', 'DESC')->get();
+                    $query = $query->where('status', 'Published');
                 }
+
+                $posts = $query->orderBy('created_at', 'DESC')->get();
             }
 
             return response()->json([

@@ -73,7 +73,7 @@
             updateData ($list) {
                 this.haveList = true;
                 let pageCount = $list.length / this.perPage;
-                this.pageCount = Math.round(pageCount);
+                this.pageCount = Math.ceil(pageCount);
                 this.page = this.pageNum;
             },
             changePage ($page) {

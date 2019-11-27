@@ -4394,7 +4394,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     updateData: function updateData($list) {
       this.haveList = true;
       var pageCount = $list.length / this.perPage;
-      this.pageCount = Math.round(pageCount);
+      this.pageCount = Math.ceil(pageCount);
       this.page = this.pageNum;
     },
     changePage: function changePage($page) {
@@ -93694,57 +93694,79 @@ var module = {
 __webpack_require__.r(__webpack_exports__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function paginate(array, page_size, page_number) {
-  --page_number; // because pages logically start with 1, but technically with 0
+var POST_FUNC = function () {
+  var _clone = function _clone(toClone) {
+    return toClone.reduce(function (copy, element) {
+      copy.push(element);
+      return copy;
+    }, []);
+  };
 
-  return array.slice(page_number * page_size, (page_number + 1) * page_size);
-}
+  var _paginate = function _paginate(array, page_size, page_number) {
+    --page_number; // because pages logically start with 1, but technically with 0
 
-function sortOwner(prop, sortable, sort_type) {
-  prop = prop.split('.');
-  var len = prop.length;
-  sortable.sort(function (prop_a, prop_b) {
-    var i = 0; // Get the correct value
+    return array.slice(page_number * page_size, (page_number + 1) * page_size);
+  };
 
-    while (i < len) {
-      prop_a = prop_a[prop[i]];
-      prop_b = prop_b[prop[i]];
-      i++;
-    }
+  var _sortOwner = function _sortOwner(prop, sortable, sort_type) {
+    prop = prop.split('.');
+    var len = prop.length;
+    sortable.sort(function (prop_a, prop_b) {
+      var i = 0; // Get the correct value
 
-    if (prop_a < prop_b) {
-      if (sort_type == 'desc') return 1;
-      return -1;
-    } else if (prop_a > prop_b) {
-      if (sort_type == 'desc') return -1;
-      return 1;
-    } else {
-      return 0;
-    }
-  });
-  return sortable;
-}
+      while (i < len) {
+        prop_a = prop_a[prop[i]];
+        prop_b = prop_b[prop[i]];
+        i++;
+      }
 
-;
-
-function search($searchable, $metas) {
-  return $searchable.filter(function (obj) {
-    return Object.values(obj).some(function (val) {
-      if (val && (typeof val == 'string' || _typeof(val) == 'object')) {
-        var hay = '';
-        if (_typeof(val) === 'object') hay = val.name.toLowerCase().replace(/(<([^>]+)>)/ig, "");else hay = val.toLowerCase().replace(/(<([^>]+)>)/ig, "");
-        var selected = false;
-        $metas.some(function (search) {
-          if (hay.includes(search.toLowerCase())) {
-            selected = true;
-            return;
-          }
-        });
-        if (selected) return val;
+      if (prop_a < prop_b) {
+        if (sort_type == 'desc') return 1;
+        return -1;
+      } else if (prop_a > prop_b) {
+        if (sort_type == 'desc') return -1;
+        return 1;
+      } else {
+        return 0;
       }
     });
-  });
-}
+    return sortable;
+  };
+
+  var _search = function _search(searchable, metas) {
+    return searchable.filter(function (obj) {
+      return Object.values(obj).some(function (val) {
+        if (val && (typeof val == 'string' || _typeof(val) == 'object')) {
+          var hay = '';
+          if (_typeof(val) === 'object') hay = val.name.toLowerCase().replace(/(<([^>]+)>)/ig, "");else hay = val.toLowerCase().replace(/(<([^>]+)>)/ig, "");
+          var selected = false;
+          metas.some(function (search) {
+            if (hay.includes(search.toLowerCase())) {
+              selected = true;
+              return;
+            }
+          });
+          if (selected) return val;
+        }
+      });
+    });
+  };
+
+  return {
+    clone: function clone($toClone) {
+      return _clone($toClone);
+    },
+    paginate: function paginate($array, $page_size, $page_number) {
+      return _paginate($array, $page_size, $page_number);
+    },
+    sortOwner: function sortOwner($prop, $sortable, $sort_type) {
+      return _sortOwner($prop, $sortable, $sort_type);
+    },
+    search: function search($searchable, $metas) {
+      return _search($searchable, $metas);
+    }
+  };
+}();
 
 var namespaced = true;
 var state = {
@@ -93765,14 +93787,14 @@ var mutations = {
   SETPOSTS: function SETPOSTS(state, $posts) {
     if (_.isEmpty($posts)) return;
     state.all = $posts;
-    if (state.doPagination) state.paginate = paginate(state.all, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
   },
   ADDPOSTS: function ADDPOSTS(state, $post) {
     var all = _.reverse(state.all);
 
     all.push($post);
     state.all = _.reverse(state.all);
-    if (state.doPagination) state.paginate = paginate(state.all, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
   },
   UPDATEPOSTS: function UPDATEPOSTS(state, $post) {
     if (_.isEmpty(state.all)) {
@@ -93788,7 +93810,7 @@ var mutations = {
 
     if (userKey == -1) return;
     state.all[userKey] = $post;
-    if (state.doPagination) state.paginate = paginate(state.all, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
   },
   SETSELECTEDPOST: function SETSELECTEDPOST(state, $post) {
     state.selected = $post;
@@ -93810,7 +93832,7 @@ var mutations = {
 
     if (userKey == -1) return;
     state.all.splice(userKey, 1);
-    if (state.doPagination) state.paginate = paginate(state.all, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
   },
   SEARCHPOSTS: function SEARCHPOSTS(state, $search) {
     state.pageNum = 1;
@@ -93828,11 +93850,11 @@ var mutations = {
     if (_.isEmpty(state.searchMeta)) {
       state.sortBy = '';
       state.searchResult = {};
-      if (state.doPagination) state.paginate = paginate(state.all, state.perPage, state.pageNum);
+      if (state.doPagination) state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
       return;
     }
 
-    var results = search(state.all, state.searchMeta);
+    var results = POST_FUNC.search(state.all, state.searchMeta);
 
     if (_.isEmpty(results)) {
       state.searchResult = [];
@@ -93840,7 +93862,7 @@ var mutations = {
     }
 
     state.searchResult = results;
-    if (state.doPagination) state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = POST_FUNC.paginate(state.searchResult, state.perPage, state.pageNum);
   },
   REMOVEMETA: function REMOVEMETA(state, $meta) {
     _.pull(state.searchMeta, $meta);
@@ -93850,7 +93872,7 @@ var mutations = {
       state.pageNum = $pageNum;
       sessionStorage.setItem('post-page-num', state.pageNum);
       if (!state.doPagination) return;
-      if (!_.isEmpty(state.searchResult)) state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);else state.paginate = paginate(state.all, state.perPage, state.pageNum);
+      if (!_.isEmpty(state.searchResult)) state.paginate = POST_FUNC.paginate(state.searchResult, state.perPage, state.pageNum);else state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
     }
   },
   SORT: function SORT(state, $data) {
@@ -93858,33 +93880,27 @@ var mutations = {
     if (!$data.type) return;
     state.sortDir = $data.type;
     var sortable = [];
-    if (!_.isEmpty(state.searchResult)) sortable = state.searchResult.reduce(function (copy, element) {
-      copy.push(element);
-      return copy;
-    }, []);else sortable = state.all.reduce(function (copy, element) {
-      copy.push(element);
-      return copy;
-    }, []);
+    if (!_.isEmpty(state.searchResult)) sortable = POST_FUNC.clone(state.searchResult);else sortable = POST_FUNC.clone(state.all);
 
     if (state.sortBy == 'owner') {
-      sortable = sortOwner('owner.name', sortable, $data.type); // Use Lodash to sort array by 'field name'
+      sortable = POST_FUNC.sortOwner('owner.name', sortable, $data.type);
     } else if (state.sortBy == 'index') {
-      sortable = _.orderBy(sortable, 'id', $data.type); // Use Lodash to sort array by 'field name'
+      sortable = _.orderBy(sortable, 'id', $data.type);
     } else {
       sortable = _.orderBy(sortable, [function (item) {
-        return item[$data.by].toLowerCase();
-      }], $data.type); // Use Lodash to sort array by 'field name'
+        return item[$data.by] ? item[$data.by].toLowerCase() : '';
+      }], $data.type);
     }
 
     if (sortable.length == 0) return;
     state.sorted = sortable;
-    if (state.doPagination) state.paginate = paginate(sortable, state.perPage, state.pageNum);
+    if (state.doPagination) state.paginate = POST_FUNC.paginate(sortable, state.perPage, state.pageNum);
   },
   CHANGEPERPAGE: function CHANGEPERPAGE(state, $perpage) {
     state.perPage = $perpage;
     sessionStorage.setItem('post-per-page', state.perPage);
     if (!state.doPagination) return;
-    if (!_.isEmpty(state.searchResult)) state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);else state.paginate = paginate(state.all, state.perPage, state.pageNum);
+    if (!_.isEmpty(state.searchResult)) state.paginate = POST_FUNC.paginate(state.searchResult, state.perPage, state.pageNum);else state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
   },
   TOGGLEPAGINATION: function TOGGLEPAGINATION(state, $paginate) {
     state.doPagination = !state.doPagination;
@@ -93892,17 +93908,17 @@ var mutations = {
     if (!state.doPagination) return;
 
     if (!_.isEmpty(state.sorted)) {
-      state.paginate = paginate(state.sorted, state.perPage, state.pageNum);
+      state.paginate = POST_FUNC.paginate(state.sorted, state.perPage, state.pageNum);
       return;
     }
 
     if (!_.isEmpty(state.searchResult)) {
-      state.paginate = paginate(state.searchResult, state.perPage, state.pageNum);
+      state.paginate = POST_FUNC.paginate(state.searchResult, state.perPage, state.pageNum);
       return;
     }
 
     if (!_.isEmpty(state.all)) {
-      state.paginate = paginate(state.all, state.perPage, state.pageNum);
+      state.paginate = POST_FUNC.paginate(state.all, state.perPage, state.pageNum);
       return;
     }
   }
