@@ -13,7 +13,9 @@
                 </div>
             </div>
             <button class="btn btn-secondary btn-lg pull-right" @click="block = !block">
-                <i class="fa fa-th-large"></i> <strong>Display: </strong> <span style="    text-align: center; min-width: 40px; display: inline-block;" v-html="blockBtnText"></span>
+                <i class="fa fa-th-large"></i>
+                <strong>Display: </strong>
+                <span style="text-align: center; min-width: 40px; display: inline-block;" v-html="blockBtnText"></span>
             </button>
         </div>
         <div :class="'col-lg-12 mb-4 meta_wrap' + hasMeta()">

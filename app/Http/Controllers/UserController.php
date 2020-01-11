@@ -6,6 +6,8 @@ use Auth;
 use App\User;
 use App\Team;
 use App\UserDetails;
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\Users as UserCollection;
 use App\Http\Helpers\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -29,22 +31,8 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users =  $this->user->with(['details' => function ($q) {
-            return $q->select('user_id', 'key', 'value');
-        }])->get();
+        return new UserCollection($this->user->with($this->userDetails())->get());
 
-        // Remove the api token
-        if ($users) {
-            $count = count($users);
-
-            for ($x = 0; $x < $count; $x++) {
-                unset($users[$x]['api_token']);
-            }
-        }
-
-        return response()->json([
-            'users' => $users
-        ]);
     }
 
     /**
@@ -56,21 +44,7 @@ class UserController extends Controller
      */
     public function show(Request $request, $userId)
     {
-        // Fetch the user
-        $user = $this->user->find($userId);
-
-        // Fetch details if available
-        $details = [];
-        if($user) {
-            $details = $user->getDetailsAttribute();
-        }
-
-        // Return data
-        unset($user->api_token);
-        return response()->json([
-            'team' => $user,
-            'details' => $details
-        ]);
+        return new UserResource($this->user->find($userId));
     }
 
     /**
@@ -82,18 +56,8 @@ class UserController extends Controller
      */
     public function active(Request $request)
     {
-        // Fetch the loogedin user
-        $user = Auth::user();
-
-        // Fetch details data
-        $details = $user->getDetailsAttribute();
-
-        // Return data
-        unset($user->api_token);
-        return response()->json([
-            'user' => $user,
-            'details' => $details
-        ]);
+        // Return the logged-in user
+        return new UserResource(Auth::user());
     }
 
     /**
@@ -127,11 +91,7 @@ class UserController extends Controller
         $userDetails->saveDetails($details, $userId, 'user_profile');
 
         // Return data
-        unset($user['api_token']);
-        return response()->json([
-            'user' => $user,
-            'details' => $details
-        ]);
+        return new UserResource($user->load($this->userDetails()));
     }
 
     /**
@@ -189,5 +149,15 @@ class UserController extends Controller
                 'msg' => $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * A query function for the details of user with selected data
+     */
+    protected function userDetails()
+    {
+        return ['details' => function ($q) {
+            return $q->select('user_id', 'key', 'value');
+        }];
     }
 }

@@ -4001,6 +4001,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -95379,6 +95381,8 @@ var axios = function () {
       _axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
       _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
       _axios.defaults.headers.common['Accept'] = 'application/json';
+      token.remove();
+      api_token.remove();
     } else {
       console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
     }
@@ -95485,6 +95489,8 @@ var xhttp = function () {
           this.xhr.setRequestHeader('Authorization', 'Bearer ' + api_token.content);
           this.xhr.setRequestHeader('Accept', 'application/json');
           this.xhr.responseType = 'json';
+          token.remove();
+          api_token.remove();
         } else {
           console.error('CSRF token/api-token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
         }

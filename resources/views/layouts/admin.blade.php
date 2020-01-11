@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <meta name="cl-code" content="{{ $user['api_token'] }}">
+    <meta name="cl-code" content="{{ $user->api_token }}">
     <meta name="base_url" content="{{ $base_url }}">
     <meta name="has_user" content="{{ $user->exists }}">
 
