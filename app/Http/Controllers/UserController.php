@@ -105,7 +105,7 @@ class UserController extends Controller
         try {
             $this->user->destroy($userId);
             return response()->json([
-                'msg' => 'The user profile was deleted.'
+                'msg' => 'The user profile was deleted successfully.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -141,7 +141,7 @@ class UserController extends Controller
             $user->save();
 
             return response()->json([
-                'msg' => 'Password updatd.',
+                'msg' => 'Password updated.',
             ]);
         } catch (\Exception $e) {
             return response()->json([

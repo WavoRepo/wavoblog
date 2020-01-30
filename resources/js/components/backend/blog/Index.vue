@@ -94,7 +94,7 @@
                 hasResult: true,
                 search: '',
                 posts: {},
-                tabActive: (sessionStorage.getItem('tab-active')) ? sessionStorage.getItem('tab-active') : 'block',
+                tabActive: (sessionStorage.getItem('tab-active')) ? sessionStorage.getItem('tab-active') : 'table',
                 headers: {
                     index: 'Id',
                     post_title: 'Title',
@@ -232,7 +232,6 @@
             }
         },
         mounted() {
-            // console.log(req.open());
             if(this.doPagination) {
                 this.isPaginated = 'fa fa-check text-info';
             }

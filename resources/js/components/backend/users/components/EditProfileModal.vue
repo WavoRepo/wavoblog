@@ -201,43 +201,43 @@
                 this.show_preview = false;
             },
             cancel () {
-
+                this.cancelUpload();
             },
             submitForm () {
-                if (this.validateForm()) {
-                    let self = this;
+                if (!this.validateForm())  return;
 
-                    let formData = new FormData();
+                let self = this;
 
-                    formData.append('name', this.user.name);
+                let formData = new FormData();
 
-                    Object.keys(this.profile).map(function(key) {
-                        formData.append(key, self.profile[key]);
+                formData.append('name', this.user.name);
+
+                Object.keys(this.profile).map(function(key) {
+                    formData.append(key, self.profile[key]);
+                });
+
+                let url = '/api/v1/user/' + this.user.id;
+
+                client.post(url, formData)
+                .then((response) => {
+                    self.setActiveUser(response.data.user);
+
+                    if(!_.isEmpty(response.data.details)) {
+                        self.setActiveUserDetails(response.data.details);
+                    }
+                    self.show_preview = false;
+                    $('#editProfileModal').modal('hide');
+
+                    self.$swal.fire({
+                        type: 'success',
+                        title: 'Profile has been updated.',
+                        showConfirmButton: false,
+                        timer: 1500
                     });
-
-                    let url = '/api/v1/user/' + this.user.id;
-
-                    client.post(url, formData)
-                    .then((response) => {
-                        self.setActiveUser(response.data.user);
-
-                        if(!_.isEmpty(response.data.details)) {
-                            self.setActiveUserDetails(response.data.details);
-                        }
-                        self.show_preview = false;
-                        $('#editProfileModal').modal('hide');
-
-                        self.$swal.fire({
-                            type: 'success',
-                            title: 'Profile has been updated.',
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                    })
-                    .catch((error) => {
-                        console.log('error: ', error);
-                    })
-                }
+                })
+                .catch((error) => {
+                    console.log('error: ', error);
+                })
             },
             validateForm () {
                 if(this.profile.name == '' ) {

@@ -7,8 +7,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-addon">Order By</span>
                         </div>
-                        <select class="form-control" v-model="sortedBy" @change="changeSortBy">
-                            <option v-for="(header, index) of headers" :value="index"> {{ header }}</option>
+                        <select class="form-control" v-model="sortedBy">
+                            <option v-for="(header, index) of headers" :value="index" v-html="header"></option>
                         </select>
                         <div class="input-group-append bg-primary">
                                 <sorter :sorting="sortBy" :sortby="sortedBy" :sortDir="sortDir" @sortBy="orderBy" />
@@ -124,11 +124,6 @@
             },
             formatDate($date) {
                 return moment($date).format('Do MM YYYY');
-            },
-            changeSortBy () {
-                // this.sort({
-                //     by: this.sortedBy
-                // });
             },
             displayRowNum () {
                 this.changePerPage(parseInt(this.rowNum));

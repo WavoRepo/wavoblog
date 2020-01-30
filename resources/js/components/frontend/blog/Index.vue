@@ -128,10 +128,10 @@
                 search: '',
                 base_url: document.head.querySelector('meta[name="base_url"]').content,
                 app_name: document.head.querySelector('meta[name="app_name"]').content,
-                block: true,
-                blockWidth: 6,
-                blockBtnText: 'Block',
-                excerptCount: 350,
+                block: false,
+                blockWidth: 12,
+                blockBtnText: 'Full',
+                excerptCount: 650,
             }
         },
         computed: {
@@ -249,11 +249,13 @@
             }
         },
         mounted() {
-            let toggle = sessionStorage.getItem('toggle-block');
-            if(toggle) {
-                toggle = (toggle === 'true' ) ? true : false;
-                this.toggleBlock(toggle);
-            }
+            // Check if display is block or full
+            let toggleBlock = sessionStorage.getItem('toggle-block');
+            toggleBlock = (!toggleBlock) ? true :(toggleBlock === 'true' ) ? true : false;
+            this.block = toggleBlock;
+            this.toggleBlock(toggleBlock);
+
+            // Populate post
             if(!_.isEmpty(this.paginatePost)) {
                 this.havePost = true;
                 this.posts = this.paginatePost;
@@ -269,6 +271,7 @@
                 this.posts = this.blogPosts;
                 return;
             }
+
             this.getAllPosts();
         }
     }

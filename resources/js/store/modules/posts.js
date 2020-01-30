@@ -86,7 +86,7 @@ const state = {
     selected: {},
     perPage : (sessionStorage.getItem('post-per-page')) ? parseInt(sessionStorage.getItem('post-per-page')) : 9,
     pageNum : (sessionStorage.getItem('post-page-num')) ? parseInt(sessionStorage.getItem('post-page-num')) : 1,
-    doPagination: (sessionStorage.getItem('do-pagination') == 'true') ? true : false,
+    doPagination: (!sessionStorage.getItem('do-pagination')) ? true : (sessionStorage.getItem('do-pagination') == 'true') ? true : false,
     sortBy : 'index',
     sortDir: '',
 }

@@ -2855,7 +2855,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       hasResult: true,
       search: '',
       posts: {},
-      tabActive: sessionStorage.getItem('tab-active') ? sessionStorage.getItem('tab-active') : 'block',
+      tabActive: sessionStorage.getItem('tab-active') ? sessionStorage.getItem('tab-active') : 'table',
       headers: {
         index: 'Id',
         post_title: 'Title',
@@ -2985,7 +2985,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   mounted: function mounted() {
-    // console.log(req.open());
     if (this.doPagination) {
       this.isPaginated = 'fa fa-check text-info';
     } else {
@@ -3252,10 +3251,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     formatDate: function formatDate($date) {
       return moment($date).format('Do MM YYYY');
-    },
-    changeSortBy: function changeSortBy() {// this.sort({
-      //     by: this.sortedBy
-      // });
     },
     displayRowNum: function displayRowNum() {
       this.changePerPage(parseInt(this.rowNum));
@@ -3706,35 +3701,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.profile.user_image = this.cachedImage;
       this.show_preview = false;
     },
-    cancel: function cancel() {},
+    cancel: function cancel() {
+      this.cancelUpload();
+    },
     submitForm: function submitForm() {
-      if (this.validateForm()) {
-        var self = this;
-        var formData = new FormData();
-        formData.append('name', this.user.name);
-        Object.keys(this.profile).map(function (key) {
-          formData.append(key, self.profile[key]);
-        });
-        var url = '/api/v1/user/' + this.user.id;
-        client.post(url, formData).then(function (response) {
-          self.setActiveUser(response.data.user);
+      if (!this.validateForm()) return;
+      var self = this;
+      var formData = new FormData();
+      formData.append('name', this.user.name);
+      Object.keys(this.profile).map(function (key) {
+        formData.append(key, self.profile[key]);
+      });
+      var url = '/api/v1/user/' + this.user.id;
+      client.post(url, formData).then(function (response) {
+        self.setActiveUser(response.data.user);
 
-          if (!_.isEmpty(response.data.details)) {
-            self.setActiveUserDetails(response.data.details);
-          }
+        if (!_.isEmpty(response.data.details)) {
+          self.setActiveUserDetails(response.data.details);
+        }
 
-          self.show_preview = false;
-          $('#editProfileModal').modal('hide');
-          self.$swal.fire({
-            type: 'success',
-            title: 'Profile has been updated.',
-            showConfirmButton: false,
-            timer: 1500
-          });
-        })["catch"](function (error) {
-          console.log('error: ', error);
+        self.show_preview = false;
+        $('#editProfileModal').modal('hide');
+        self.$swal.fire({
+          type: 'success',
+          title: 'Profile has been updated.',
+          showConfirmButton: false,
+          timer: 1500
         });
-      }
+      })["catch"](function (error) {
+        console.log('error: ', error);
+      });
     },
     validateForm: function validateForm() {
       if (this.profile.name == '') {
@@ -4018,10 +4014,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       search: '',
       base_url: document.head.querySelector('meta[name="base_url"]').content,
       app_name: document.head.querySelector('meta[name="app_name"]').content,
-      block: true,
-      blockWidth: 6,
-      blockBtnText: 'Block',
-      excerptCount: 350
+      block: false,
+      blockWidth: 12,
+      blockBtnText: 'Full',
+      excerptCount: 650
     };
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('USERS', {
@@ -4132,12 +4128,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     remove: function remove($id) {}
   }),
   mounted: function mounted() {
-    var toggle = sessionStorage.getItem('toggle-block');
-
-    if (toggle) {
-      toggle = toggle === 'true' ? true : false;
-      this.toggleBlock(toggle);
-    }
+    // Check if display is block or full
+    var toggleBlock = sessionStorage.getItem('toggle-block');
+    toggleBlock = !toggleBlock ? true : toggleBlock === 'true' ? true : false;
+    this.block = toggleBlock;
+    this.toggleBlock(toggleBlock); // Populate post
 
     if (!_.isEmpty(this.paginatePost)) {
       this.havePost = true;
@@ -76171,28 +76166,25 @@ var render = function() {
                     ],
                     staticClass: "form-control",
                     on: {
-                      change: [
-                        function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.sortedBy = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        },
-                        _vm.changeSortBy
-                      ]
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.sortedBy = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
                     }
                   },
                   _vm._l(_vm.headers, function(header, index) {
-                    return _c("option", { domProps: { value: index } }, [
-                      _vm._v(" " + _vm._s(header))
-                    ])
+                    return _c("option", {
+                      domProps: { value: index, innerHTML: _vm._s(header) }
+                    })
                   }),
                   0
                 ),
@@ -95301,21 +95293,21 @@ var app = new Vue({
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _clients__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./clients */ "./resources/js/clients.js");
 /**
- * lodash
- *
- */
+* lodash
+*
+*/
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
- * moment
- *
- */
+* moment
+*
+*/
 
 window.moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
+* We'll load jQuery and the Bootstrap jQuery plugin which provides support
+* for JavaScript based Bootstrap features such as modals and tabs. This
+* code may be modified to fit the specific needs of your application.
+*/
 
 try {
   window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
@@ -95323,19 +95315,25 @@ try {
   __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.js");
 } catch (e) {}
 /**
- * We'll load the client (axios HTTP library) which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
+* We'll load the client (axios HTTP library) which allows us to easily issue requests
+* to our Laravel back-end. This library automatically handles sending the
+* CSRF token as a header based on the value of the "XSRF" token cookie.
+*/
 
 
 
 if (_clients__WEBPACK_IMPORTED_MODULE_0__["axios"]) window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["axios"];else window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["xhttp"];
 /**
- * Load the Vuejs
- */
+* Load the Vuejs
+*/
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/**
+*  Vue config setup
+*/
+
+Vue.config.productionTip = false;
+Vue.config.devtools = false;
 
 /***/ }),
 
@@ -96891,7 +96889,7 @@ var state = {
   selected: {},
   perPage: sessionStorage.getItem('post-per-page') ? parseInt(sessionStorage.getItem('post-per-page')) : 9,
   pageNum: sessionStorage.getItem('post-page-num') ? parseInt(sessionStorage.getItem('post-page-num')) : 1,
-  doPagination: sessionStorage.getItem('do-pagination') == 'true' ? true : false,
+  doPagination: !sessionStorage.getItem('do-pagination') ? true : sessionStorage.getItem('do-pagination') == 'true' ? true : false,
   sortBy: 'index',
   sortDir: ''
 };
