@@ -25,14 +25,14 @@ class AdminController extends Controller
      */
     public function show(Request $request)
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         // Fist page to display
         $page = 'dashboard';
 
         // Override page if the page beside dashboard
         $segments = $request->segments();
-        if(count($segments)) {
+        if (count($segments)) {
             $page = end($segments);
         }
 

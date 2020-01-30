@@ -11,7 +11,7 @@
     <meta name="base_url" content="{{ $base_url }}">
     <meta name="has_user" content="{{ $user->exists }}">
 
-    <title>Wavo Blog - @yield('title')</title>
+    <title>{{ config('app.name') }} - @yield('title')</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">

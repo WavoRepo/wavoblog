@@ -17,7 +17,7 @@ class UserController extends Controller
 {
     use ConfirmsPasswords;
 
-    public function __construct( User $user, Storage $storage )
+    public function __construct(User $user, Storage $storage)
     {
         $this->user = $user;
         $this->storage = $storage;
@@ -29,10 +29,9 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         return new UserCollection($this->user->with($this->userDetails())->get());
-
     }
 
     /**
@@ -42,7 +41,7 @@ class UserController extends Controller
      * @param  int  $userId
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $userId)
+    public function show($userId)
     {
         return new UserResource($this->user->find($userId));
     }
@@ -54,10 +53,10 @@ class UserController extends Controller
      * @param  int  $userId
      * @return \Illuminate\Http\Response
      */
-    public function active(Request $request)
+    public function active()
     {
         // Return the logged-in user
-        return new UserResource(Auth::user());
+        return new UserResource(auth()->user());
     }
 
     /**
@@ -129,7 +128,7 @@ class UserController extends Controller
             // Fetch the user model
             $user = $this->user->where('email', $request->email)->first();
 
-            if(!$user) {
+            if (!$user) {
                 return response()->json([
                     'error' => true,
                     'msg' => 'update failed, credentials do not match our records.',
@@ -156,8 +155,8 @@ class UserController extends Controller
      */
     protected function userDetails()
     {
-        return ['details' => function ($q) {
-            return $q->select('user_id', 'key', 'value');
+        return ['details' => function ($query) {
+            return $query->select('user_id', 'key', 'value');
         }];
     }
 }

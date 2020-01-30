@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="col-lg-10">
-                <pagination />
+                <post-pagination />
             </div>
         </div>
         <table class="table table-striped table-bordered xtable-responsive table-lg">
@@ -53,7 +53,7 @@
     import { mapState, mapGetters,  mapActions } from 'vuex';
     import blogAction from './Action';
     import Sorter from '../../../../utility/Sorter';
-    import Pagination from '../../../../utility/Pagination';
+    import PostPagination from '../../../../utility/PostPagination';
 
     export default {
         name: 'blog-list-table',
@@ -61,7 +61,7 @@
         components: {
             Sorter,
             blogAction,
-            Pagination
+            PostPagination
         },
         data() {
             return {

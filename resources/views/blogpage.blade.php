@@ -95,7 +95,7 @@
 
                     </div>
                     <div>
-                        <strong>Copyright</strong> Wavo Blog © 2014-2018
+                        <strong>Copyright</strong> {{ config('app.name') }} © 2014-2018
                     </div>
                 </div>
             </div>

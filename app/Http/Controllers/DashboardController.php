@@ -15,7 +15,7 @@ class DashboardController extends Controller
     /**
      * Dashboard content that looks like a card.
      */
-    public function GetServices()
+    public function getServices()
     {
         return response()->json(config('dashboard.services'));
     }

@@ -24,7 +24,7 @@
             </button>
         </div>
         <div class="col-lg-12 pagination_wrap">
-                <pagination />
+                <post-pagination />
         </div>
         <template v-if="havePost" v-for="post of posts">
             <div v-if="post.status == 'Published'" :class="'col-lg-' + blockWidth">
@@ -113,12 +113,12 @@
 
 <script>
     import { mapState, mapGetters,  mapActions } from 'vuex';
-    import Pagination from '../../../utility/Pagination';
+    import PostPagination from '../../../utility/PostPagination';
 
     export default {
         name: 'blog',
         components: {
-            Pagination
+            PostPagination
         },
         data () {
             return {

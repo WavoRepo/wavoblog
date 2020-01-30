@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class PostsController extends Controller
 {
 
-    public function __construct(Posts $post, Storage $storage )
+    public function __construct(Posts $post, Storage $storage)
     {
         $this->post = $post;
         $this->storage = $storage;
@@ -29,31 +29,31 @@ class PostsController extends Controller
             $query = $this->post->with($this->postOwner());
 
             // Fetch by ID
-            if($request->has('id')) {
+            if ($request->has('id')) {
                 $posts = $query->where('id', $request->id)->first();
+
+                return response()->json([
+                    'posts' => $posts
+                ]);
             }
             //  Fetch all
-            else {
-                if($request->has('frontpage')) {
-                    $query = $query->where('status', 'Published');
-                }
-
-                $posts = $query->orderBy('created_at', 'DESC')->get();
+            if ($request->has('frontpage')) {
+                $query = $query->where('status', 'Published');
             }
+
+            $posts = $query->orderBy('created_at', 'DESC')->get();
 
             return response()->json([
                 'posts' => $posts
             ]);
+        }
 
-        }
         // load View template for frontend
-        else {
-            return view('blogpage', [
-                'user' => Auth::user(),
-                'base_url' => config('app.url'),
-                'hasPost' =>$this->post->where('status', 'Published')->exists()
-            ]);
-        }
+        return view('blogpage', [
+            'user' => auth()->user(),
+            'base_url' => config('app.url'),
+            'hasPost' =>$this->post->where('status', 'Published')->exists()
+        ]);
     }
 
     /**
@@ -64,7 +64,7 @@ class PostsController extends Controller
      */
     public function store(Request $request, Text $text)
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $this->post->user_id = $user->id;
         $this->post->post_title = $request->title;
@@ -95,7 +95,9 @@ class PostsController extends Controller
      */
     public function show(Request $request, $postId)
     {
+        // This function is not yet used so we return the arguments
         return response()->json([
+            'post-id' => $postId,
             'request' => $request->all()
         ]);
     }
@@ -157,8 +159,8 @@ class PostsController extends Controller
      */
     protected function postOwner()
     {
-        return ['owner' => function ($q) {
-            return $q->select('id', 'name', 'email');
+        return ['owner' => function ($query) {
+            return $query->select('id', 'name', 'email');
         }];
     }
 }

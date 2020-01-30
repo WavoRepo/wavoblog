@@ -17,7 +17,7 @@
     import { mapState, mapGetters,  mapActions } from 'vuex';
 
     export default {
-        name: 'pagination',
+        name: 'post-pagination',
         data () {
             return {
                 page: 1,

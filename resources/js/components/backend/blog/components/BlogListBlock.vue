@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="col-lg-7">
-                    <pagination />
+                    <post-pagination />
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
     import { mapState, mapGetters,  mapActions } from 'vuex';
     import blogAction from './Action';
     import Sorter from '../../../../utility/Sorter';
-    import Pagination from '../../../../utility/Pagination';
+    import PostPagination from '../../../../utility/PostPagination';
 
     export default {
         name: 'blog-list-block',
@@ -86,7 +86,7 @@
         components: {
             Sorter,
             blogAction,
-            Pagination
+            PostPagination
         },
         data() {
             return {

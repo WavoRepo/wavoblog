@@ -23,7 +23,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
 
         /*** BOF DASHBOARD ***/
-        Route::get('/get-dashboard-services', 'DashboardController@GetServices');
+        Route::get('/get-dashboard-services', 'DashboardController@getServices');
 
         /*** BOF USER ***/
         Route::get('/user/active', 'UserController@active');
@@ -43,8 +43,9 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     /*** REQUEST METHOD DON'T MATCH ***/
-    Route::fallback(function(){
+    Route::fallback(function () {
         return response()->json([
-            'message' => 'Page Not Found. If error persists, contact support@wavo.com'], 404);
+            'message' => 'Page Not Found. If error persists, contact support@' . strtolower(config('app.name')) . '.com'
+        ], 404);
     });
 });

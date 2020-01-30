@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Wavo Blog</title>
+        <title>{{ config('app.name') }}</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -122,7 +122,7 @@
 
                     </div>
                     <div>
-                        <strong>Copyright</strong> Wavo Blog © 2014-2018
+                        <strong>Copyright</strong> {{ config('app.name') }} © 2014-2018
                     </div>
                 </div>
             </div>

@@ -8,7 +8,7 @@ class Directory
 {
     protected $filesystem;
 
-    public function __construct( Filesystem $filesystem )
+    public function __construct(Filesystem $filesystem)
     {
         $this->filesystem = $filesystem;
     }
@@ -21,7 +21,7 @@ class Directory
      */
     public function cleanDirectory($directory)
     {
-        if($this->filesystem->isDirectory($directory)) {
+        if ($this->filesystem->isDirectory($directory)) {
             $this->filesystem->cleanDirectory($directory);
             return true;
         }
@@ -36,7 +36,7 @@ class Directory
      */
     public function createDirectory($directory)
     {
-        if(!$this->filesystem->isDirectory($directory)) {
+        if (!$this->filesystem->isDirectory($directory)) {
             $this->filesystem->makeDirectory($directory, 0777, true, true);
         }
     }

@@ -13,7 +13,7 @@ class Storage extends Directory
         'public' => 'app/public/'
     ];
 
-    public function __construct( FilesystemManager $storage, Filesystem $filesystem )
+    public function __construct(FilesystemManager $storage, Filesystem $filesystem)
     {
         $this->storage = $storage;
         $this->filesystem = $filesystem;
@@ -63,7 +63,7 @@ class Storage extends Directory
     public function getPublicPath()
     {
         $filePath = DIRECTORY_SEPARATOR . 'storage'. DIRECTORY_SEPARATOR;
-        $filePath .= $this->normalizePath( $this->directory . DIRECTORY_SEPARATOR . $this->fileName);
+        $filePath .= $this->normalizePath($this->directory . DIRECTORY_SEPARATOR . $this->fileName);
         return $filePath;
     }
 
@@ -77,20 +77,9 @@ class Storage extends Directory
     {
         $directory = $this->getPath($disk);
 
-        if(!$this->cleanDirectory($directory)) {
+        if (!$this->cleanDirectory($directory)) {
             $this->createDirectory($directory);
         }
-    }
-
-    /**
-     * upload
-     *
-     * @param  string $filepath
-     * @return void
-     */
-    protected function upload($disk, $file)
-    {
-        $this->storage ->disk($disk)->putFileAs($this->directory, $file, $this->fileName);
     }
 
     /**
@@ -106,5 +95,16 @@ class Storage extends Directory
 
         // return $path;
         return $this->normalizePath($path . DIRECTORY_SEPARATOR . $fileName);
+    }
+
+    /**
+     * upload
+     *
+     * @param  string $filepath
+     * @return void
+     */
+    protected function upload($disk, $file)
+    {
+        $this->storage ->disk($disk)->putFileAs($this->directory, $file, $this->fileName);
     }
 }
