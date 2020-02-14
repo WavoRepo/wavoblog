@@ -85,11 +85,24 @@ export default {
                     .then((response) => {
                         self.removePost($id);
 
-                        self.$swal.fire(
-                            'Deleted!',
-                            'Post has been deleted.',
-                            'success'
-                        )
+                        let modalType = 'success';
+                        let modalTitle = 'Deleted!';
+                        let modalText = response.data.msg;
+                        let modalFooter = '';
+
+                        if (response.status != 200) {
+                            modalType = 'warning';
+                            modalTitle = 'Oops... ';
+                            modalText = 'Something went wrong! ' + response.data.msg;
+                            modalFooter = 'The blog was remove from the list anyway.';
+                        }
+
+                        self.$swal.fire({
+                            icon: modalType,
+                            title: modalTitle,
+                            text: modalText,
+                            footer: modalFooter
+                        })
                     })
                     .catch((error) => {
                         console.log('error ',  error);

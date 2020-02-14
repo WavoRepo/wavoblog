@@ -17,6 +17,9 @@ class UserController extends Controller
 {
     use ConfirmsPasswords;
 
+    protected $user;
+    protected $storage;
+
     public function __construct(User $user, Storage $storage)
     {
         $this->user = $user;

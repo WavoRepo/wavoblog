@@ -30,8 +30,9 @@ try {
 
 import { axios, xhttp } from './clients';
 
-if(axios) window.client = axios;
-else window.client = xhttp;
+// if(axios) window.client = axios;
+// else window.client = xhttp;
+window.client = xhttp;
 
 /**
 * Load the Vuejs
@@ -41,5 +42,5 @@ window.Vue = require('vue');
 /**
 *  Vue config setup
 */
-Vue.config.productionTip = false;
-Vue.config.devtools = false;
+// Vue.config.productionTip = false;
+// Vue.config.devtools = false;

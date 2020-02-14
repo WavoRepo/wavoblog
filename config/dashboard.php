@@ -3,7 +3,7 @@
 return [
 
     'services' => [
-        'users' => [
+        'user' => [
             'name' => 'Users',
             'icon' => 'fa fa-users',
             'slug' => 'users',
@@ -20,6 +20,12 @@ return [
             'icon' => 'fa fa-list-alt',
             'slug' => 'blog',
             'desc' => 'List of blog post created by registered user.'
+        ],
+        'blog-catrgory' => [
+            'name' => 'Blog Post Categories',
+            'icon' => 'fa fa-tags',
+            'slug' => 'blog/categories',
+            'desc' => 'List of blog post category created by registered user.'
         ]
     ]
 ];

@@ -214,7 +214,7 @@ const mutations = {
 
         sessionStorage.setItem('post-per-page', state.perPage);
 
-        if(!state.doPagination)  return;
+        if(!state.doPagination) return;
 
         if(!_.isEmpty(state.searchResult)) state.paginate =  POST_FUNC.paginate (state.searchResult, state.perPage, state.pageNum);
         else state.paginate =  POST_FUNC.paginate (state.all, state.perPage, state.pageNum);

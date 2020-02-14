@@ -8,6 +8,10 @@ use Illuminate\Filesystem\FilesystemManager;
 class Storage extends Directory
 {
     protected $storage;
+    protected $filesystem;
+
+    protected $directory;
+    protected $fileName;
 
     protected $storagePath = [
         'public' => 'app/public/'
@@ -29,7 +33,7 @@ class Storage extends Directory
     public function saveUserProfileImage($userId, $file)
     {
         $this->directory = 'user_' . $userId;
-        $this->fileName = 'user_image_' . $userId . date("Ymdgi") . '.png';
+        $this->fileName = 'user_image_' . $userId . date("Ymdgi") . $file->getClientOriginalExtension();
 
 
         $this->cleanOrCreateDirectory('public');
@@ -105,6 +109,6 @@ class Storage extends Directory
      */
     protected function upload($disk, $file)
     {
-        $this->storage ->disk($disk)->putFileAs($this->directory, $file, $this->fileName);
+        $this->storage->disk($disk)->putFileAs($this->directory, $file, $this->fileName);
     }
 }

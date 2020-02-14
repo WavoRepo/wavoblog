@@ -73,19 +73,6 @@
                     console.log(error);
                 });
             },
-            getAllUsers () {
-                let self = this;
-
-                if(!_.isEmpty(this.users)) return;
-
-                client.get('/api/v1/user/')
-                .then((response) => {
-                    self.setUsers(response.data.users);
-                })
-                .catch((error) => {
-                    console.log('error: ', error);
-                })
-            },
             getServices () {
                 if(!_.isEmpty(this.services)) return;
 

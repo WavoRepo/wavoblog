@@ -136,7 +136,8 @@
         },
         methods: {
             ...mapActions('POSTS', [
-                'addPosts'
+                'addPosts',
+                'setSelectedPostById'
             ]),
             time() {
                 var self = this
@@ -182,7 +183,9 @@
                     client.post(url, formData)
                     .then((response) => {
                         if(!_.isEmpty(this.blogPosts)) {
-                            self.addPosts(response.data.post);
+                            let post = response.data.post;
+                            self.addPosts(post);
+                            self.setSelectedPostById(post.id);
                         }
 
                         self.$swal.fire({
@@ -191,6 +194,9 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
+
+                        // Redirect to edit page for adding new post is done
+                        self.$router.push({ name: 'Edit Blog'});
                     })
                     .catch((error) => {
                         console.log('error ',  error);

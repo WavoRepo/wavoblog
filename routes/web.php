@@ -17,6 +17,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/blog/{slug1?}/{slug2?}', 'PostsController@index')->name('blog');
+Route::get('/blog/{slug1?}/{slug2?}', 'PostController@index')->name('blog');
 
 Route::get('/admin/{slug1?}/{slug2?}', 'AdminController@show')->name('index');

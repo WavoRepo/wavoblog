@@ -8,8 +8,10 @@ use App\Http\Helpers\Text;
 use App\Http\Helpers\Storage;
 use Illuminate\Http\Request;
 
-class PostsController extends Controller
+class PostController extends Controller
 {
+    protected $post;
+    protected $storage;
 
     public function __construct(Posts $post, Storage $storage)
     {
@@ -31,6 +33,13 @@ class PostsController extends Controller
             // Fetch by ID
             if ($request->has('id')) {
                 $posts = $query->where('id', $request->id)->first();
+
+                // Not found response
+                if (!$post) {
+                    return response()->json([
+                        'post' => $post
+                    ], 404);
+                }
 
                 return response()->json([
                     'posts' => $posts
@@ -95,11 +104,20 @@ class PostsController extends Controller
      */
     public function show(Request $request, $postId)
     {
-        // This function is not yet used so we return the arguments
-        return response()->json([
-            'post-id' => $postId,
-            'request' => $request->all()
-        ]);
+        if ($request->wantsJson()) {
+            $post = $this->post->find($postId);
+
+            // Not found response
+            if (!$post) {
+                return response()->json([
+                    'post' => $post
+                ], 404);
+            }
+
+            return response()->json([
+                'posts' => $post->load($this->postOwner())
+            ]);
+        }
     }
 
     /**
@@ -112,6 +130,13 @@ class PostsController extends Controller
     public function update(Request $request, Text $text, $postId)
     {
         $post = $this->post->where('id', $postId)->first();
+
+        // Not found response
+        if (!$post) {
+            return response()->json([
+                'post' => $post
+            ], 404);
+        }
 
         // Update data
         $post->post_title = $request->title;
@@ -142,16 +167,15 @@ class PostsController extends Controller
      */
     public function destroy(Posts $posts, $postId)
     {
-        try {
-            $posts->destroy($postId);
+        if ($posts->destroy($postId)) {
             return response()->json([
-                'msg' => 'Thethe blog post was deleted.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'msg' => $e->getMessage()
+                'msg' => 'The selected blog post was deleted.'
             ]);
         }
+
+        return response()->json([
+            'msg' => 'The selected blog post was not deleted, resources not found.'
+        ], 404);
     }
 
     /**

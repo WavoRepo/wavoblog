@@ -121,17 +121,17 @@
         },
         watch: {
             blogPosts: function ($post) {
-                if(_.isEmpty($post) || !_.isEmpty(this.paginatePost)) return;
+                if (_.isEmpty($post) || !_.isEmpty(this.paginatePost)) return;
                 this.hasResult = true;
                 this.posts = $post;
             },
             results: function ($post) {
-                if(_.isEmpty($post) && _.isEmpty(this.metas)) {
+                if (_.isEmpty($post) && _.isEmpty(this.metas)) {
                     this.hasResult = true;
                     this.posts = this.blogPosts;
                     return;
                 }
-                if(_.isEmpty($post) && !_.isEmpty(this.metas)) {
+                if (_.isEmpty($post) && !_.isEmpty(this.metas)) {
                     this.hasResult = false;
                     this.posts = $post;
                     return;
@@ -140,7 +140,7 @@
                 this.posts = $post;
             },
             sortedPost: function ($sortedPost) {
-                if(_.isEmpty($sortedPost)) return;
+                if (_.isEmpty($sortedPost)) return;
                 this.hasResult = true;
                 this.posts = $sortedPost;
             },
@@ -149,18 +149,18 @@
                 this.posts = $paginatePost;
             },
             doPagination: function ($doPagination) {
-                if(!$doPagination) {
-                    if(!_.isEmpty(this.sortedPost)) {
+                if (!$doPagination) {
+                    if (!_.isEmpty(this.sortedPost)) {
                         this.hasResult = true;
                         this.posts = this.sortedPost;
                         return;
                     }
-                    if(!_.isEmpty(this.results)) {
+                    if (!_.isEmpty(this.results)) {
                         this.hasResult = true;
                         this.posts = this.results;
                         return;
                     }
-                    if(!_.isEmpty(this.blogPosts)) {
+                    if (!_.isEmpty(this.blogPosts)) {
                         this.hasResult = true;
                         this.posts = this.blogPosts;
                         return;
@@ -179,7 +179,7 @@
                 'togglePagination'
             ]),
             hasMeta () {
-                if(!_.isEmpty(this.metas)) return ' mt-4';
+                if (!_.isEmpty(this.metas)) return ' mt-4';
                 return '';
             },
             isBlog () {
@@ -193,7 +193,7 @@
                 sessionStorage.setItem('tab-active', $tab);
             },
             activeTab ($tab) {
-                if($tab == this.tabActive) return ' active';
+                if ($tab == this.tabActive) return ' active';
                 return ''
             },
             searchPost () {
@@ -206,12 +206,39 @@
             },
             paginate () {
                 this.togglePagination();
-                if(this.doPagination) {
+                if (this.doPagination) {
                     this.isPaginated = 'fa fa-check text-info';
                 }
                 else {
                     this.isPaginated = 'fa fa-ban text-info';
                 }
+            },
+            setPaginationBtnIcon () {
+                if (this.doPagination) {
+                    this.isPaginated = 'fa fa-check text-info';
+                    return;
+                }
+
+                this.isPaginated = 'fa fa-ban text-info';
+            },
+            postAlreadyFetch() {
+                if (!_.isEmpty(this.paginatePost) && this.doPagination) {
+                    this.posts = this.paginatePost;
+                    return true;
+                }
+                if (!_.isEmpty(this.$sortedPost)) {
+                    this.posts = this.$sortedPost;
+                    return true;
+                }
+                if (!_.isEmpty(this.results)) {
+                    this.posts = this.results;
+                    return true;
+                }
+                if (!_.isEmpty(this.blogPosts)) {
+                    this.posts = this.blogPosts;
+                    return true;
+                }
+                return false;
             },
             getAllPosts () {
 
@@ -220,7 +247,7 @@
 
                 client.get(url)
                 .then((response) => {
-                    if(_.isEmpty(response.data.posts)) {
+                    if (_.isEmpty(response.data.posts)) {
                         self.hasResult = true;
                         return;
                     }
@@ -229,33 +256,11 @@
                 .catch((error) => {
                     console.log('error ',  error);
                 });
-            }
+            },
         },
         mounted() {
-            if(this.doPagination) {
-                this.isPaginated = 'fa fa-check text-info';
-            }
-            else {
-                this.isPaginated = 'fa fa-ban text-info';
-            }
-
-            if(!_.isEmpty(this.paginatePost) && this.doPagination) {
-                this.posts = this.paginatePost;
-                return;
-            }
-            if(!_.isEmpty(this.$sortedPost)) {
-                this.posts = this.$sortedPost;
-                return;
-            }
-            if(!_.isEmpty(this.results)) {
-                this.posts = this.results;
-                return;
-            }
-            if(!_.isEmpty(this.blogPosts)) {
-                this.posts = this.blogPosts;
-                return;
-            }
-            this.getAllPosts();
+            this.setPaginationBtnIcon();
+            if (!this.postAlreadyFetch()) this.getAllPosts();
         }
     }
 </script>

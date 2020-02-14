@@ -49,6 +49,12 @@
 
                                 Update
                             </button>
+                            <button type="button"
+                                class="btn btn-warning btn-lg pull-right mr-2"
+                                @click="deletePost(post.id)">
+
+                                Delete
+                            </button>
                         </div>
                     </div>
                     <div class="card">
@@ -153,6 +159,7 @@
         },
         methods: {
             ...mapActions('POSTS', [
+                'removePost',
                 'updatePosts',
                 'setSelectedPost'
             ]),
@@ -214,16 +221,29 @@
 
                     client.post(url, formData)
                     .then((response) => {
-                        self.updatePosts(response.data.post);
-                        self.setSelectedPost(response.data.post);
-                        self.show_preview = false;
+                        if (response.status == 200) {
+                            self.updatePosts(response.data.post);
+                            self.setSelectedPost(response.data.post);
+                            self.show_preview = false;
+
+                            self.$swal.fire({
+                                type: 'success',
+                                title: 'Post has been updated.',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            return;
+                        }
 
                         self.$swal.fire({
-                            type: 'success',
-                            title: 'Post has been updated.',
+                            type: 'warning',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                            footer: `${response.status} - ${response.statusText}`,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 3000
                         });
+
                     })
                     .catch((error) => {
                         console.log('error ',  error);
@@ -244,6 +264,55 @@
                     return false;
                 }
                 return true;
+            },
+            deletePost ($id) {
+                let self = this;
+
+                this.$swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.value) {
+
+                        let formData = new FormData();
+                        formData.append('-method', 'delete');
+
+                        let url = '/api/v1/post/' + $id;
+
+                        client.delete(url, formData)
+                        .then((response) => {
+                            self.removePost($id);
+
+                            let modalType = 'success';
+                            let modalTitle = 'Deleted!';
+                            let modalFooter = '';
+
+                            if (response.status != 200) {
+                                modalType = 'warning';
+                                modalTitle = 'Oops... <br />Something went wrong! ';
+                                modalFooter = 'The blog was remove from the list anyway.';
+                            }
+
+                            self.$swal.fire({
+                                title: modalTitle,
+                                text: response.data.msg,
+                                type: modalType,
+                                footer: modalFooter
+                            })
+
+                            // Redirect to post list page
+                            self.$router.push({ name: 'Blog Posts'});
+                        })
+                        .catch((error) => {
+                            console.log('error ',  error);
+                        });
+                    }
+                });
             }
         },
         mounted () {

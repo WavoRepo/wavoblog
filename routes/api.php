@@ -35,11 +35,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/security/password/confirm', 'UserController@confirm');
 
         /*** BOF POSTS ***/
-        Route::get('/post', 'PostsController@index');
-        Route::post('/post', 'PostsController@store');
-        Route::get('/post/{id}', 'PostsController@show');
-        Route::post('/post/{id}', 'PostsController@update');
-        Route::delete('/post/{id}', 'PostsController@destroy');
+        Route::get('/post', 'PostController@index');
+        Route::post('/post', 'PostController@store');
+        Route::get('/post/{id}', 'PostController@show');
+        Route::post('/post/{id}', 'PostController@update');
+        Route::delete('/post/{id}', 'PostController@destroy');
     });
 
     /*** REQUEST METHOD DON'T MATCH ***/
