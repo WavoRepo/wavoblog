@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ config('app.name') }}</title>
+        <title>{{ str_replace('-', ' ', config('app.name')) }}</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
@@ -86,7 +86,7 @@
             <div class="position-ref" style="padding-bottom: 80px">
                 <div style="background-color: #2f4050; width: 100%; height: 58px; margin-bottom: 50px; color: #fff;">
                     <div class="top-left" style="position: absolute; left: 35px; top: 14px;">
-                        <a href="/" style="color: #fff; text-decoration: none;"> <h2 style="margin: 0">{{ config('app.name') }}</h2></a>
+                        <a href="/" style="color: #fff; text-decoration: none;"> <h2 style="margin: 0">{{ str_replace('-', ' ', config('app.name')) }}</h2></a>
                     </div>
                     @if (Route::has('login'))
                         <div class="top-right links">
@@ -108,7 +108,7 @@
 
                 <div class="content">
                     <div class="title m-b-md">
-                        {{ config('app.name') }}
+                        {{ str_replace('-', ' ', config('app.name')) }}
                     </div>
 
                     <div class="links">
@@ -122,7 +122,7 @@
 
                     </div>
                     <div>
-                        <strong>Copyright</strong> {{ config('app.name') }} © 2014-2018
+                        <strong>Copyright</strong> {{ str_replace('-', ' ', config('app.name')) }} © 2014-2018
                     </div>
                 </div>
             </div>

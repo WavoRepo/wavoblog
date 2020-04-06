@@ -1,4 +1,4 @@
-# laravel/VueJs Blog Application
+# Laravel/VueJs Blog Application
 A simple blog application using laravel as framework, sqlite as database and Vuejs, Vuex, VueRouter and Axios as HTTP client for simple,easy XMLHttpRequests.
 
 ### Getting Started
@@ -18,7 +18,7 @@ A simple blog application using laravel as framework, sqlite as database and Vue
 
   #Application name
 
-  APP_NAME=Blog Application
+  APP_NAME=Blog-Application
 
   #sqlite connection
 

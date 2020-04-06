@@ -6,11 +6,12 @@
 
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
-
+        @auth
         <meta name="cl-code" content="{{ $user['api_token'] }}">
+        @endauth
         <meta name="base_url" content="{{ $base_url }}">
         <meta name="has_user" content="{{ ($user) ? true : false }}">
-        <meta name="app_name" content="{{ config('app.name') }}">
+        <meta name="app_name" content="{{ str_replace('-', ' ', config('app.name')) }}">
         <meta name="frontpage" content="true">
 
         <title>Blog Post</title>
@@ -38,7 +39,7 @@
             <div class="position-ref" style="padding-bottom: 80px">
                 <div style="background-color: #2f4050; width: 100%; height: 58px; margin-bottom: 50px; color: #fff;">
                     <div class="top-left" style="position: absolute; left: 35px; top: 14px;">
-                        <a href="/" style="color: #fff; text-decoration: none;"> <h2 style="margin: 0">{{ config('app.name') }}</h2></a>
+                        <a href="/" style="color: #fff; text-decoration: none;"> <h2 style="margin: 0">{{ str_replace('-', ' ', config('app.name')) }}</h2></a>
                     </div>
                     @if (Route::has('login'))
                         <div class="top-right links">
@@ -65,7 +66,7 @@
             <div class="flex-center position-ref xfull-height" style="height: calc(100vh - 400px">
                 <div class="content">
                     <div class="title m-b-md">
-                        {{ config('app.name') }}
+                        {{ str_replace('-', ' ', config('app.name')) }}
                     </div>
 
                     <div class="middle-box text-center" style="padding-top: 0;">
@@ -95,7 +96,7 @@
 
                     </div>
                     <div>
-                        <strong>Copyright</strong> {{ config('app.name') }} © 2014-2018
+                        <strong>Copyright</strong> {{ str_replace('-', ' ', config('app.name')) }} © 2014-2018
                     </div>
                 </div>
             </div>

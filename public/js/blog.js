@@ -4444,7 +4444,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'post-pagination',
@@ -4472,7 +4471,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (_.isEmpty($list)) {
         if (!_.isEmpty(this.all) && _.isEmpty(this.searchMeta)) {
-          this.updateData(this.all);
+          this.updateData(this.$list);
           return;
         }
 
@@ -4493,8 +4492,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     updateData: function updateData($list) {
       this.haveList = true;
       var pageCount = $list.length / this.perPage;
+      console.log(pageCount);
+      console.log(this.perPage);
       this.pageCount = Math.ceil(pageCount);
       this.page = this.pageNum;
+      console.log(this.pageCount);
     },
     changePage: function changePage($page) {
       this.setPageNum($page);
@@ -75217,7 +75219,6 @@ var render = function() {
     attrs: {
       "page-count": _vm.pageCount,
       "page-range": 3,
-      "margin-pages": _vm.perPage,
       "click-handler": _vm.changePage,
       "prev-text": "Prev",
       "next-text": "Next",
@@ -94394,7 +94395,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!********************************************************************************!*\
   !*** ./resources/js/utility/PostPagination.vue?vue&type=template&id=2924f60a& ***!
   \********************************************************************************/
-/*! exports provided: render, staticRenderFns */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

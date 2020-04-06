@@ -17,8 +17,8 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'v1'], function () {
 
     /*** BOF POSTS ***/
-    Route::get('/frontend/post', 'PostsController@index');
-    Route::get('/frontend/post/{id}', 'PostsController@show');
+    Route::get('/frontend/post', 'PostController@index');
+    Route::get('/frontend/post/{id}', 'PostController@show');
 
     Route::group(['middleware' => 'auth:api'], function () {
 

@@ -4,7 +4,6 @@
         v-model="page"
         :page-count="pageCount"
         :page-range="3"
-        :margin-pages="perPage"
         :click-handler="changePage"
         :prev-text="'Prev'"
         :next-text="'Next'"
@@ -50,7 +49,7 @@
                 this.haveList = false;
                 if(_.isEmpty($list)) {
                     if(!_.isEmpty(this.all) && _.isEmpty(this.searchMeta)) {
-                        this.updateData (this.all);
+                        this.updateData (this.$list);
                         return
                     }
                     this.pageCount = 0;
@@ -73,8 +72,11 @@
             updateData ($list) {
                 this.haveList = true;
                 let pageCount = $list.length / this.perPage;
+                console.log(pageCount);
+                console.log(this.perPage);
                 this.pageCount = Math.ceil(pageCount);
                 this.page = this.pageNum;
+                console.log(this.pageCount);
             },
             changePage ($page) {
                 this.setPageNum($page);
