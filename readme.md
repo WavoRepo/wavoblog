@@ -1,4 +1,4 @@
-# Wavo Blog Application
+# laravel/VueJs Blog Application
 A simple blog application using laravel as framework, sqlite as database and Vuejs, Vuex, VueRouter and Axios as HTTP client for simple,easy XMLHttpRequests.
 
 ### Getting Started
@@ -18,7 +18,7 @@ A simple blog application using laravel as framework, sqlite as database and Vue
 
   #Application name
 
-  APP_NAME=WavoBlog
+  APP_NAME=Blog Application
 
   #sqlite connection
 
@@ -35,7 +35,7 @@ A simple blog application using laravel as framework, sqlite as database and Vue
   DB_PASSWORD=secret
 
 ### Authors
-* Jeremie Yunsay - Initial work - Freelance
+* Jeremie Yunsay - Full Stack Web Developer - Freelance
 
 ### License
 
