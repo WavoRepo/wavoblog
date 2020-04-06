@@ -70,13 +70,12 @@
                 'setPageNum'
             ]),
             updateData ($list) {
+                if(!$list) return;
+
                 this.haveList = true;
                 let pageCount = $list.length / this.perPage;
-                console.log(pageCount);
-                console.log(this.perPage);
                 this.pageCount = Math.ceil(pageCount);
                 this.page = this.pageNum;
-                console.log(this.pageCount);
             },
             changePage ($page) {
                 this.setPageNum($page);

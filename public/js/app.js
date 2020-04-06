@@ -4506,13 +4506,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('POSTS', ['setPageNum']), {
     updateData: function updateData($list) {
+      if (!$list) return;
       this.haveList = true;
       var pageCount = $list.length / this.perPage;
-      console.log(pageCount);
-      console.log(this.perPage);
       this.pageCount = Math.ceil(pageCount);
       this.page = this.pageNum;
-      console.log(this.pageCount);
     },
     changePage: function changePage($page) {
       this.setPageNum($page);
@@ -95524,10 +95522,12 @@ var axios = function () {
     if (token) {
       _axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
       _axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-      _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
+
+      if (api_token) {
+        _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
+      }
+
       _axios.defaults.headers.common['Accept'] = 'application/json';
-      token.remove();
-      api_token.remove();
     } else {
       console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
     }
@@ -95628,14 +95628,16 @@ var xhttp = function () {
     }, {
       key: "setRequestHeader",
       value: function setRequestHeader() {
-        if (token || !api_token) {
+        if (token) {
           this.xhr.setRequestHeader('X-CSRF-TOKEN', token.content);
           this.xhr.setRequestHeader('X-xhruested-With', 'XMLHttpxhruest');
-          this.xhr.setRequestHeader('Authorization', 'Bearer ' + api_token.content);
+
+          if (api_token) {
+            this.xhr.setRequestHeader('Authorization', 'Bearer ' + api_token.content);
+          }
+
           this.xhr.setRequestHeader('Accept', 'application/json');
           this.xhr.responseType = 'json';
-          token.remove();
-          api_token.remove();
         } else {
           console.error('CSRF token/api-token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
         }
@@ -97508,7 +97510,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!********************************************************************************!*\
   !*** ./resources/js/utility/PostPagination.vue?vue&type=template&id=2924f60a& ***!
   \********************************************************************************/
-/*! no static exports found */
+/*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

@@ -21,11 +21,10 @@ let axios = (function() {
         if (token) {
             _axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
             _axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-            _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
+            if (api_token) {
+                _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
+            }
             _axios.defaults.headers.common['Accept'] = 'application/json';
-
-            token.remove();
-            api_token.remove();
 
         } else {
             console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
@@ -117,16 +116,14 @@ let xhttp = (function() {
         }
 
         setRequestHeader () {
-            if (token || !api_token) {
+            if (token) {
                 this.xhr.setRequestHeader('X-CSRF-TOKEN', token.content);
                 this.xhr.setRequestHeader('X-xhruested-With', 'XMLHttpxhruest');
-                this.xhr.setRequestHeader('Authorization', 'Bearer ' + api_token.content);
+                if (api_token) {
+                    this.xhr.setRequestHeader('Authorization', 'Bearer ' + api_token.content);
+                }
                 this.xhr.setRequestHeader('Accept', 'application/json');
                 this.xhr.responseType = 'json';
-
-                token.remove();
-                api_token.remove();
-
             }else {
                 console.error('CSRF token/api-token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
             }

@@ -21,7 +21,7 @@ $factory->define(Posts::class, function (Faker $faker) {
     return [
         'user_id' => mt_rand(1, 10),
         'post_title' => $title,
-        'post_content' => $faker->paragraph($nbSentences = 4, $variableNbSentences = true),
+        'post_content' => $faker->paragraph(220),
         'post_slug' => Str::slug($title),
         'status' => 'Published',
     ];

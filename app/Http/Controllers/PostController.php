@@ -35,9 +35,9 @@ class PostController extends Controller
                 $posts = $query->where('id', $request->id)->first();
 
                 // Not found response
-                if (!$post) {
+                if (!$posts) {
                     return response()->json([
-                        'post' => $post
+                        'post' => $posts
                     ], 404);
                 }
 
