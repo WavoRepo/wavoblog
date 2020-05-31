@@ -10,6 +10,8 @@ use App\Http\Requests\PostRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\FeaturedImage;
+use App\Http\Resources\Post as PostResource;
+use App\Http\Resources\Posts as PostCollection;
 
 class PostController extends Controller
 {
@@ -23,9 +25,11 @@ class PostController extends Controller
      */
     public function collection(Post $post)
     {
-        return response()->json([
-            'posts' => $post->with('owner')->orderBy('created_at', 'DESC')->get()
-        ]);
+        return new PostCollection(
+            $post->with('owner')
+                ->orderBy('created_at', 'DESC')
+                ->get()
+        );
     }
 
     /**
@@ -36,9 +40,11 @@ class PostController extends Controller
      */
     public function published(Post $post)
     {
-        return response()->json([
-            'posts' => $post->with('owner')->where('status', 'published')->orderBy('created_at', 'DESC')->get()
-        ]);
+        return new PostCollection(
+            $post->published()->with('owner')
+                ->orderBy('created_at', 'DESC')
+                ->get()
+        );
     }
 
     /**
@@ -51,17 +57,15 @@ class PostController extends Controller
      */
     public function store(PostRequest $request, Storage $storage, Post $post)
     {
-        $inputs = $request->validated();
-        $inputs['user_id'] = auth()->id();
-
-        $post = $post->create($inputs);
+        $post = $post->create(array_merge(
+            $request->validated(),
+            ['user_id' => auth()->id()]
+        ));
 
         // Process Image then add to post
         $this->saveFeaturedImage($request, $storage, $post);
 
-        return response()->json([
-            'post' => $post->load('owner')
-        ]);
+        return new PostResource($post->load('owner'));
     }
 
     /**
@@ -73,10 +77,7 @@ class PostController extends Controller
      */
     public function find(Post $post)
     {
-        return response()->json([
-            'methods' => 'show',
-            'post' => $post->load('owner')
-        ]);
+        return new PostResource($post->load('owner'));
     }
 
     /**
@@ -95,9 +96,7 @@ class PostController extends Controller
         // Process Image then add to post
         $this->saveFeaturedImage($request, $storage, $post);
 
-        return response()->json([
-            'post' => $post->load('owner')
-        ]);
+        return new PostResource($post->load('owner'));
     }
 
     /**

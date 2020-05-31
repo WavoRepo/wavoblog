@@ -72,7 +72,7 @@ class UserController extends Controller
         $this->saveProfileImage($request, $storage, $user, $userDetails);
 
         // Return data
-        return new UserResource($user->load('details'));
+        return new UserResource($user);
     }
 
     /**
