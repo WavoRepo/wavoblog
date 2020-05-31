@@ -1,8 +1,8 @@
 
-import Blog from './components/frontend/blog/Index';
-import SinglePost from './components/frontend/blog/SinglePost';
+import Blog from './vue/frontend/blog/Index';
+import SinglePost from './vue/frontend/blog/SinglePost';
 
-import PageNotFound from './components/PageNotFound';
+import PageNotFound from './vue/PageNotFound';
 
 
 let routesBlog = [

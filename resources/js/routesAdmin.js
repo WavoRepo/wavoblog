@@ -1,13 +1,13 @@
 
-import Dashboard from './components/backend/Dashboard';
-import Users from './components/backend/users/Index';
-import Blog from './components/backend/blog/Index';
-import AddBlog from './components/backend/blog/Add';
-import EditBlog from './components/backend/blog/Edit';
-import BlogCategories from './components/backend/blogCategory/Index';
-import Security from './components/backend/Security';
-import SinglePost from './components/frontend/blog/SinglePost';
-import PageNotFound from './components/PageNotFound';
+import Dashboard from './vue/backend/Dashboard';
+import Users from './vue/backend/users/Index';
+import Blog from './vue/backend/blog/Index';
+import AddBlog from './vue/backend/blog/Add';
+import EditBlog from './vue/backend/blog/Edit';
+import BlogCategories from './vue/backend/blogCategory/Index';
+import Security from './vue/backend/Security';
+import SinglePost from './vue/frontend/blog/SinglePost';
+import PageNotFound from './vue/PageNotFound';
 
 let routesAdmin = [
     { path: '/admin', component: Dashboard, name: 'Dashboard' },

@@ -21,12 +21,12 @@ return [
             'slug' => 'blog',
             'desc' => 'List of blog post created by registered user.'
         ]
-        // ,
-        // 'blog-catrgory' => [
-        //     'name' => 'Blog Post Categories',
-        //     'icon' => 'fa fa-tags',
-        //     'slug' => 'blog/categories',
-        //     'desc' => 'List of blog post category created by registered user.'
-        // ]
+        ,
+        'blog-catrgory' => [
+            'name' => 'Blog Post Categories',
+            'icon' => 'fa fa-tags',
+            'slug' => 'blog/categories',
+            'desc' => 'List of blog post category created by registered user.'
+        ]
     ]
 ];

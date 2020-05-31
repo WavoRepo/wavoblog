@@ -41,7 +41,7 @@
                     <td>{{ post.status }}</td>
                     <td>{{ formatDate(post.created_at) }}</td>
                     <td>
-                        <blog-action :post="post" :activeUser="activeUser"/>
+                        <action :post="post" :activeUser="activeUser"/>
                     </td>
                 </tr>
             </tbody>
@@ -51,18 +51,18 @@
 
 <script>
     import { mapState, mapGetters,  mapActions } from 'vuex';
-    import blogAction from './Action';
-    import Sorter from '../../../../utility/Sorter';
-    import PostPagination from '../../../../utility/PostPagination';
+    // import blogAction from './Action';
+    // import Sorter from '../../../../utility/Sorter';
+    // import PostPagination from '../../../../utility/PostPagination';
 
     export default {
         name: 'blog-list-table',
         props: ['posts', 'headers', 'activeUser', 'hasPost'],
-        components: {
-            Sorter,
-            blogAction,
-            PostPagination
-        },
+        // components: {
+        //     Sorter,
+        //     blogAction,
+        //     PostPagination
+        // },
         data() {
             return {
                 rowNum: 96,

@@ -80,15 +80,15 @@
 
 <script>
     import { mapState, mapGetters,  mapActions } from 'vuex';
-    import blogListTable from './components/BlogListTable';
-    import BlogListBlock from './components/BlogListBlock';
+    // import blogListTable from './components/BlogListTable';
+    // import BlogListBlock from './components/BlogListBlock';
 
     export default {
         name: 'blog',
-        components: {
-            blogListTable,
-            BlogListBlock
-        },
+        // components: {
+        //     blogListTable,
+        //     BlogListBlock
+        // },
         data () {
             return {
                 hasResult: true,
@@ -240,7 +240,7 @@
                 }
                 return false;
             },
-            getAllPosts () {
+            getAllPost () {
 
                 let self = this;
                 let url = '/api/v1/post';
@@ -260,7 +260,7 @@
         },
         mounted() {
             this.setPaginationBtnIcon();
-            if (!this.postAlreadyFetch()) this.getAllPosts();
+            if (!this.postAlreadyFetch()) this.getAllPost();
         }
     }
 </script>

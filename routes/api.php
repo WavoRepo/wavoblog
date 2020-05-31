@@ -42,6 +42,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/post', 'PostController@store');
             Route::post('/post/{post}', 'PostController@update');
             Route::delete('/post/{post}', 'PostController@destroy');
+
+            /*** BOF ATEGORIES ***/
+            Route::post('/category', 'CategoryController@store');
         });
     });
 

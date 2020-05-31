@@ -3,19 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use Auth;
-use App\PostCategory;
+use App\Category;
 use App\Http\Helpers\Text;
 use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
 use App\Http\Controllers\Controller;
 
-class PostCategoryController extends Controller
+class CategoryController extends Controller
 {
     protected $postCategory;
 
-    public function __construct(PostCategory $postCategory)
-    {
-        $this->postCategory = $postCategory;
-    }
     /**
      * Get all resource in storage.
      *
@@ -33,9 +30,15 @@ class PostCategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Text $text)
+    public function store(CategoryRequest $request, Text $text, Category $category)
     {
+        $category = $category->create($request->validated());
 
+        return response()->json([
+            'validated' => $request->validated(),
+            'request' => $request->all(),
+            'category' => $category
+        ]);
     }
 
     /**
@@ -58,14 +61,6 @@ class PostCategoryController extends Controller
      */
     public function destroy(Posts $posts, $postId)
     {
-        if ($posts->destroy($postId)) {
-            return response()->json([
-                'msg' => 'The selected blog post was deleted.'
-            ]);
-        }
 
-        return response()->json([
-            'msg' => 'The selected blog post was not deleted, resources not found.'
-        ], 404);
     }
 }

@@ -48,15 +48,15 @@
 
 <script>
     import { mapState, mapGetters,  mapActions } from 'vuex';
-    import ViewProfileModal from './components/ViewProfileModal';
-    import EditProfileModal from './components/EditProfileModal';
+    // import ViewProfileModal from './components/ViewProfileModal';
+    // import EditProfileModal from './components/EditProfileModal';
 
     export default {
         name: 'users',
-        components: {
-            ViewProfileModal,
-            EditProfileModal
-        },
+        // components: {
+        //     ViewProfileModal,
+        //     EditProfileModal
+        // },
         data() {
             return {
                 base_url: document.head.querySelector('meta[name="base_url"]').content
