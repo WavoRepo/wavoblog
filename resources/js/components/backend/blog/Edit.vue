@@ -121,7 +121,7 @@
                 base_url: '',
                 img_source: '',
                 post: {
-                    owner: {}
+                    // owner: {}
                 },
                 editor: ClassicEditor,
                 editorData: '<p>Content of the editor.</p>',
@@ -195,13 +195,7 @@
             },
             updateValue ($post) {
                 this.base_url =  this.baseUrl;
-                this.post.id =  $post.id;
-                this.post.title =  $post.post_title;
-                this.post.slug =  $post.post_slug;
-                this.post.status =  $post.status;
-                this.post.author =  $post.owner.name;
-                this.post.content =  $post.post_content;
-                this.post.featured_image =  $post.featured_image;
+                this.post = $post;
 
                 this.img_source = $post.featured_image;
                 this.cachedImage = $post.featured_image;
@@ -221,32 +215,29 @@
 
                     client.post(url, formData)
                     .then((response) => {
-                        if (response.status == 200) {
-                            self.updatePosts(response.data.post);
-                            self.setSelectedPost(response.data.post);
-                            self.show_preview = false;
+                        console.log(response);
 
-                            self.$swal.fire({
-                                type: 'success',
-                                title: 'Post has been updated.',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            return;
-                        }
+                        self.updatePosts(response.data.post);
+                        self.setSelectedPost(response.data.post);
+                        self.show_preview = false;
 
+                        self.$swal.fire({
+                            type: 'success',
+                            title: 'Post has been updated.',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    })
+                    .catch((error) => {
                         self.$swal.fire({
                             type: 'warning',
                             title: 'Oops...',
                             text: 'Something went wrong!',
-                            footer: `${response.status} - ${response.statusText}`,
+                            footer: `${error.response.status} - ${error.response.statusText}`,
                             showConfirmButton: false,
                             timer: 3000
                         });
 
-                    })
-                    .catch((error) => {
-                        console.log('error ',  error);
                     });
                 }
             },

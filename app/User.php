@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'api_token'
+        'name', 'email', 'password', 'api_token', 'profile_image'
     ];
 
     /**
@@ -42,7 +42,7 @@ class User extends Authenticatable
      */
     public function details()
     {
-        return $this->hasMany(\App\UserDetails::class);
+        return $this->hasMany(\App\UserDetails::class)->select('user_id', 'key', 'value');
     }
 
     /**

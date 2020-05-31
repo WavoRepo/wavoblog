@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Auth;
 use App\PostCategory;
 use App\Http\Helpers\Text;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PostCategoryController extends Controller
 {

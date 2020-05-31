@@ -1,6 +1,21 @@
 .align-center {
     text-align: center;
 }
+
+.breadcrumb {
+    background-color: transparent;
+    li {
+        color: #6c757d;
+        font-size: 16px;
+        &.active {
+            color: #fff;
+        }
+        a:hover {
+            color: cyan;
+        }
+    }
+}
+
 .user-index {
     .profile-image-wrap {
         background-position: center;

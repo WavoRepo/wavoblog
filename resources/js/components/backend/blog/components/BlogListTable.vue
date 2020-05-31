@@ -35,7 +35,7 @@
             <tbody class="table-hover">
                 <tr v-for="(post, index) of posts">
                     <td>{{ post.id }}</td>
-                    <td>{{ post.post_title }}</td>
+                    <td>{{ post.title }}</td>
                     <td>{{ post.owner.name }}</td>
                     <td>Uncategorized</td>
                     <td>{{ post.status }}</td>

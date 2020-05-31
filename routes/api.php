@@ -16,30 +16,33 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'v1'], function () {
 
-    /*** BOF POSTS ***/
-    Route::get('/frontend/post', 'PostController@index');
-    Route::get('/frontend/post/{id}', 'PostController@show');
+    Route::group(['namespace' => 'Api'], function ()
+    {
+        /*** BOF POSTS ***/
+        Route::get('/post/published', 'PostController@published');
+        Route::get('/post/{post}', 'PostController@find');
 
-    Route::group(['middleware' => 'auth:api'], function () {
+        Route::group(['middleware' => 'auth:api'], function ()
+        {
+            /*** BOF DASHBOARD ***/
+            Route::get('/get-dashboard-services', 'DashboardController@getServices');
 
-        /*** BOF DASHBOARD ***/
-        Route::get('/get-dashboard-services', 'DashboardController@getServices');
-
-        /*** BOF USER ***/
-        Route::get('/user/active', 'UserController@active');
-        Route::get('/user', 'UserController@index');
-        Route::get('/user/{id}', 'UserController@show');
-        Route::post('/user/{id}', 'UserController@update');
+            /*** BOF USER ***/
+            Route::get('/user', 'UserController@index');
+            Route::get('/user/active', 'UserController@active');
+            Route::get('/user/{user}', 'UserController@show');
+            Route::post('/user/{user}', 'UserController@update');
+            Route::delete('/user/{user}', 'UserController@destroy');
 
             /*** BOF SECURITY ***/
-        Route::post('/security/password/confirm', 'UserController@confirm');
+            Route::post('/security/password/confirm', 'UserController@confirm');
 
-        /*** BOF POSTS ***/
-        Route::get('/post', 'PostController@index');
-        Route::post('/post', 'PostController@store');
-        Route::get('/post/{id}', 'PostController@show');
-        Route::post('/post/{id}', 'PostController@update');
-        Route::delete('/post/{id}', 'PostController@destroy');
+            /*** BOF POSTS ***/
+            Route::get('/post', 'PostController@collection');
+            Route::post('/post', 'PostController@store');
+            Route::post('/post/{post}', 'PostController@update');
+            Route::delete('/post/{post}', 'PostController@destroy');
+        });
     });
 
     /*** REQUEST METHOD DON'T MATCH ***/

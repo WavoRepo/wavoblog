@@ -32,7 +32,7 @@ import { axios, xhttp } from './clients';
 
 // if(axios) window.client = axios;
 // else window.client = xhttp;
-window.client = xhttp;
+window.client = axios;
 
 /**
 * Load the Vuejs

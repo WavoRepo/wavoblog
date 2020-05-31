@@ -72,11 +72,8 @@
                 </div>
             </div>
         </nav>
-        <div class="wrapper border-bottom white-bg page-heading" style="margin-top: 1px; padding: 10px; background-color: #eceaea;">
+        <div class="wrapper page-heading" style="padding: 25px 10px 10px;">
             <breadcrumbs></breadcrumbs>
-            <div class="col-lg-2">
-
-            </div>
         </div>
         <main>
             @yield('content')

@@ -7,7 +7,7 @@
                     @click="setSelected(post.id)">
 
                     <i class="fa fa-pencil"> </i>
-                    Edit
+
                 </button>
             </router-link>
             <button v-else class="btn btn-white btn-xs"
@@ -15,15 +15,15 @@
                 disabled>
 
                 <i class="fa fa-pencil" > </i>
-                Edit
+
             </button>
-            <router-link :to="'/blog/' + post.post_slug">
+            <router-link :to="'/blog/' + post.slug">
                 <button class="btn btn-info btn-xs"
                     type="button"
                     @click="setSelected(post.id)">
 
                     <i class="fa fa-eye"> </i>
-                    View
+
                 </button>
             </router-link>
             <button v-if="post.owner.email == activeUser.email" class="btn btn-danger btn-xs"
@@ -31,14 +31,14 @@
                 @click="remove(post.id)">
 
                 <i class="fa fa-trash"> </i>
-                Trash
+
             </button>
             <button v-else class="btn btn-white btn-xs"
                 type="button"
                 disabled>
 
                 <i class="fa fa-trash"> </i>
-                Trash
+
             </button>
         </div>
     </div>

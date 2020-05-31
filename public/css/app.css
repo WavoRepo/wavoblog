@@ -28522,6 +28522,23 @@ body.md-skin {
   text-align: center;
 }
 
+.breadcrumb {
+  background-color: transparent;
+}
+
+.breadcrumb li {
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.breadcrumb li.active {
+  color: #fff;
+}
+
+.breadcrumb li a:hover {
+  color: cyan;
+}
+
 .user-index .profile-image-wrap {
   background-position: center;
   background-repeat: no-repeat;

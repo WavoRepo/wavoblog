@@ -30,7 +30,7 @@
             <div v-if="post.status == 'Published'" :class="'col-lg-' + blockWidth">
                 <div class="card">
                     <div class="card-header text-left">
-                        <h3>{{ post.post_title }}</h3>
+                        <h3>{{ post.title }}</h3>
                         <div class="row">
                             <div class="small m-b-xs col-md-6 text-left">
                                 <h4>
@@ -62,10 +62,10 @@
                                 </div>
                             </div>
                             <div class="col-md-7 post-content">
-                                <div class="excerpt" v-html="excerpt(post.post_content, excerptCount)">
+                                <div class="excerpt" v-html="excerpt(post.content, excerptCount)">
 
                                 </div>
-                                <router-link :to="'/blog/' + post.post_slug" @click="setSelected(post.id)">
+                                <router-link :to="'/blog/' + post.slug" @click="setSelected(post.id)">
                                     <button class="btn btn-primary btn-xs pull-left mb-2"
                                         type="button"
                                         @click="setSelected(post.id)">
@@ -202,6 +202,7 @@
                 return moment($date).format('Do MM YYYY hh:mm');
             },
             excerpt ($text, excerptCount) {
+                if(!$text) return $text;
                 // return $text.replace(/(<([^>]+)>)/ig, '').substr(0, excerptCount) + '...';
                 return $text.replace(/<img[^>]*>/g, '').substr(0, excerptCount) + '...';
             },
@@ -229,9 +230,11 @@
                 } else {
                     url = '/api/v1/frontend/post/?frontpage=true';
                 }
+                url = '/api/v1/post/published';
 
                 client.get(url)
                 .then((response) => {
+                    console.log(response);
                     if(_.isEmpty(response.data.posts)) {
                         this.havePost = false;
                     };

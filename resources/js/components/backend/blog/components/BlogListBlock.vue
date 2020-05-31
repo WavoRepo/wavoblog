@@ -40,7 +40,7 @@
         <div v-for="post of posts" class="col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h4>{{ post.post_title }}</h4>
+                    <h4>{{ post.title }}</h4>
                 </div>
                 <div class="card-content wrapper">
                     <div class="small m-b-xs">
@@ -52,7 +52,7 @@
                             </span>
                         </h4>
                     </div>
-                    <!-- <div v-html="post.post_content"></div> -->
+                    <!-- <div v-html="post.content"></div> -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="small text-left">

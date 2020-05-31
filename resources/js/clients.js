@@ -20,11 +20,11 @@ let axios = (function() {
 
         if (token) {
             _axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-            _axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
             if (api_token) {
                 _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
             }
             _axios.defaults.headers.common['Accept'] = 'application/json';
+            // _axios.defaults.headers.common['Content-Type'] = 'application/json';
 
         } else {
             console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');

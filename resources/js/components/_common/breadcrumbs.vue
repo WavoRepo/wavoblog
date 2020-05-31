@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-10">
-                <ol class="breadcrumb" style="background-color: #eceaea;">
+                <ol class="breadcrumb"  >
                     <li v-if="title == 'Dashboard'" class="breadcrumb-item">
                         <router-link :to="'/admin/'">
                             <i class="fa fa-th-large"></i>

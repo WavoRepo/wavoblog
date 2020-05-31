@@ -33,7 +33,7 @@ class Storage extends Directory
     public function saveUserProfileImage($userId, $file)
     {
         $this->directory = 'user_' . $userId;
-        $this->fileName = 'user_image_' . $userId . date("Ymdgi") . $file->getClientOriginalExtension();
+        $this->fileName = 'user_image_' . $userId . date("Ymdgi") . '.' . $file->getClientOriginalExtension();
 
 
         $this->cleanOrCreateDirectory('public');

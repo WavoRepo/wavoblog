@@ -14,7 +14,7 @@
                         {{ formatDate(post.created_at)  }}
                     </span>
                     <h1>
-                        {{ post.post_title }}
+                        {{ post.title }}
                     </h1>
                 </div>
                 <div class="col-lg-12 featured-image-wrap">
@@ -22,7 +22,7 @@
                         :src="getImage(post.featured_image)">
                 </div>
                 <hr style="width: 100%; margin: 2rem 0;">
-                <div class="col-lg-12 post-content-wrap" v-html="post.post_content"></div>
+                <div class="col-lg-12 post-content-wrap" v-html="post.content"></div>
             </div>
             <hr>
             <div v-show="post.owner.name" class="row">
@@ -112,17 +112,10 @@
             getPost($postId) {
                 let self = this;
 
-                let url = '';
-                if(!_.isEmpty(this.activeUser)) {
-                    url = '/api/v1/post/?id=' + $postId;
-                } else {
-                    url = '/api/v1/frontend/post/?id=' + $postId;
-                }
-
-
-                client.get(url)
+                client.get('/api/v1/post/' + $postId)
                 .then((response) => {
-                    self.setSelectedPost(response.data.posts);
+                    console.log(response);
+                    self.setSelectedPost(response.data.post);
                 })
                 .catch((error) => {
                     console.log('error: ', error);
@@ -139,7 +132,7 @@
             }
             else if(!_.isEmpty(_post)) {
                 _post = JSON.parse(_post);
-                if (_post.post_slug != this.$route.params.post) {
+                if (_post.slug != this.$route.params.post) {
                     this.havePost = false;
                     return;
                 }

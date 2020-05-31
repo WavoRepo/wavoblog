@@ -2424,6 +2424,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
         var url = '/api/v1/post';
         client.post(url, formData).then(function (response) {
+          console.log(response);
+
           if (!_.isEmpty(_this.blogPosts)) {
             var post = response.data.post;
             self.addPosts(post);
@@ -2436,10 +2438,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             showConfirmButton: false,
             timer: 1500
           }); // Redirect to edit page for adding new post is done
-
-          self.$router.push({
-            name: 'Edit Blog'
-          });
+          // self.$router.push({ name: 'Edit Blog'});
         })["catch"](function (error) {
           console.log('error ', error);
         });
@@ -2601,8 +2600,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       show_preview: false,
       base_url: '',
       img_source: '',
-      post: {
-        owner: {}
+      post: {// owner: {}
       },
       editor: _ckeditor_ckeditor5_build_classic__WEBPACK_IMPORTED_MODULE_2___default.a,
       editorData: '<p>Content of the editor.</p>',
@@ -2663,13 +2661,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     updateValue: function updateValue($post) {
       this.base_url = this.baseUrl;
-      this.post.id = $post.id;
-      this.post.title = $post.post_title;
-      this.post.slug = $post.post_slug;
-      this.post.status = $post.status;
-      this.post.author = $post.owner.name;
-      this.post.content = $post.post_content;
-      this.post.featured_image = $post.featured_image;
+      this.post = $post;
       this.img_source = $post.featured_image;
       this.cachedImage = $post.featured_image;
     },
@@ -2682,29 +2674,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
         var url = '/api/v1/post/' + this.post.id;
         client.post(url, formData).then(function (response) {
-          if (response.status == 200) {
-            self.updatePosts(response.data.post);
-            self.setSelectedPost(response.data.post);
-            self.show_preview = false;
-            self.$swal.fire({
-              type: 'success',
-              title: 'Post has been updated.',
-              showConfirmButton: false,
-              timer: 1500
-            });
-            return;
-          }
-
+          console.log(response);
+          self.updatePosts(response.data.post);
+          self.setSelectedPost(response.data.post);
+          self.show_preview = false;
+          self.$swal.fire({
+            type: 'success',
+            title: 'Post has been updated.',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        })["catch"](function (error) {
           self.$swal.fire({
             type: 'warning',
             title: 'Oops...',
             text: 'Something went wrong!',
-            footer: "".concat(response.status, " - ").concat(response.statusText),
+            footer: "".concat(error.response.status, " - ").concat(error.response.statusText),
             showConfirmButton: false,
             timer: 3000
           });
-        })["catch"](function (error) {
-          console.log('error ', error);
         });
       }
     },
@@ -4167,7 +4155,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return moment($date).format('Do MM YYYY hh:mm');
     },
     excerpt: function excerpt($text, excerptCount) {
-      // return $text.replace(/(<([^>]+)>)/ig, '').substr(0, excerptCount) + '...';
+      if (!$text) return $text; // return $text.replace(/(<([^>]+)>)/ig, '').substr(0, excerptCount) + '...';
+
       return $text.replace(/<img[^>]*>/g, '').substr(0, excerptCount) + '...';
     },
     isBlog: function isBlog() {
@@ -4197,7 +4186,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         url = '/api/v1/frontend/post/?frontpage=true';
       }
 
+      url = '/api/v1/post/published';
       client.get(url).then(function (response) {
+        console.log(response);
+
         if (_.isEmpty(response.data.posts)) {
           _this.havePost = false;
         }
@@ -4371,16 +4363,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     getPost: function getPost($postId) {
       var self = this;
-      var url = '';
-
-      if (!_.isEmpty(this.activeUser)) {
-        url = '/api/v1/post/?id=' + $postId;
-      } else {
-        url = '/api/v1/frontend/post/?id=' + $postId;
-      }
-
-      client.get(url).then(function (response) {
-        self.setSelectedPost(response.data.posts);
+      client.get('/api/v1/post/' + $postId).then(function (response) {
+        console.log(response);
+        self.setSelectedPost(response.data.post);
       })["catch"](function (error) {
         console.log('error: ', error);
       });
@@ -4397,7 +4382,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     } else if (!_.isEmpty(_post)) {
       _post = JSON.parse(_post);
 
-      if (_post.post_slug != this.$route.params.post) {
+      if (_post.slug != this.$route.params.post) {
         this.havePost = false;
         return;
       }
@@ -71869,10 +71854,7 @@ var render = function() {
       _c("div", { staticClass: "col-lg-10" }, [
         _c(
           "ol",
-          {
-            staticClass: "breadcrumb",
-            staticStyle: { "background-color": "#eceaea" }
-          },
+          { staticClass: "breadcrumb" },
           [
             _vm.title == "Dashboard"
               ? _c(
@@ -73169,10 +73151,7 @@ var render = function() {
                     }
                   }
                 },
-                [
-                  _c("i", { staticClass: "fa fa-pencil" }),
-                  _vm._v("\n                Edit\n            ")
-                ]
+                [_c("i", { staticClass: "fa fa-pencil" })]
               )
             ])
           : _c(
@@ -73181,13 +73160,10 @@ var render = function() {
                 staticClass: "btn btn-white btn-xs",
                 attrs: { type: "button", disabled: "" }
               },
-              [
-                _c("i", { staticClass: "fa fa-pencil" }),
-                _vm._v("\n            Edit\n        ")
-              ]
+              [_c("i", { staticClass: "fa fa-pencil" })]
             ),
         _vm._v(" "),
-        _c("router-link", { attrs: { to: "/blog/" + _vm.post.post_slug } }, [
+        _c("router-link", { attrs: { to: "/blog/" + _vm.post.slug } }, [
           _c(
             "button",
             {
@@ -73199,10 +73175,7 @@ var render = function() {
                 }
               }
             },
-            [
-              _c("i", { staticClass: "fa fa-eye" }),
-              _vm._v("\n                View\n            ")
-            ]
+            [_c("i", { staticClass: "fa fa-eye" })]
           )
         ]),
         _vm._v(" "),
@@ -73218,10 +73191,7 @@ var render = function() {
                   }
                 }
               },
-              [
-                _c("i", { staticClass: "fa fa-trash" }),
-                _vm._v("\n            Trash\n        ")
-              ]
+              [_c("i", { staticClass: "fa fa-trash" })]
             )
           : _c(
               "button",
@@ -73229,10 +73199,7 @@ var render = function() {
                 staticClass: "btn btn-white btn-xs",
                 attrs: { type: "button", disabled: "" }
               },
-              [
-                _c("i", { staticClass: "fa fa-trash" }),
-                _vm._v("\n            Trash\n        ")
-              ]
+              [_c("i", { staticClass: "fa fa-trash" })]
             )
       ],
       1
@@ -73421,7 +73388,7 @@ var render = function() {
             { staticClass: "card" },
             [
               _c("div", { staticClass: "card-header" }, [
-                _c("h4", [_vm._v(_vm._s(post.post_title))])
+                _c("h4", [_vm._v(_vm._s(post.title))])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "card-content wrapper" }, [
@@ -73662,7 +73629,7 @@ var render = function() {
               return _c("tr", [
                 _c("td", [_vm._v(_vm._s(post.id))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(post.post_title))]),
+                _c("td", [_vm._v(_vm._s(post.title))]),
                 _vm._v(" "),
                 _c("td", [_vm._v(_vm._s(post.owner.name))]),
                 _vm._v(" "),
@@ -74741,7 +74708,7 @@ var render = function() {
                 ? _c("div", { class: "col-lg-" + _vm.blockWidth }, [
                     _c("div", { staticClass: "card" }, [
                       _c("div", { staticClass: "card-header text-left" }, [
-                        _c("h3", [_vm._v(_vm._s(post.post_title))]),
+                        _c("h3", [_vm._v(_vm._s(post.title))]),
                         _vm._v(" "),
                         _c("div", { staticClass: "row" }, [
                           _c(
@@ -74812,10 +74779,7 @@ var render = function() {
                                 staticClass: "excerpt",
                                 domProps: {
                                   innerHTML: _vm._s(
-                                    _vm.excerpt(
-                                      post.post_content,
-                                      _vm.excerptCount
-                                    )
+                                    _vm.excerpt(post.content, _vm.excerptCount)
                                   )
                                 }
                               }),
@@ -74823,7 +74787,7 @@ var render = function() {
                               _c(
                                 "router-link",
                                 {
-                                  attrs: { to: "/blog/" + post.post_slug },
+                                  attrs: { to: "/blog/" + post.slug },
                                   on: {
                                     click: function($event) {
                                       return _vm.setSelected(post.id)
@@ -75089,7 +75053,7 @@ var render = function() {
               _c("h1", [
                 _vm._v(
                   "\n                    " +
-                    _vm._s(_vm.post.post_title) +
+                    _vm._s(_vm.post.title) +
                     "\n                "
                 )
               ])
@@ -75113,7 +75077,7 @@ var render = function() {
             _vm._v(" "),
             _c("div", {
               staticClass: "col-lg-12 post-content-wrap",
-              domProps: { innerHTML: _vm._s(_vm.post.post_content) }
+              domProps: { innerHTML: _vm._s(_vm.post.content) }
             })
           ]),
           _vm._v(" "),
@@ -92431,7 +92395,7 @@ try {
  // if(axios) window.client = axios;
 // else window.client = xhttp;
 
-window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["xhttp"];
+window.client = _clients__WEBPACK_IMPORTED_MODULE_0__["axios"];
 /**
 * Load the Vuejs
 */
@@ -92484,13 +92448,12 @@ var axios = function () {
 
     if (token) {
       _axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-      _axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
       if (api_token) {
         _axios.defaults.headers.common['Authorization'] = 'Bearer ' + api_token.content;
       }
 
-      _axios.defaults.headers.common['Accept'] = 'application/json';
+      _axios.defaults.headers.common['Accept'] = 'application/json'; // _axios.defaults.headers.common['Content-Type'] = 'application/json';
     } else {
       console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
     }

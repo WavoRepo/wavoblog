@@ -182,6 +182,8 @@
 
                     client.post(url, formData)
                     .then((response) => {
+                        console.log(response);
+
                         if(!_.isEmpty(this.blogPosts)) {
                             let post = response.data.post;
                             self.addPosts(post);
@@ -196,7 +198,7 @@
                         });
 
                         // Redirect to edit page for adding new post is done
-                        self.$router.push({ name: 'Edit Blog'});
+                        // self.$router.push({ name: 'Edit Blog'});
                     })
                     .catch((error) => {
                         console.log('error ',  error);
