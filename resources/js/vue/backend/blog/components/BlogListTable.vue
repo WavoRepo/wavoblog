@@ -41,7 +41,7 @@
                     <td>{{ post.status }}</td>
                     <td>{{ formatDate(post.created_at) }}</td>
                     <td>
-                        <action :post="post" :activeUser="activeUser"/>
+                        <blog-action :post="post" :activeUser="activeUser"/>
                     </td>
                 </tr>
             </tbody>

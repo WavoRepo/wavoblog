@@ -8,21 +8,22 @@
                 <form class="no-borders">
                     <div class="form-group row">
                         <label for="email" class="col-md-4 col-form-label text-md-right">Name</label>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <input required="required" class="form-control" v-model="category.name">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="password" class="col-md-4 col-form-label text-md-right">Description</label>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <textarea class="form-control" v-model="category.description"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="password" class="col-md-4 col-form-label text-md-right">Parent</label>
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <select class="form-control" v-model="category.parent_id">
-                                <option value="" v-for="category in categories"> category.name</option>
+                                <option value="0">No Parent</option>
+                                <option :value="category.id" v-for="category in categories"> {{category.name}}</option>
                             </select>
                         </div>
                     </div>
@@ -40,30 +41,56 @@
 </template>
 
 <script>
-export default {
+import {mapState, mapActions} from 'vuex'
 
+export default {
     data () {
         return {
-            category: {},
-            categories: {}
+            category: {
+                parent_id: 0,
+                taxonomy: 'post-category'
+            },
         }
     },
+    computed: {
+        ...mapState('CATEGORIES', {
+            categories: 'all'
+        }),
+    },
     methods: {
+        ...mapActions('CATEGORIES', [
+            'addCategory'
+        ]),
         submitForm: function () {
             let self = this;
-            console.log(this.category);
 
             let formData = new FormData();
             Object.keys(this.category).map(function(key) {
                 formData.append(key, self.category[key]);
             });
 
-            client.post('/api/v1/category', formData)
+            this.addCategory(this.category)
             .then(response => {
-                console.log(response);
+                self.$swal.fire({
+                    icon: 'success',
+                    title: 'Done Adding New Category',
+                });
             })
             .catch(error => {
-                console.log(error);
+                let html = error.response.data.message;
+                if(error.response.data.errors){
+                    html += '<ul style="list-style-type: none;">';
+                    const err = Object.values(error.response.data.errors);
+                    for (const _err of err) {
+                        html += `<li>${_err}</li>`;
+                    }
+                    html += '</ul>';
+                }
+                self.$swal.fire({
+                    icon: 'warning',
+                    title: 'Opsss...',
+                    html: html
+                })
             })
         }
     }

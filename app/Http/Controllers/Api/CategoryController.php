@@ -19,9 +19,11 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function collection(Request $request, Category $category)
     {
-
+        return response()->json([
+            'categories' => $category->all()
+        ]);
     }
 
     /**
@@ -30,13 +32,11 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CategoryRequest $request, Text $text, Category $category)
+    public function store(CategoryRequest $request, Category $category)
     {
         $category = $category->create($request->validated());
 
         return response()->json([
-            'validated' => $request->validated(),
-            'request' => $request->all(),
             'category' => $category
         ]);
     }
@@ -48,9 +48,13 @@ class CategoryController extends Controller
      * @param  int  $postId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Text $text, $postId)
+    public function update(CategoryRequest $request, Category $category)
     {
+        $category->update($request->validated());
 
+        return response()->json([
+            'category' => $category
+        ]);
     }
 
     /**
@@ -59,8 +63,14 @@ class CategoryController extends Controller
      * @param  int  $postId
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Posts $posts, $postId)
+    public function destroy(Category $category)
     {
+        $parentId = $category->id;
+        $category->delete();
+        $category->where('parent_id', $parentId)->update(['parent_id' => 0]);
 
+        return response()->json([
+            'msg' => 'The selected blog post was deleted.'
+        ]);
     }
 }

@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                <action :display="'card-footer'" :post="post" :activeUser="activeUser"/>
+                <blog-action :display="'card-footer'" :post="post" :activeUser="activeUser"/>
             </div>
         </div>
     </div>
@@ -76,18 +76,10 @@
 
 <script>
     import { mapState, mapGetters,  mapActions } from 'vuex';
-    // import blogAction from './Action';
-    // import Sorter from '../../../../utility/Sorter';
-    // import PostPagination from '../../../../utility/PostPagination';
 
     export default {
         name: 'blog-list-block',
         props: ['posts', 'activeUser', 'headers', 'hasPost'],
-        // components: {
-        //     Sorter,
-        //     blogAction,
-        //     PostPagination
-        // },
         data() {
             return {
                 rowNum: 96,

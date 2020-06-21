@@ -34,13 +34,18 @@ final class CategoryRequest extends FormRequest
     public function rules()
     {
         return  [
-            'name' => ['required', 'max:255'],
+            'name' => ['required', 'max:255',Rule::unique('category', 'name')->ignore($this->category)],
             'description' => ['sometimes', 'required'],
             'taxonomy' => ['sometimes', 'required'],
             'parent_id' => ['sometimes', 'required'],
         ];
     }
 
+    /**
+     * [validated description]
+     * @method validated
+     * @return [type]
+     */
     public function validated()
     {
         $validated = $this->validator->validated();

@@ -107,10 +107,6 @@ class PostController extends Controller
      */
     public function destroy(Post $posts)
     {
-        $posts->delete();
-
-        return response()->json([
-            'msg' => 'The selected blog post was deleted.'
-        ]);
+        return $posts->delete();
     }
 }

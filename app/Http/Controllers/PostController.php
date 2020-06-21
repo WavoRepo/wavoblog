@@ -17,7 +17,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Post $post)
+    public function index(Post $post)
     {
         // load View template for frontend
         return view('blogpage', [

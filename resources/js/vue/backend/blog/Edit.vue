@@ -57,6 +57,8 @@
                             </button>
                         </div>
                     </div>
+                    <FeaturedImage :featuredImage="post.featured_image" />
+<!--
                     <div class="card">
                         <div class="card-header">
                             Featured Image
@@ -99,6 +101,7 @@
                             </div>
                         </div>
                     </div>
+                     -->
                 </div>
             </div>
         </form>

@@ -70,8 +70,6 @@ export default {
                 text: "You won't be able to revert this!",
                 type: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.value) {
@@ -85,27 +83,20 @@ export default {
                     .then((response) => {
                         self.removePost($id);
 
-                        let modalType = 'success';
-                        let modalTitle = 'Deleted!';
-                        let modalText = response.data.msg;
-                        let modalFooter = '';
-
-                        if (response.status != 200) {
-                            modalType = 'warning';
-                            modalTitle = 'Oops... ';
-                            modalText = 'Something went wrong! ' + response.data.msg;
-                            modalFooter = 'The blog was remove from the list anyway.';
-                        }
-
                         self.$swal.fire({
-                            icon: modalType,
-                            title: modalTitle,
-                            text: modalText,
-                            footer: modalFooter
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'The selected blog post was deleted.'
                         })
                     })
                     .catch((error) => {
                         console.log('error ',  error);
+                        self.$swal.fire({
+                            icon: 'warning',
+                            title: 'Oops... ',
+                            text: 'Something went wrong! ' + response.data.msg,
+                            footer: 'The blog was remove from the list anyway.'
+                        })
                     });
                 }
             });
